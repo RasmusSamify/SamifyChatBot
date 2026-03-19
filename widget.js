@@ -29,8 +29,9 @@
 
   /* LAUNCHER */
   #launcher {
+    pointer-events: all;
     position: fixed; bottom: 24px; right: 24px;
-    width: 56px; height: 56px; border-radius: 50%;
+    width: 64px; height: 64px; border-radius: 50%;
     background: var(--accent); border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.25);
@@ -43,6 +44,7 @@
 
   /* WIDGET */
   #widget {
+    pointer-events: none;
     position: fixed; bottom: 92px; right: 24px;
     width: var(--w); height: var(--h);
     border-radius: var(--radius);
@@ -177,6 +179,37 @@
   .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .status-updated { font-size: 11px; color: var(--text3); margin-top: 14px; text-align: center; }
 
+
+  /* TOOLTIP BUBBLE */
+  #samify-tooltip {
+    position: fixed; bottom: 100px; right: 24px;
+    background: #1a1a2e; color: #fff;
+    padding: 12px 16px; border-radius: 12px 12px 4px 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+    line-height: 1.5; max-width: 240px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    pointer-events: all; cursor: pointer;
+    opacity: 0; transform: translateY(8px) scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9999;
+  }
+  #samify-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
+  #samify-tooltip::after {
+    content: '';
+    position: absolute; bottom: -8px; right: 20px;
+    width: 0; height: 0;
+    border-left: 8px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 8px solid #1a1a2e;
+  }
+  #samify-tooltip-close {
+    position: absolute; top: 6px; right: 8px;
+    font-size: 14px; color: rgba(255,255,255,0.4);
+    cursor: pointer; line-height: 1; background: none; border: none; color: rgba(255,255,255,0.5);
+    padding: 0 2px;
+  }
+  #samify-tooltip-close:hover { color: #fff; }
+
   /* FOOTER */
   .w-footer { padding: 8px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .w-footer a { font-size: 10.5px; color: #111; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: opacity 0.15s; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 0.02em; }
@@ -186,9 +219,10 @@
 
   var wrap = document.createElement('div');
   wrap.id = 'samify-widget-container';
+  wrap.style.cssText = 'position:fixed;bottom:0;right:0;z-index:9997;pointer-events:none;';
   wrap.innerHTML = `<button id="launcher" onclick="toggleWidget()" aria-label="Öppna support">
-  <svg class="chat-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  <svg class="close-icon" style="display:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <svg class="chat-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <svg class="close-icon" style="display:none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 </button>
 
 <div id="widget">
@@ -562,6 +596,22 @@
   }
 
 
+
+
+  // Tooltip
+  function closeTooltip() {
+    var t = document.getElementById('samify-tooltip');
+    if (t) { t.classList.remove('show'); setTimeout(function(){ t.style.display='none'; }, 300); }
+  }
+  function openFromTooltip() {
+    closeTooltip();
+    document.getElementById('widget').classList.add('visible');
+    document.getElementById('launcher').classList.add('open');
+  }
+  setTimeout(function() {
+    var t = document.getElementById('samify-tooltip');
+    if (t) t.classList.add('show');
+  }, 5000);
 
   setTimeout(function() {
     if (typeof updateTabArrows === 'function') updateTabArrows();
