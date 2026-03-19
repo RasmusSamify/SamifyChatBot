@@ -597,6 +597,16 @@
 
 
 
+  // Expose functions globally so onclick attrs in injected HTML can reach them
+  window.toggleWidget = toggleWidget;
+  window.switchTab = switchTab;
+  window.toggleFaq = toggleFaq;
+  window.tabScroll = tabScroll;
+  window.pricingTab = pricingTab;
+  window.openCalendly = openCalendly;
+  window.closeTooltip = closeTooltip;
+  window.openFromTooltip = openFromTooltip;
+
   // Tooltip
   function closeTooltip() {
     var t = document.getElementById('samify-tooltip');
