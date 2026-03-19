@@ -207,8 +207,8 @@
     #samify-tooltip-close:hover { color: #fff; }
 
     /* FOOTER */
-    .sw-footer { padding: 7px 14px; border-top: 1px solid #e8e8ec; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; }
-    .sw-footer a { font-size: 10px; color: #111; text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 700; letter-spacing: 0.02em; transition: opacity 0.15s; }
+    .sw-footer { padding: 10px 14px; border-top: 1px solid #e8e8ec; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; }
+    .sw-footer a { font-size: 12px; color: #111; text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 700; letter-spacing: 0.02em; transition: opacity 0.15s; }
     .sw-footer a:hover { opacity: 0.65; }
     .sw-pdot { width: 6px; height: 6px; border-radius: 50%; background: #7c3aed; display: inline-block; }
   `;
@@ -474,7 +474,10 @@
       </div>
 
       <div class="sw-footer">
-        <a href="https://samify.se" target="_blank">Powered By Samify AI <span class="sw-pdot"></span></a>
+        <a href="https://samify.se" target="_blank" style="flex-direction:column;gap:4px;">
+          <img src="https://samify.se/wp-content/uploads/go-x/u/7c566770-2e09-4b98-98b8-c4afcbbeeeaa/image-160x62.png" alt="Samify" style="height:22px;width:auto;display:block;" />
+          <span style="font-size:10px;font-weight:700;color:#a0a0b0;letter-spacing:0.04em;">Powered By Samify AI <span class="sw-pdot" style="vertical-align:middle;"></span></span>
+        </a>
       </div>
     </div>
 
