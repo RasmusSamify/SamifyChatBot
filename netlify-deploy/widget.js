@@ -1,13 +1,11 @@
 (function() {
-  if (document.getElementById('samify-widget-container')) return; // prevent double-load
+  if (document.getElementById('samify-widget-container')) return;
 
-  // Fonts
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Montserrat:wght@500;700&display=swap';
   document.head.appendChild(link);
 
-  // CSS
   var style = document.createElement('style');
   style.textContent = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -186,7 +184,6 @@
   .purple-dot { width: 7px; height: 7px; border-radius: 50%; background: #7c3aed; display: inline-block; flex-shrink: 0; }`;
   document.head.appendChild(style);
 
-  // HTML
   var wrap = document.createElement('div');
   wrap.id = 'samify-widget-container';
   wrap.innerHTML = `<button id="launcher" onclick="toggleWidget()" aria-label="Öppna support">
@@ -220,10 +217,302 @@
   <div class="w-content">
 
     <!-- CHAT -->
-    <div id="panel-chat" class="tab-panel active">`;
+    <div id="panel-chat" class="tab-panel active">
+      <script async type="module" src="https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js"></script>
+      <zapier-interfaces-chatbot-embed
+        is-popup="false"
+        chatbot-id="cml7176g80063a6ttccmada8x"
+        height="100%"
+        width="100%"
+      ></zapier-interfaces-chatbot-embed>
+    </div>
+
+    <!-- FAQ -->
+    <div id="panel-faq" class="tab-panel">
+      <div class="panel-body">
+        <div class="section-title">Vanliga frågor</div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Vad är Samify och vad gör ni?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Samify är en AI- och automationsbyrå som hjälper svenska SME-företag att effektivisera sina arbetsflöden. Vi bygger skräddarsydda AI-lösningar, chatbotar och integrationer — utan att ni behöver byta system.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Behöver vi byta våra befintliga system?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Nej — det är hela poängen. Vi kopplar samman det ni redan har: Fortnox, Outlook, webCRM, Google Workspace och 6 000+ andra verktyg. Ni fortsätter jobba som vanligt, vi automatiserar det repetitiva.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Hur snabbt kan vi komma igång?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Normalt 1–2 veckor från signerat avtal till första lösningen är live. Onboarding och upplärning av AI:n ingår alltid i uppstarten.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Vad kostar en chatbot från Samify?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Vi har paket från 2 500 kr/mån. Priset beror på antal integrationer, volymer och anpassningsbehov. Boka ett möte så räknar vi ut vad som passar er verksamhet.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Hur tränas chatboten på vår verksamhet?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Vi laddar upp era dokument, priser, rutiner och vanliga frågor som kunskapskällor. Boten lär sig er röst, era produkter och era processer — och vi finjusterar kontinuerligt baserat på riktiga konversationer.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Vad händer om boten inte vet svaret?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Boten hänvisar till er mänskliga support och kan automatiskt skicka ett ärende till rätt person. Inget ärende faller mellan stolarna.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Är lösningen GDPR-säker?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Ja. Vi upprättar alltid ett personuppgiftsbiträdesavtal (DPA) med varje kund. Data behandlas i enlighet med GDPR och lagras inte längre än nödvändigt.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Hur lång är bindningstiden?
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Avtal löper med 3 månaders ömsesidig uppsägningstid. Vi tror på långsiktiga relationer, inte låsningar — ni stannar för att det levererar värde.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKING -->
+    <div id="panel-booking" class="tab-panel">
+      <div class="panel-body">
+        <div class="section-title">Boka möte</div>
+
+        <!-- Calendly CTA — byt ut href mot er Calendly-länk -->
+        <div class="calendly-banner" onclick="openCalendly()">
+          <div class="calendly-icon">📅</div>
+          <div class="calendly-text">
+            <strong>Boka ett kostnadsfritt möte</strong>
+            <span>30 min · Videomöte · Direkt i kalendern</span>
+          </div>
+          <div class="calendly-arrow">→</div>
+        </div>
+
+        <div class="booking-divider">Närmaste lediga tider</div>
+        <div class="booking-slots">
+          <div class="slot">
+            <div>
+              <div class="slot-day">Måndag 24 mars</div>
+              <div class="slot-time">10:00 – 10:30 · Videomöte</div>
+            </div>
+            <button class="slot-btn" onclick="openCalendly()">Boka</button>
+          </div>
+          <div class="slot">
+            <div>
+              <div class="slot-day">Tisdag 25 mars</div>
+              <div class="slot-time">09:00 – 09:30 · Videomöte</div>
+            </div>
+            <button class="slot-btn" onclick="openCalendly()">Boka</button>
+          </div>
+          <div class="slot">
+            <div>
+              <div class="slot-day">Onsdag 26 mars</div>
+              <div class="slot-time">13:00 – 13:30 · Videomöte</div>
+            </div>
+            <button class="slot-btn" onclick="openCalendly()">Boka</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICING -->
+    <div id="panel-pricing" class="tab-panel">
+      <div class="panel-body">
+        <div class="section-title">Paket & Priser</div>
+
+        <div class="price-toggle">
+          <button class="price-toggle-btn active" onclick="pricingTab('chatbot', this)">💬 Chatbot</button>
+          <button class="price-toggle-btn" onclick="pricingTab('automation', this)">⚡ Automatisering</button>
+        </div>
+
+        <!-- CHATBOT PRICES -->
+        <div id="price-chatbot" class="price-set active">
+          <div class="price-card">
+            <div class="price-tier">Start</div>
+            <div class="price-name">Start</div>
+            <div class="price-desc">För mindre team eller enklare kundinteraktioner.</div>
+            <div class="price-amount">från 4 995 <span>kr / månad</span></div>
+            <div class="price-features">
+              <div class="price-feature"><strong>Grundläggande AI</strong> — Tränad på FAQ och vanliga frågor.</div>
+              <div class="price-feature"><strong>Extern chatbot</strong> — För hemsida och leadgenerering.</div>
+              <div class="price-feature"><strong>Standard-integrationer</strong> — Gmail, Slack, CRM-koppling.</div>
+            </div>
+            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
+          </div>
+
+          <div class="price-card featured">
+            <div class="price-badge">MEST POPULÄR</div>
+            <div class="price-tier">Tillväxt</div>
+            <div class="price-name">Scale</div>
+            <div class="price-desc">För bolag som vill automatisera kundservice och intern support.</div>
+            <div class="price-amount">från 9 995 <span>kr / månad</span></div>
+            <div class="price-features">
+              <div class="price-feature"><strong>Avancerad AI</strong> — Kontextmedveten och lär sig kontinuerligt.</div>
+              <div class="price-feature"><strong>Dubbla chatbotar</strong> — Både extern (kunder) och intern (HR/policys).</div>
+              <div class="price-feature"><strong>Prioriterad support</strong> — Dedikerad kontaktperson för snabb hjälp.</div>
+              <div class="price-feature"><strong>Anpassade arbetsflöden</strong> — Eskalering till rätt person automatiskt.</div>
+            </div>
+            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-tier">Optimal</div>
+            <div class="price-name">Custom</div>
+            <div class="price-desc">Skräddarsydd AI-lösning för maximal konvertering och effektivitet.</div>
+            <div class="price-amount">Offert <span>kontakta oss</span></div>
+            <div class="price-features">
+              <div class="price-feature"><strong>Chatbot + Automation</strong> — Bot som inte bara pratar, den utför åtgärder direkt i era system.</div>
+              <div class="price-feature"><strong>Full integration</strong> — Alla era system kopplade i realtid.</div>
+              <div class="price-feature"><strong>Proaktiv förvaltning</strong> — Kontinuerlig optimering och uppdateringar.</div>
+            </div>
+            <button class="price-cta" onclick="openCalendly()">Kontakta oss →</button>
+          </div>
+        </div>
+
+        <!-- AUTOMATION PRICES -->
+        <div id="price-automation" class="price-set">
+          <div class="price-card">
+            <div class="price-tier">Start</div>
+            <div class="price-name">Start</div>
+            <div class="price-desc">För enstaka automatiserade processer och mindre dataflöden.</div>
+            <div class="price-amount">från 4 995 <span>kr / månad</span></div>
+            <div class="price-features">
+              <div class="price-feature"><strong>Enkel komplexitet</strong> — Raka flöden (A till B) utan avancerad logik.</div>
+              <div class="price-feature"><strong>Grundautomation</strong> — E-post, notiser, grundläggande dataöverföring.</div>
+              <div class="price-feature"><strong>Standard-appar</strong> — Koppling till vanliga verktyg (Gmail, Slack, Trello).</div>
+            </div>
+            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
+          </div>
+
+          <div class="price-card featured">
+            <div class="price-badge">MEST POPULÄR</div>
+            <div class="price-tier">Tillväxt</div>
+            <div class="price-name">Scale</div>
+            <div class="price-desc">För bolag som vill automatisera hela avdelningar eller system.</div>
+            <div class="price-amount">från 9 995 <span>kr / månad</span></div>
+            <div class="price-features">
+              <div class="price-feature"><strong>Medelhög komplexitet</strong> — Flöden med villkor, filter och felhantering.</div>
+              <div class="price-feature"><strong>Multi-system</strong> — CRM, ekonomi, projekt – allt synkat automatiskt.</div>
+              <div class="price-feature"><strong>Omdömeshantering</strong> — Automatisk insamling och svar via Google/Trustpilot.</div>
+              <div class="price-feature"><strong>SOC 2-säkerhet</strong> — Hantering av känslig data enligt standard.</div>
+            </div>
+            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-tier">Optimal</div>
+            <div class="price-name">Custom</div>
+            <div class="price-desc">Skräddarsydd helhetslösning för maximal tidsbesparing.</div>
+            <div class="price-amount">Offert <span>kontakta oss</span></div>
+            <div class="price-features">
+              <div class="price-feature"><strong>Djupgående analys</strong> — Kartläggning av processer för att hitta varje sparad minut.</div>
+              <div class="price-feature"><strong>Full systemintegration</strong> — Sömlös dataöverföring mellan alla affärssystem.</div>
+              <div class="price-feature"><strong>Proaktiv förvaltning</strong> — Löpande optimering och dedikerad kontaktperson.</div>
+            </div>
+            <button class="price-cta" onclick="openCalendly()">Kontakta oss →</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="panel-contact" class="tab-panel">
+      <div class="panel-body">
+        <div class="section-title">Kontakta oss</div>
+
+        <div class="contact-card">
+          <div class="contact-card-header">
+            <div class="contact-avatar">S</div>
+            <div>
+              <div class="contact-name">Samify</div>
+              <div class="contact-role">AI & Automationsbyrå · Kalmar</div>
+            </div>
+          </div>
+          <div class="contact-links">
+            <a href="mailto:info@samify.se" class="contact-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              info@samify.se
+            </a>
+            <a href="https://samify.se" target="_blank" class="contact-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              samify.se
+            </a>
+            <a href="https://www.linkedin.com/company/samify-ai" target="_blank" class="contact-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-header">
+            <div class="contact-avatar" style="background:#f0f0ff;color:#5B2D8E;">ZL</div>
+            <div>
+              <div class="contact-name">ZicLun AB</div>
+              <div class="contact-role">Org.nr: 559XXX-XXXX · Kalmar</div>
+            </div>
+          </div>
+          <div class="contact-links">
+            <a href="mailto:info@samify.se" class="contact-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Fakturering & avtal
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS -->
+    <div id="panel-status" class="tab-panel">
+      <div class="panel-body">
+        <div class="section-title">Systemstatus</div>
+        <div class="status-list">
+          <div class="status-row"><span class="status-label">Chatbot</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
+          <div class="status-row"><span class="status-label">API-integrationer</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
+          <div class="status-row"><span class="status-label">E-postautomation</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
+          <div class="status-row"><span class="status-label">Automationsplattform</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
+          <div class="status-row"><span class="status-label">Dashboard</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
+        </div>
+        <div class="status-updated">Uppdaterad: idag 08:42</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="w-footer">
+    <a href="https://samify.se" target="_blank">
+      Powered By Samify AI <span class="purple-dot"></span>
+    </a>
+  </div>
+</div>`;
   document.body.appendChild(wrap);
 
-  // JS
   // ⬇️ BYT UT MOT ER CALENDLY-LÄNK
   const CALENDLY_URL = 'https://calendly.com/samify'; // <-- ändra här
 
