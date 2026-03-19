@@ -397,12 +397,11 @@
           <div class="price-card">
             <div class="price-tier">Start</div>
             <div class="price-name">Start</div>
-            <div class="price-desc">För mindre team eller enklare kundinteraktioner.</div>
             <div class="price-amount">från 4 995 <span>kr / månad</span></div>
             <div class="price-features">
-              <div class="price-feature"><strong>Grundläggande AI</strong> — Tränad på FAQ och vanliga frågor.</div>
-              <div class="price-feature"><strong>Extern chatbot</strong> — För hemsida och leadgenerering.</div>
-              <div class="price-feature"><strong>Standard-integrationer</strong> — Gmail, Slack, CRM-koppling.</div>
+              <div class="price-feature">Grundläggande AI tränad på er verksamhet</div>
+              <div class="price-feature">Extern chatbot för hemsida & leads</div>
+              <div class="price-feature">Gmail, Slack & CRM-koppling</div>
             </div>
             <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
           </div>
@@ -411,13 +410,12 @@
             <div class="price-badge">MEST POPULÄR</div>
             <div class="price-tier">Tillväxt</div>
             <div class="price-name">Scale</div>
-            <div class="price-desc">För bolag som vill automatisera kundservice och intern support.</div>
             <div class="price-amount">från 9 995 <span>kr / månad</span></div>
             <div class="price-features">
-              <div class="price-feature"><strong>Avancerad AI</strong> — Kontextmedveten och lär sig kontinuerligt.</div>
-              <div class="price-feature"><strong>Dubbla chatbotar</strong> — Både extern (kunder) och intern (HR/policys).</div>
-              <div class="price-feature"><strong>Prioriterad support</strong> — Dedikerad kontaktperson för snabb hjälp.</div>
-              <div class="price-feature"><strong>Anpassade arbetsflöden</strong> — Eskalering till rätt person automatiskt.</div>
+              <div class="price-feature">Avancerad AI — lär sig kontinuerligt</div>
+              <div class="price-feature">Extern + intern bot (kunder & HR)</div>
+              <div class="price-feature">Dedikerad kontaktperson</div>
+              <div class="price-feature">Automatisk eskalering & arbetsflöden</div>
             </div>
             <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
           </div>
@@ -425,12 +423,11 @@
           <div class="price-card">
             <div class="price-tier">Optimal</div>
             <div class="price-name">Custom</div>
-            <div class="price-desc">Skräddarsydd AI-lösning för maximal konvertering och effektivitet.</div>
             <div class="price-amount">Offert <span>kontakta oss</span></div>
             <div class="price-features">
-              <div class="price-feature"><strong>Chatbot + Automation</strong> — Bot som inte bara pratar, den utför åtgärder direkt i era system.</div>
-              <div class="price-feature"><strong>Full integration</strong> — Alla era system kopplade i realtid.</div>
-              <div class="price-feature"><strong>Proaktiv förvaltning</strong> — Kontinuerlig optimering och uppdateringar.</div>
+              <div class="price-feature">Bot som agerar direkt i era system</div>
+              <div class="price-feature">Full integration i realtid</div>
+              <div class="price-feature">Löpande optimering & förvaltning</div>
             </div>
             <button class="price-cta" onclick="openCalendly()">Kontakta oss →</button>
           </div>
@@ -441,12 +438,11 @@
           <div class="price-card">
             <div class="price-tier">Start</div>
             <div class="price-name">Start</div>
-            <div class="price-desc">För enstaka automatiserade processer och mindre dataflöden.</div>
             <div class="price-amount">från 4 995 <span>kr / månad</span></div>
             <div class="price-features">
-              <div class="price-feature"><strong>Enkel komplexitet</strong> — Raka flöden (A till B) utan avancerad logik.</div>
-              <div class="price-feature"><strong>Grundautomation</strong> — E-post, notiser, grundläggande dataöverföring.</div>
-              <div class="price-feature"><strong>Standard-appar</strong> — Koppling till vanliga verktyg (Gmail, Slack, Trello).</div>
+              <div class="price-feature">Enkla flöden från A till B</div>
+              <div class="price-feature">E-post, notiser & dataöverföring</div>
+              <div class="price-feature">Gmail, Slack & Trello</div>
             </div>
             <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
           </div>
@@ -455,13 +451,12 @@
             <div class="price-badge">MEST POPULÄR</div>
             <div class="price-tier">Tillväxt</div>
             <div class="price-name">Scale</div>
-            <div class="price-desc">För bolag som vill automatisera hela avdelningar eller system.</div>
             <div class="price-amount">från 9 995 <span>kr / månad</span></div>
             <div class="price-features">
-              <div class="price-feature"><strong>Medelhög komplexitet</strong> — Flöden med villkor, filter och felhantering.</div>
-              <div class="price-feature"><strong>Multi-system</strong> — CRM, ekonomi, projekt – allt synkat automatiskt.</div>
-              <div class="price-feature"><strong>Omdömeshantering</strong> — Automatisk insamling och svar via Google/Trustpilot.</div>
-              <div class="price-feature"><strong>SOC 2-säkerhet</strong> — Hantering av känslig data enligt standard.</div>
+              <div class="price-feature">Flöden med villkor, filter & felhantering</div>
+              <div class="price-feature">CRM, ekonomi & projekt synkat</div>
+              <div class="price-feature">Google & Trustpilot-omdömen automatiskt</div>
+              <div class="price-feature">SOC 2-säker datahantering</div>
             </div>
             <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
           </div>
@@ -469,12 +464,11 @@
           <div class="price-card">
             <div class="price-tier">Optimal</div>
             <div class="price-name">Custom</div>
-            <div class="price-desc">Skräddarsydd helhetslösning för maximal tidsbesparing.</div>
             <div class="price-amount">Offert <span>kontakta oss</span></div>
             <div class="price-features">
-              <div class="price-feature"><strong>Djupgående analys</strong> — Kartläggning av processer för att hitta varje sparad minut.</div>
-              <div class="price-feature"><strong>Full systemintegration</strong> — Sömlös dataöverföring mellan alla affärssystem.</div>
-              <div class="price-feature"><strong>Proaktiv förvaltning</strong> — Löpande optimering och dedikerad kontaktperson.</div>
+              <div class="price-feature">Kartläggning & analys av era processer</div>
+              <div class="price-feature">Sömlös integration mellan alla system</div>
+              <div class="price-feature">Löpande optimering & dedikerad kontakt</div>
             </div>
             <button class="price-cta" onclick="openCalendly()">Kontakta oss →</button>
           </div>
