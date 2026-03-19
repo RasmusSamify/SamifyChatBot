@@ -7,654 +7,536 @@
   zapierScript.src = 'https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js';
   document.head.appendChild(zapierScript);
 
+  // Fonts
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap';
   document.head.appendChild(link);
 
+  // CSS
   var style = document.createElement('style');
-  style.textContent = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  style.textContent = `
+    #samify-widget-container * { font-family: 'Montserrat', sans-serif !important; box-sizing: border-box; }
 
-  #samify-widget-container * {
-    font-family: 'Montserrat', sans-serif !important;
-  }
+    #samify-launcher {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #1a1a2e; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      transition: transform 0.2s, background 0.2s;
+      z-index: 9999;
+    }
+    #samify-launcher:hover { transform: scale(1.07); background: #0f3460; }
+    #samify-launcher.open .si-chat { display: none; }
+    #samify-launcher.open .si-close { display: block !important; }
 
-  :root {
-    --accent: #1a1a2e;
-    --accent2: #0f3460;
-    --highlight: #e94560;
-    --bg: #ffffff;
-    --bg2: #f7f7f8;
-    --border: #e8e8ec;
-    --text: #111118;
-    --text2: #6b6b7b;
-    --text3: #a0a0b0;
-    --radius: 16px;
-    --shadow: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
-    --w: 400px;
-    --h: 620px;
-  }
+    #samify-widget {
+      position: fixed; bottom: 100px; right: 24px;
+      width: 380px; height: 620px;
+      border-radius: 18px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08);
+      background: #fff;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.92) translateY(16px);
+      opacity: 0; pointer-events: none;
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+      z-index: 9998;
+    }
+    #samify-widget.visible { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
 
+    .sw-header {
+      background: #1a1a2e; padding: 16px 18px;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    .sw-back {
+      background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      color: #fff; font-size: 16px; transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .sw-back.show { display: flex; }
+    .sw-back:hover { background: rgba(255,255,255,0.2); }
+    .sw-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #e94560; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .sw-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .sw-status { font-size: 11px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .sw-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
 
+    .sw-content { flex: 1; overflow: hidden; position: relative; }
+    .sw-screen { position: absolute; inset: 0; overflow-y: auto; background: #f7f7f8; display: none; flex-direction: column; }
+    .sw-screen.active { display: flex; }
 
-  /* LAUNCHER */
-  #launcher {
-    position: fixed; bottom: 24px; right: 24px;
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--accent); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    transition: transform 0.2s, background 0.2s;
-    z-index: 9999;
-  }
-  #launcher:hover { transform: scale(1.07); background: var(--accent2); }
-  #launcher.open svg.chat-icon { display: none; }
-  #launcher.open svg.close-icon { display: block !important; }
+    /* HOME */
+    .home-body { padding: 16px; }
+    .home-greeting {
+      font-size: 12.5px; font-weight: 400; color: #6b6b7b;
+      line-height: 1.6; margin-bottom: 14px;
+      background: #fff; border-radius: 12px; padding: 12px 14px;
+      border: 1px solid #e8e8ec;
+    }
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .home-card {
+      background: #fff; border: 1px solid #e8e8ec;
+      border-radius: 12px; padding: 14px 12px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 7px; cursor: pointer; text-align: center;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .home-card:hover { background: #f0f0f8; border-color: #1a1a2e; transform: translateY(-1px); }
+    .home-card:active { transform: scale(0.97); }
+    .home-card.wide {
+      grid-column: span 2; flex-direction: row;
+      justify-content: flex-start; gap: 14px;
+      padding: 14px 16px; text-align: left;
+      background: #1a1a2e; border-color: #1a1a2e;
+    }
+    .home-card.wide:hover { background: #0f3460; border-color: #0f3460; }
+    .home-card.wide .card-label { color: #fff; }
+    .home-card.wide .card-sub { color: rgba(255,255,255,0.55); }
+    .home-card.wide .card-icon-wrap {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .home-card .card-icon-wrap {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: #f0f0f8;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-icon { font-size: 20px; }
+    .card-label { font-size: 12px; font-weight: 700; color: #111118; }
+    .card-sub { font-size: 10.5px; color: #a0a0b0; font-weight: 400; }
+    .wide-arrow { margin-left: auto; color: rgba(255,255,255,0.4); font-size: 20px; font-weight: 300; }
 
-  /* WIDGET */
-  #widget {
-    pointer-events: none;
-    position: fixed; bottom: 92px; right: 24px;
-    width: var(--w); height: var(--h);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    transform: scale(0.92) translateY(16px);
-    opacity: 0; pointer-events: none;
-    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
-    z-index: 9998;
-  }
-  #widget.visible { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+    /* INNER SCREENS */
+    .inner-body { padding: 16px; flex: 1; }
+    .inner-title { font-size: 13px; font-weight: 700; color: #111118; margin-bottom: 12px; }
 
-  /* HEADER */
-  .w-header { background: var(--accent); padding: 16px 18px 0; flex-shrink: 0; }
-  .w-header-top { display: flex; align-items: center; margin-bottom: 14px; }
-  .w-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--highlight); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #fff; margin-right: 10px; }
-  .w-brand-name { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.2; }
-  .w-brand-status { font-size: 11px; color: rgba(255,255,255,0.55); display: flex; align-items: center; gap: 4px; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+    /* CHAT */
+    #sw-chat { display: none; flex-direction: column; }
+    #sw-chat.active { display: flex; }
+    #sw-chat zapier-interfaces-chatbot-embed { flex: 1; width: 100% !important; height: 100% !important; border: none; display: block; }
 
-  /* TABS */
-  .w-tabs-wrap { display: flex; align-items: stretch; position: relative; }
-  .w-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; }
-  .w-tabs::-webkit-scrollbar { display: none; }
-  .tab-scroll-btn {
-    flex-shrink: 0; width: 28px; background: rgba(255,255,255,0.07);
-    border: none; cursor: pointer; color: rgba(255,255,255,0.6);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; transition: background 0.15s, color 0.15s;
-    padding-bottom: 2px;
-  }
-  .tab-scroll-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
-  .tab-scroll-btn.hidden { opacity: 0; pointer-events: none; }
-  .tab-scroll-left { border-radius: 4px 0 0 0; }
-  .tab-scroll-right { border-radius: 0 4px 0 0; }
-  .tab-btn {
-    flex-shrink: 0; padding: 9px 13px 10px;
-    font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500;
-    color: rgba(255,255,255,0.5); background: transparent; border: none;
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s; white-space: nowrap;
-  }
-  .tab-btn:hover { color: rgba(255,255,255,0.8); }
-  .tab-btn.active { color: #fff; border-bottom-color: var(--highlight); }
+    /* FAQ */
+    .faq-item { border: 1px solid #e8e8ec; border-radius: 10px; margin-bottom: 8px; overflow: hidden; background: #fff; }
+    .faq-q { width: 100%; text-align: left; background: none; border: none; padding: 13px 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; font-weight: 600; color: #111118; transition: background 0.1s; gap: 10px; }
+    .faq-q:hover { background: #f7f7f8; }
+    .faq-chevron { flex-shrink: 0; transition: transform 0.2s; color: #a0a0b0; font-size: 14px; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 15px 13px; font-size: 12px; font-weight: 400; color: #6b6b7b; line-height: 1.65; border-top: 1px solid #e8e8ec; padding-top: 11px; }
+    .faq-item.open .faq-a { display: block; }
 
-  /* CONTENT */
-  .w-content { flex: 1; overflow: hidden; position: relative; }
-  .tab-panel { position: absolute; inset: 0; overflow-y: auto; display: none; background: var(--bg2); }
-  .tab-panel.active { display: block; }
-  #panel-chat { display: none; }
-  #panel-chat.active { display: flex; flex-direction: column; }
-  #panel-chat zapier-interfaces-chatbot-embed { flex: 1; width: 100% !important; height: 100% !important; border: none; display: block; }
+    /* BOOKING / CALENDLY */
+    #sw-booking { padding: 0; }
+    #sw-booking .inner-body { padding: 0; height: 100%; display: flex; flex-direction: column; }
+    .calendly-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 10px; color: #a0a0b0; font-size: 12px; }
+    .calendly-spinner { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #e8e8ec; border-top-color: #1a1a2e; animation: sw-spin 0.8s linear infinite; }
+    @keyframes sw-spin { to { transform: rotate(360deg); } }
 
-  /* PANEL BODY */
-  .panel-body { padding: 18px; }
-  .section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; }
+    /* PRICING */
+    .price-toggle { display: flex; background: #ebebeb; border-radius: 8px; padding: 3px; margin-bottom: 14px; gap: 3px; }
+    .price-toggle-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 6px; font-size: 11.5px; font-weight: 600; color: #6b6b7b; cursor: pointer; transition: all 0.15s; }
+    .price-toggle-btn.active { background: #1a1a2e; color: #fff; }
+    .price-set { display: none; }
+    .price-set.active { display: block; }
+    .price-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .price-card.featured { border-color: #1a1a2e; border-width: 1.5px; }
+    .price-badge { display: inline-block; font-size: 9.5px; font-weight: 700; background: #e94560; color: #fff; padding: 3px 9px; border-radius: 20px; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .price-tier { font-size: 9.5px; font-weight: 700; color: #a0a0b0; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
+    .price-name { font-size: 16px; font-weight: 700; color: #111118; margin-bottom: 6px; }
+    .price-amount { font-size: 19px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.02em; }
+    .price-amount span { font-size: 11px; font-weight: 400; color: #a0a0b0; }
+    .price-features { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+    .price-feature { font-size: 11.5px; font-weight: 400; color: #6b6b7b; display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
+    .price-feature::before { content: '✓'; color: #166534; font-weight: 700; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+    .price-cta { display: block; width: 100%; margin-top: 12px; padding: 10px; background: #1a1a2e; color: #fff; border: none; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; text-align: center; transition: background 0.15s; }
+    .price-cta:hover { background: #0f3460; }
+    .price-card.featured .price-cta { background: #e94560; }
+    .price-card.featured .price-cta:hover { opacity: 0.88; }
 
-  /* FAQ */
-  .faq-item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; background: var(--bg); }
-  .faq-q { width: 100%; text-align: left; background: none; border: none; padding: 13px 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text); transition: background 0.1s; gap: 10px; }
-  .faq-q:hover { background: var(--bg2); }
-  .faq-q svg { flex-shrink: 0; transition: transform 0.2s; color: var(--text3); }
-  .faq-item.open .faq-q svg { transform: rotate(180deg); }
-  .faq-a { display: none; padding: 11px 15px 13px; font-size: 12.5px; color: var(--text2); line-height: 1.6; border-top: 1px solid var(--border); }
-  .faq-item.open .faq-a { display: block; }
+    /* CONTACT */
+    .contact-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+    .contact-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .contact-av { width: 38px; height: 38px; border-radius: 50%; background: #f0f0f8; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #1a1a2e; flex-shrink: 0; }
+    .contact-name { font-size: 13px; font-weight: 700; color: #111118; }
+    .contact-role { font-size: 11px; color: #a0a0b0; }
+    .contact-links { display: flex; flex-direction: column; gap: 4px; }
+    .contact-link { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6b6b7b; text-decoration: none; padding: 7px 8px; border-radius: 7px; transition: background 0.1s; }
+    .contact-link:hover { background: #f7f7f8; color: #111118; }
 
-  /* BOOKING */
-  /* CALENDLY INLINE */
-  #panel-booking { padding: 0 !important; }
-  #panel-booking .panel-body { padding: 0; height: 100%; }
-  .calendly-loading {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%; gap: 10px; color: var(--text2); font-size: 13px;
-  }
-  .calendly-spinner {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 3px solid var(--border); border-top-color: var(--accent);
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .calendly-inline-widget { width: 100%; height: 100%; min-height: 520px; border: none; }
+    /* KOM IGÅNG */
+    .start-steps { display: flex; flex-direction: column; margin-bottom: 16px; }
+    .start-step { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid #e8e8ec; }
+    .start-step:last-child { border-bottom: none; }
+    .start-num { width: 30px; height: 30px; border-radius: 50%; background: #1a1a2e; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .start-step-title { font-size: 13px; font-weight: 700; color: #111118; margin-bottom: 3px; }
+    .start-step-desc { font-size: 11.5px; font-weight: 400; color: #6b6b7b; line-height: 1.55; }
+    .start-cta-box { background: #1a1a2e; border-radius: 12px; padding: 16px; text-align: center; }
+    .start-cta-box p { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+    .start-cta-btn { padding: 10px 22px; background: #e94560; color: #fff; border: none; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
+    .start-cta-btn:hover { opacity: 0.88; }
 
-  /* CONTACT */
-  .contact-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
-  .contact-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .contact-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
-  .contact-name { font-size: 13px; font-weight: 600; color: var(--text); }
-  .contact-role { font-size: 11.5px; color: var(--text2); }
-  .contact-links { display: flex; flex-direction: column; gap: 6px; }
-  .contact-link { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text2); text-decoration: none; padding: 6px 8px; border-radius: 7px; transition: background 0.1s; }
-  .contact-link:hover { background: var(--bg2); color: var(--text); }
-  .contact-link svg { flex-shrink: 0; color: var(--text3); }
+    /* TOOLTIP */
+    #samify-tooltip {
+      position: fixed; bottom: 100px; right: 94px;
+      background: #1a1a2e; color: #fff;
+      padding: 12px 16px 12px 14px; border-radius: 12px 12px 4px 12px;
+      font-size: 12.5px; font-weight: 400; line-height: 1.55;
+      max-width: 220px; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      opacity: 0; transform: translateY(8px) scale(0.95);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 9999; pointer-events: all;
+    }
+    #samify-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
+    #samify-tooltip::after {
+      content: ''; position: absolute; bottom: 10px; right: -7px;
+      border-top: 7px solid transparent; border-bottom: 7px solid transparent;
+      border-left: 7px solid #1a1a2e;
+    }
+    #samify-tooltip-close { position: absolute; top: 6px; right: 8px; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 13px; line-height: 1; padding: 0; }
+    #samify-tooltip-close:hover { color: #fff; }
 
-  /* PRICING */
-  .price-toggle { display: flex; background: var(--bg2); border-radius: 8px; padding: 3px; margin-bottom: 16px; gap: 3px; }
-  .price-toggle-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; }
-  .price-toggle-btn.active { background: var(--accent); color: #fff; }
-  .price-set { display: none; }
-  .price-set.active { display: block; }
-  .price-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
-  .price-card.featured { border-color: var(--accent); border-width: 1.5px; }
-  .price-badge { display: inline-block; font-size: 10px; font-weight: 600; background: var(--highlight); color: #fff; padding: 3px 9px; border-radius: 20px; margin-bottom: 8px; letter-spacing: 0.04em; }
-  .price-tier { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
-  .price-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-  .price-desc { font-size: 11.5px; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
-  .price-amount { font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
-  .price-amount span { font-size: 11px; font-weight: 400; color: var(--text2); }
-  .price-features { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
-  .price-feature { font-size: 12px; color: var(--text2); display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
-  .price-feature::before { content: '✓'; color: #166534; font-weight: 700; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
-  .price-feature strong { color: var(--text); font-weight: 600; }
-  .price-cta { display: block; width: 100%; margin-top: 12px; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; transition: background 0.15s; }
-  .price-cta:hover { background: var(--accent2); }
-  .price-card.featured .price-cta { background: var(--highlight); }
-  .price-card.featured .price-cta:hover { opacity: 0.88; }
-
-  /* KOM IGÅNG */
-  .start-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
-  .start-step { display: flex; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--border); }
-  .start-step:last-child { border-bottom: none; }
-  .start-num {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    font-size: 13px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 2px;
-  }
-  .start-step.done .start-num { background: #166534; }
-  .start-step-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .start-step-desc { font-size: 12.5px; font-weight: 300; color: var(--text2); line-height: 1.55; }
-  .start-cta-box {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 12px; padding: 18px; text-align: center;
-  }
-  .start-cta-box p { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 12px; line-height: 1.5; }
-  .start-cta-btn {
-    display: inline-block; padding: 11px 24px;
-    background: var(--highlight); color: #fff;
-    border: none; border-radius: 8px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px; font-weight: 700; cursor: pointer;
-    transition: opacity 0.15s; text-decoration: none;
-  }
-  .start-cta-btn:hover { opacity: 0.88; }
-
-
-  /* TOOLTIP BUBBLE */
-  #samify-tooltip {
-    position: fixed; bottom: 100px; right: 24px;
-    background: #1a1a2e; color: #fff;
-    padding: 12px 16px; border-radius: 12px 12px 4px 12px;
-    font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 400;
-    line-height: 1.5; max-width: 240px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    pointer-events: all; cursor: pointer;
-    opacity: 0; transform: translateY(8px) scale(0.95);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 9999;
-  }
-  #samify-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
-  #samify-tooltip::after {
-    content: '';
-    position: absolute; bottom: -8px; right: 20px;
-    width: 0; height: 0;
-    border-left: 8px solid transparent;
-    border-right: 0px solid transparent;
-    border-top: 8px solid #1a1a2e;
-  }
-  #samify-tooltip-close {
-    position: absolute; top: 6px; right: 8px;
-    font-size: 14px; color: rgba(255,255,255,0.4);
-    cursor: pointer; line-height: 1; background: none; border: none; color: rgba(255,255,255,0.5);
-    padding: 0 2px;
-  }
-  #samify-tooltip-close:hover { color: #fff; }
-
-  /* FOOTER */
-  .w-footer { padding: 8px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .w-footer a { font-size: 10.5px; color: #111; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: opacity 0.15s; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 0.02em; }
-  .w-footer a:hover { opacity: 0.7; }
-  .purple-dot { width: 7px; height: 7px; border-radius: 50%; background: #7c3aed; display: inline-block; flex-shrink: 0; }`;
+    /* FOOTER */
+    .sw-footer { padding: 7px 14px; border-top: 1px solid #e8e8ec; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; }
+    .sw-footer a { font-size: 10px; color: #111; text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 700; letter-spacing: 0.02em; transition: opacity 0.15s; }
+    .sw-footer a:hover { opacity: 0.65; }
+    .sw-pdot { width: 6px; height: 6px; border-radius: 50%; background: #7c3aed; display: inline-block; }
+  `;
   document.head.appendChild(style);
 
+  // HTML
   var wrap = document.createElement('div');
   wrap.id = 'samify-widget-container';
   wrap.style.cssText = 'position:fixed;bottom:0;right:0;width:0;height:0;overflow:visible;z-index:9997;';
-  wrap.innerHTML = `<button id="launcher" onclick="toggleWidget()" aria-label="Öppna support">
-  <svg class="chat-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  <svg class="close-icon" style="display:none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-</button>
+  wrap.innerHTML = `
+    <button id="samify-launcher" onclick="swToggle()" aria-label="Öppna support">
+      <svg class="si-chat" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <svg class="si-close" style="display:none" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
 
-<div id="widget">
-  <div class="w-header">
-    <div class="w-header-top">
-      <div class="w-avatar">S</div>
-      <div>
-        <div class="w-brand-name">Samify AI</div>
-        <div class="w-brand-status"><span class="status-dot"></span> Online nu</div>
-      </div>
-    </div>
-    <div class="w-tabs-wrap">
-      <button class="tab-scroll-btn tab-scroll-left hidden" id="tab-left" onclick="tabScroll(-1)" aria-label="Scrolla vänster">&#8249;</button>
-      <div class="w-tabs" id="w-tabs">
-        <button class="tab-btn active" onclick="switchTab('chat', this)">💬 Chat</button>
-        <button class="tab-btn" onclick="switchTab('faq', this)">FAQ</button>
-        <button class="tab-btn" onclick="switchTab('booking', this)">Boka möte</button>
-        <button class="tab-btn" onclick="switchTab('pricing', this)">Priser</button>
-        <button class="tab-btn" onclick="switchTab('contact', this)">Kontakt</button>
-        <button class="tab-btn" onclick="switchTab('start', this)">Kom igång</button>
-      </div>
-      <button class="tab-scroll-btn tab-scroll-right" id="tab-right" onclick="tabScroll(1)" aria-label="Scrolla höger">&#8250;</button>
-    </div>
-  </div>
-
-  <div class="w-content">
-
-    <!-- CHAT -->
-    <div id="panel-chat" class="tab-panel active">
-      <zapier-interfaces-chatbot-embed
-        is-popup="false"
-        chatbot-id="cml7176g80063a6ttccmada8x"
-        height="100%"
-        width="100%"
-      ></zapier-interfaces-chatbot-embed>
-    </div>
-
-    <!-- FAQ -->
-    <div id="panel-faq" class="tab-panel">
-      <div class="panel-body">
-        <div class="section-title">Vanliga frågor</div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Vad är Samify och vad gör ni?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Samify är en AI- och automationsbyrå som hjälper svenska SME-företag att effektivisera sina arbetsflöden. Vi bygger skräddarsydda AI-lösningar, chatbotar och integrationer — utan att ni behöver byta system.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Behöver vi byta våra befintliga system?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Nej — det är hela poängen. Vi kopplar samman det ni redan har: Fortnox, Outlook, webCRM, Google Workspace och 6 000+ andra verktyg. Ni fortsätter jobba som vanligt, vi automatiserar det repetitiva.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Hur snabbt kan vi komma igång?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Normalt 1–2 veckor från signerat avtal till första lösningen är live. Onboarding och upplärning av AI:n ingår alltid i uppstarten.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Vad kostar en chatbot från Samify?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Vi har paket från 2 500 kr/mån. Priset beror på antal integrationer, volymer och anpassningsbehov. Boka ett möte så räknar vi ut vad som passar er verksamhet.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Hur tränas chatboten på vår verksamhet?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Vi laddar upp era dokument, priser, rutiner och vanliga frågor som kunskapskällor. Boten lär sig er röst, era produkter och era processer — och vi finjusterar kontinuerligt baserat på riktiga konversationer.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Vad händer om boten inte vet svaret?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Boten hänvisar till er mänskliga support och kan automatiskt skicka ett ärende till rätt person. Inget ärende faller mellan stolarna.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Är lösningen GDPR-säker?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Ja. Vi upprättar alltid ett personuppgiftsbiträdesavtal (DPA) med varje kund. Data behandlas i enlighet med GDPR och lagras inte längre än nödvändigt.</div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Hur lång är bindningstiden?
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-a">Avtal löper med 3 månaders ömsesidig uppsägningstid. Vi tror på långsiktiga relationer, inte låsningar — ni stannar för att det levererar värde.</div>
+    <div id="samify-widget">
+      <div class="sw-header" id="sw-header">
+        <button class="sw-back" id="sw-back" onclick="swGoHome()">‹</button>
+        <div class="sw-avatar">S</div>
+        <div>
+          <div class="sw-title" id="sw-header-title">Samify AI</div>
+          <div class="sw-status"><span class="sw-dot"></span> Online nu</div>
         </div>
       </div>
-    </div>
 
-    <!-- BOOKING -->
-    <div id="panel-booking" class="tab-panel">
-      <div class="panel-body">
-        <div id="calendly-container" style="width:100%;height:100%;min-height:520px;">
-          <div class="calendly-loading" id="calendly-loading">
-            <div class="calendly-spinner"></div>
-            Laddar kalender...
+      <div class="sw-content">
+
+        <!-- HOME -->
+        <div class="sw-screen active" id="sw-home">
+          <div class="home-body">
+            <div class="home-greeting">Hej! Hur kan vi hjälpa dig idag? Välj ett alternativ eller chatta direkt med oss. 👋</div>
+            <div class="home-grid">
+              <div class="home-card wide" onclick="swNav('sw-chat','Chatta med oss')">
+                <div class="card-icon-wrap"><span class="card-icon">💬</span></div>
+                <div>
+                  <div class="card-label">Chatta med oss</div>
+                  <div class="card-sub">Svar direkt från vår AI</div>
+                </div>
+                <div class="wide-arrow">›</div>
+              </div>
+              <div class="home-card" onclick="swNav('sw-faq','Vanliga frågor')">
+                <div class="card-icon-wrap"><span class="card-icon">❓</span></div>
+                <div class="card-label">Vanliga frågor</div>
+                <div class="card-sub">Snabba svar</div>
+              </div>
+              <div class="home-card" onclick="swNav('sw-booking','Boka möte')">
+                <div class="card-icon-wrap"><span class="card-icon">📅</span></div>
+                <div class="card-label">Boka möte</div>
+                <div class="card-sub">30 min, gratis</div>
+              </div>
+              <div class="home-card" onclick="swNav('sw-pricing','Priser')">
+                <div class="card-icon-wrap"><span class="card-icon">💰</span></div>
+                <div class="card-label">Priser</div>
+                <div class="card-sub">Från 4 995 kr/mån</div>
+              </div>
+              <div class="home-card" onclick="swNav('sw-contact','Kontakt')">
+                <div class="card-icon-wrap"><span class="card-icon">📞</span></div>
+                <div class="card-label">Kontakt</div>
+                <div class="card-sub">info@samify.se</div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- CHAT -->
+        <div class="sw-screen" id="sw-chat">
+          <zapier-interfaces-chatbot-embed
+            is-popup="false"
+            chatbot-id="cml7176g80063a6ttccmada8x"
+            height="100%"
+            width="100%"
+          ></zapier-interfaces-chatbot-embed>
+        </div>
+
+        <!-- FAQ -->
+        <div class="sw-screen" id="sw-faq">
+          <div class="inner-body">
+            <div class="inner-title">Vanliga frågor</div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Vad är Samify och vad gör ni? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Samify är en AI- och automationsbyrå som hjälper svenska SME-företag att effektivisera sina arbetsflöden med skräddarsydda AI-lösningar och integrationer.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Behöver vi byta befintliga system? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Nej — vi kopplar samman det ni redan har: Fortnox, Outlook, webCRM, Google Workspace och 6 000+ verktyg. Ni fortsätter jobba som vanligt.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Hur snabbt kan vi komma igång? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Normalt 1–2 veckor från signerat avtal till första lösningen är live. Onboarding ingår alltid.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Vad kostar det? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Vi har paket från 4 995 kr/mån. Priset beror på integrationer och anpassningsbehov. Boka ett möte så tar vi fram ett förslag.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Hur tränas chatboten på vår verksamhet? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Vi laddar upp era dokument, priser och rutiner som kunskapskällor. Boten lär sig er röst och vi finjusterar löpande.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Är lösningen GDPR-säker? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Ja. Vi upprättar alltid ett personuppgiftsbiträdesavtal (DPA) och all data behandlas enligt GDPR.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q" onclick="swFaq(this)">Hur lång är bindningstiden? <svg class="faq-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="faq-a">Avtal löper med 3 månaders ömsesidig uppsägningstid. Ni stannar för att det levererar värde — inte för att ni måste.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOOKING -->
+        <div class="sw-screen" id="sw-booking">
+          <div class="inner-body">
+            <div id="sw-calendly-wrap" style="width:100%;height:100%;min-height:500px;display:flex;flex-direction:column;">
+              <div class="calendly-loading" id="sw-cal-loading">
+                <div class="calendly-spinner"></div>
+                Laddar kalender...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRICING -->
+        <div class="sw-screen" id="sw-pricing">
+          <div class="inner-body">
+            <div class="inner-title">Paket & Priser</div>
+            <div class="price-toggle">
+              <button class="price-toggle-btn active" onclick="swPricingTab('chatbot',this)">💬 Chatbot</button>
+              <button class="price-toggle-btn" onclick="swPricingTab('automation',this)">⚡ Automatisering</button>
+            </div>
+            <div id="sw-price-chatbot" class="price-set active">
+              <div class="price-card">
+                <div class="price-tier">Start</div>
+                <div class="price-name">Start</div>
+                <div class="price-amount">från 4 995 <span>kr / månad</span></div>
+                <div class="price-features">
+                  <div class="price-feature">Grundläggande AI tränad på er verksamhet</div>
+                  <div class="price-feature">Extern chatbot för hemsida & leads</div>
+                  <div class="price-feature">Gmail, Slack & CRM-koppling</div>
+                </div>
+                <button class="price-cta" onclick="swOpenCalendly()">Boka demo →</button>
+              </div>
+              <div class="price-card featured">
+                <div class="price-badge">MEST POPULÄR</div>
+                <div class="price-tier">Tillväxt</div>
+                <div class="price-name">Scale</div>
+                <div class="price-amount">från 9 995 <span>kr / månad</span></div>
+                <div class="price-features">
+                  <div class="price-feature">Avancerad AI — lär sig kontinuerligt</div>
+                  <div class="price-feature">Extern + intern bot (kunder & HR)</div>
+                  <div class="price-feature">Dedikerad kontaktperson</div>
+                  <div class="price-feature">Automatisk eskalering & arbetsflöden</div>
+                </div>
+                <button class="price-cta" onclick="swOpenCalendly()">Boka demo →</button>
+              </div>
+              <div class="price-card">
+                <div class="price-tier">Optimal</div>
+                <div class="price-name">Custom</div>
+                <div class="price-amount">Offert <span>kontakta oss</span></div>
+                <div class="price-features">
+                  <div class="price-feature">Bot som agerar direkt i era system</div>
+                  <div class="price-feature">Full integration i realtid</div>
+                  <div class="price-feature">Löpande optimering & förvaltning</div>
+                </div>
+                <button class="price-cta" onclick="swOpenCalendly()">Kontakta oss →</button>
+              </div>
+            </div>
+            <div id="sw-price-automation" class="price-set">
+              <div class="price-card">
+                <div class="price-tier">Start</div>
+                <div class="price-name">Start</div>
+                <div class="price-amount">från 4 995 <span>kr / månad</span></div>
+                <div class="price-features">
+                  <div class="price-feature">Enkla flöden från A till B</div>
+                  <div class="price-feature">E-post, notiser & dataöverföring</div>
+                  <div class="price-feature">Gmail, Slack & Trello</div>
+                </div>
+                <button class="price-cta" onclick="swOpenCalendly()">Boka demo →</button>
+              </div>
+              <div class="price-card featured">
+                <div class="price-badge">MEST POPULÄR</div>
+                <div class="price-tier">Tillväxt</div>
+                <div class="price-name">Scale</div>
+                <div class="price-amount">från 9 995 <span>kr / månad</span></div>
+                <div class="price-features">
+                  <div class="price-feature">Flöden med villkor, filter & felhantering</div>
+                  <div class="price-feature">CRM, ekonomi & projekt synkat</div>
+                  <div class="price-feature">Google & Trustpilot-omdömen automatiskt</div>
+                  <div class="price-feature">SOC 2-säker datahantering</div>
+                </div>
+                <button class="price-cta" onclick="swOpenCalendly()">Boka demo →</button>
+              </div>
+              <div class="price-card">
+                <div class="price-tier">Optimal</div>
+                <div class="price-name">Custom</div>
+                <div class="price-amount">Offert <span>kontakta oss</span></div>
+                <div class="price-features">
+                  <div class="price-feature">Kartläggning & analys av era processer</div>
+                  <div class="price-feature">Sömlös integration mellan alla system</div>
+                  <div class="price-feature">Löpande optimering & dedikerad kontakt</div>
+                </div>
+                <button class="price-cta" onclick="swOpenCalendly()">Kontakta oss →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="sw-screen" id="sw-contact">
+          <div class="inner-body">
+            <div class="inner-title">Kontakta oss</div>
+            <div class="contact-card">
+              <div class="contact-head">
+                <div class="contact-av">S</div>
+                <div>
+                  <div class="contact-name">Samify</div>
+                  <div class="contact-role">AI & Automationsbyrå · Kalmar</div>
+                </div>
+              </div>
+              <div class="contact-links">
+                <a href="mailto:info@samify.se" class="contact-link">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  info@samify.se
+                </a>
+                <a href="https://samify.se" target="_blank" class="contact-link">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  samify.se
+                </a>
+                <a href="https://www.linkedin.com/company/samify-ai" target="_blank" class="contact-link">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                  LinkedIn
+                </a>
+                <a href="mailto:info@samify.se" class="contact-link">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Fakturering & avtal
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
 
-    <!-- PRICING -->
-    <div id="panel-pricing" class="tab-panel">
-      <div class="panel-body">
-        <div class="section-title">Paket & Priser</div>
-
-        <div class="price-toggle">
-          <button class="price-toggle-btn active" onclick="pricingTab('chatbot', this)">💬 Chatbot</button>
-          <button class="price-toggle-btn" onclick="pricingTab('automation', this)">⚡ Automatisering</button>
-        </div>
-
-        <!-- CHATBOT PRICES -->
-        <div id="price-chatbot" class="price-set active">
-          <div class="price-card">
-            <div class="price-tier">Start</div>
-            <div class="price-name">Start</div>
-            <div class="price-amount">från 4 995 <span>kr / månad</span></div>
-            <div class="price-features">
-              <div class="price-feature">Grundläggande AI tränad på er verksamhet</div>
-              <div class="price-feature">Extern chatbot för hemsida & leads</div>
-              <div class="price-feature">Gmail, Slack & CRM-koppling</div>
-            </div>
-            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
-          </div>
-
-          <div class="price-card featured">
-            <div class="price-badge">MEST POPULÄR</div>
-            <div class="price-tier">Tillväxt</div>
-            <div class="price-name">Scale</div>
-            <div class="price-amount">från 9 995 <span>kr / månad</span></div>
-            <div class="price-features">
-              <div class="price-feature">Avancerad AI — lär sig kontinuerligt</div>
-              <div class="price-feature">Extern + intern bot (kunder & HR)</div>
-              <div class="price-feature">Dedikerad kontaktperson</div>
-              <div class="price-feature">Automatisk eskalering & arbetsflöden</div>
-            </div>
-            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
-          </div>
-
-          <div class="price-card">
-            <div class="price-tier">Optimal</div>
-            <div class="price-name">Custom</div>
-            <div class="price-amount">Offert <span>kontakta oss</span></div>
-            <div class="price-features">
-              <div class="price-feature">Bot som agerar direkt i era system</div>
-              <div class="price-feature">Full integration i realtid</div>
-              <div class="price-feature">Löpande optimering & förvaltning</div>
-            </div>
-            <button class="price-cta" onclick="openCalendly()">Kontakta oss →</button>
-          </div>
-        </div>
-
-        <!-- AUTOMATION PRICES -->
-        <div id="price-automation" class="price-set">
-          <div class="price-card">
-            <div class="price-tier">Start</div>
-            <div class="price-name">Start</div>
-            <div class="price-amount">från 4 995 <span>kr / månad</span></div>
-            <div class="price-features">
-              <div class="price-feature">Enkla flöden från A till B</div>
-              <div class="price-feature">E-post, notiser & dataöverföring</div>
-              <div class="price-feature">Gmail, Slack & Trello</div>
-            </div>
-            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
-          </div>
-
-          <div class="price-card featured">
-            <div class="price-badge">MEST POPULÄR</div>
-            <div class="price-tier">Tillväxt</div>
-            <div class="price-name">Scale</div>
-            <div class="price-amount">från 9 995 <span>kr / månad</span></div>
-            <div class="price-features">
-              <div class="price-feature">Flöden med villkor, filter & felhantering</div>
-              <div class="price-feature">CRM, ekonomi & projekt synkat</div>
-              <div class="price-feature">Google & Trustpilot-omdömen automatiskt</div>
-              <div class="price-feature">SOC 2-säker datahantering</div>
-            </div>
-            <button class="price-cta" onclick="openCalendly()">Boka demo →</button>
-          </div>
-
-          <div class="price-card">
-            <div class="price-tier">Optimal</div>
-            <div class="price-name">Custom</div>
-            <div class="price-amount">Offert <span>kontakta oss</span></div>
-            <div class="price-features">
-              <div class="price-feature">Kartläggning & analys av era processer</div>
-              <div class="price-feature">Sömlös integration mellan alla system</div>
-              <div class="price-feature">Löpande optimering & dedikerad kontakt</div>
-            </div>
-            <button class="price-cta" onclick="openCalendly()">Kontakta oss →</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- CONTACT -->
-    <div id="panel-contact" class="tab-panel">
-      <div class="panel-body">
-        <div class="section-title">Kontakta oss</div>
-
-        <div class="contact-card">
-          <div class="contact-card-header">
-            <div class="contact-avatar">S</div>
-            <div>
-              <div class="contact-name">Samify</div>
-              <div class="contact-role">AI & Automationsbyrå · Kalmar</div>
-            </div>
-          </div>
-          <div class="contact-links">
-            <a href="mailto:info@samify.se" class="contact-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              info@samify.se
-            </a>
-            <a href="https://samify.se" target="_blank" class="contact-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              samify.se
-            </a>
-            <a href="https://www.linkedin.com/company/samify-ai" target="_blank" class="contact-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              LinkedIn
-            </a>
-          </div>
-        </div>
-
-        <div class="contact-card">
-          <div class="contact-card-header">
-            <div class="contact-avatar" style="background:#f0f0ff;color:#5B2D8E;">ZL</div>
-            <div>
-              <div class="contact-name">ZicLun AB</div>
-              <div class="contact-role">Org.nr: 559XXX-XXXX · Kalmar</div>
-            </div>
-          </div>
-          <div class="contact-links">
-            <a href="mailto:info@samify.se" class="contact-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Fakturering & avtal
-            </a>
-          </div>
-        </div>
+      <div class="sw-footer">
+        <a href="https://samify.se" target="_blank">Powered By Samify AI <span class="sw-pdot"></span></a>
       </div>
     </div>
 
-    <!-- STATUS -->
-    <div id="panel-start" class="tab-panel">
-      <div class="panel-body">
-        <div class="section-title">Kom igång</div>
-        <div class="start-steps">
-          <div class="start-step">
-            <div class="start-num">1</div>
-            <div>
-              <div class="start-step-title">Boka ett gratis möte</div>
-              <div class="start-step-desc">30 minuter. Vi lyssnar på era behov och visar vad som är möjligt — ingen bindning.</div>
-            </div>
-          </div>
-          <div class="start-step">
-            <div class="start-num">2</div>
-            <div>
-              <div class="start-step-title">Vi bygger er lösning</div>
-              <div class="start-step-desc">Chatbot, automationer och integrationer på 1–2 veckor. Ni behöver inte göra något.</div>
-            </div>
-          </div>
-          <div class="start-step">
-            <div class="start-num">3</div>
-            <div>
-              <div class="start-step-title">Live — ni märker skillnaden</div>
-              <div class="start-step-desc">Widgeten på er sida, automationerna rullar. Ni sparar tid från dag ett.</div>
-            </div>
-          </div>
-        </div>
-        <div class="start-cta-box">
-          <p>Redo att sätta företaget på autopilot?</p>
-          <button class="start-cta-btn" onclick="openCalendly()">Boka gratis möte →</button>
-        </div>
-      </div>
+    <div id="samify-tooltip" onclick="swOpenFromTooltip()">
+      <button id="samify-tooltip-close" onclick="event.stopPropagation();swCloseTooltip()">✕</button>
+      Hej! Kul att du hittat till Samify — ställ gärna några frågor till mig om du undrar över något! 👋
     </div>
-
-  </div>
-
-  <div class="w-footer">
-    <a href="https://samify.se" target="_blank">
-      Powered By Samify AI <span class="purple-dot"></span>
-    </a>
-  </div>
-</div>`;
+  `;
   document.body.appendChild(wrap);
 
   // ⬇️ BYT UT MOT ER CALENDLY-LÄNK
-  const CALENDLY_URL = 'https://calendly.com/samify-info'; // <-- ändra här
+  var CALENDLY_URL = 'https://calendly.com/samify-info';
 
-  function toggleWidget() {
-    document.getElementById('widget').classList.toggle('visible');
-    document.getElementById('launcher').classList.toggle('open');
+  var calendlyLoaded = false;
+
+  function swToggle() {
+    document.getElementById('samify-widget').classList.toggle('visible');
+    document.getElementById('samify-launcher').classList.toggle('open');
+    swCloseTooltip();
   }
 
-  function switchTab(name, btn) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    btn.classList.add('active');
+  function swGoHome() {
+    document.querySelectorAll('.sw-screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('sw-home').classList.add('active');
+    document.getElementById('sw-back').classList.remove('show');
+    document.getElementById('sw-header-title').textContent = 'Samify AI';
   }
 
-  function toggleFaq(btn) {
-    btn.closest('.faq-item').classList.toggle('open');
+  function swNav(screenId, title) {
+    document.querySelectorAll('.sw-screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(screenId).classList.add('active');
+    document.getElementById('sw-back').classList.add('show');
+    document.getElementById('sw-header-title').textContent = title;
+    if (screenId === 'sw-booking' && !calendlyLoaded) {
+      swLoadCalendly();
+    }
   }
 
-  const tabsEl = document.getElementById('w-tabs');
-  const tabLeft = document.getElementById('tab-left');
-  const tabRight = document.getElementById('tab-right');
-
-  function updateTabArrows() {
-    tabLeft.classList.toggle('hidden', tabsEl.scrollLeft <= 4);
-    tabRight.classList.toggle('hidden', tabsEl.scrollLeft + tabsEl.clientWidth >= tabsEl.scrollWidth - 4);
-  }
-
-  function tabScroll(dir) {
-    tabsEl.scrollBy({ left: dir * 100, behavior: 'smooth' });
-    setTimeout(updateTabArrows, 200);
-  }
-
-  tabsEl.addEventListener('scroll', updateTabArrows);
-  window.addEventListener('load', updateTabArrows);
-  setTimeout(updateTabArrows, 500);
-
-  function pricingTab(name, btn) {
-    document.querySelectorAll('.price-set').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.price-toggle-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('price-' + name).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  function openCalendly() {
-    // Fallback - open in new tab if inline fails
-    window.open(CALENDLY_URL, '_blank');
-  }
-
-  function loadCalendlyInline() {
-    var container = document.getElementById('calendly-container');
-    if (!container) return;
+  function swLoadCalendly() {
+    calendlyLoaded = true;
+    var wrap = document.getElementById('sw-calendly-wrap');
     var iframe = document.createElement('iframe');
-    iframe.src = CALENDLY_URL + '?embed_domain=' + location.hostname + '&embed_type=inline&hide_gdpr_banner=1&hide_event_type_details=0&primary_color=1a1a2e';
-    iframe.style.cssText = 'width:100%;height:100%;min-height:520px;border:none;border-radius:0;';
+    iframe.src = CALENDLY_URL + '?embed_domain=' + location.hostname + '&embed_type=inline&hide_gdpr_banner=1';
+    iframe.style.cssText = 'width:100%;flex:1;min-height:500px;border:none;';
     iframe.onload = function() {
-      var loading = document.getElementById('calendly-loading');
+      var loading = document.getElementById('sw-cal-loading');
       if (loading) loading.style.display = 'none';
     };
-    container.innerHTML = '';
-    container.appendChild(iframe);
+    wrap.innerHTML = '';
+    wrap.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;';
+    wrap.appendChild(iframe);
   }
 
-  // Load Calendly when booking tab is clicked
-  var origSwitchTab = window.switchTab;
-  window.switchTab = function(name, btn) {
-    origSwitchTab(name, btn);
-    if (name === 'booking') {
-      var container = document.getElementById('calendly-container');
-      if (container && !container.querySelector('iframe')) {
-        loadCalendlyInline();
-      }
-    }
-  };
+  function swFaq(btn) { btn.closest('.faq-item').classList.toggle('open'); }
 
+  function swPricingTab(name, btn) {
+    document.querySelectorAll('.price-set').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.price-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('sw-price-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
 
+  function swOpenCalendly() { window.open(CALENDLY_URL, '_blank'); }
 
-
-  // Expose functions globally so onclick attrs in injected HTML can reach them
-  window.toggleWidget = toggleWidget;
-  window.switchTab = switchTab;
-  window.toggleFaq = toggleFaq;
-  window.tabScroll = tabScroll;
-  window.pricingTab = pricingTab;
-  window.openCalendly = openCalendly;
-  window.closeTooltip = closeTooltip;
-  window.openFromTooltip = openFromTooltip;
-
-  // Tooltip
-  function closeTooltip() {
+  function swCloseTooltip() {
     var t = document.getElementById('samify-tooltip');
-    if (t) { t.classList.remove('show'); setTimeout(function(){ t.style.display='none'; }, 300); }
+    if (t) { t.classList.remove('show'); setTimeout(function() { t.style.display = 'none'; }, 300); }
   }
-  function openFromTooltip() {
-    closeTooltip();
-    document.getElementById('widget').classList.add('visible');
-    document.getElementById('launcher').classList.add('open');
+
+  function swOpenFromTooltip() {
+    swCloseTooltip();
+    document.getElementById('samify-widget').classList.add('visible');
+    document.getElementById('samify-launcher').classList.add('open');
   }
+
   setTimeout(function() {
     var t = document.getElementById('samify-tooltip');
     if (t) t.classList.add('show');
   }, 5000);
 
-  setTimeout(function() {
-    if (typeof updateTabArrows === 'function') updateTabArrows();
-  }, 300);
+  window.swToggle = swToggle;
+  window.swGoHome = swGoHome;
+  window.swNav = swNav;
+  window.swFaq = swFaq;
+  window.swPricingTab = swPricingTab;
+  window.swOpenCalendly = swOpenCalendly;
+  window.swCloseTooltip = swCloseTooltip;
+  window.swOpenFromTooltip = swOpenFromTooltip;
 })();
