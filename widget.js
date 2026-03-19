@@ -1,9 +1,15 @@
 (function() {
   if (document.getElementById('samify-widget-container')) return;
 
+  // Load Zapier chatbot script
+  var zapierScript = document.createElement('script');
+  zapierScript.type = 'module';
+  zapierScript.src = 'https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js';
+  document.head.appendChild(zapierScript);
+
   var link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Montserrat:wght@500;700&display=swap';
+  link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap';
   document.head.appendChild(link);
 
   var style = document.createElement('style');
@@ -83,7 +89,7 @@
   .tab-scroll-right { border-radius: 0 4px 0 0; }
   .tab-btn {
     flex-shrink: 0; padding: 9px 13px 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500;
     color: rgba(255,255,255,0.5); background: transparent; border: none;
     cursor: pointer; border-bottom: 2px solid transparent;
     transition: color 0.15s, border-color 0.15s; white-space: nowrap;
@@ -105,7 +111,7 @@
 
   /* FAQ */
   .faq-item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; background: var(--bg); }
-  .faq-q { width: 100%; text-align: left; background: none; border: none; padding: 13px 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text); transition: background 0.1s; gap: 10px; }
+  .faq-q { width: 100%; text-align: left; background: none; border: none; padding: 13px 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: var(--text); transition: background 0.1s; gap: 10px; }
   .faq-q:hover { background: var(--bg2); }
   .faq-q svg { flex-shrink: 0; transition: transform 0.2s; color: var(--text3); }
   .faq-item.open .faq-q svg { transform: rotate(180deg); }
@@ -130,7 +136,7 @@
   .slot { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
   .slot-day { font-size: 13px; font-weight: 500; color: var(--text); }
   .slot-time { font-size: 12px; color: var(--text2); margin-top: 2px; }
-  .slot-btn { padding: 7px 14px; border-radius: 7px; background: var(--accent); color: #fff; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .slot-btn { padding: 7px 14px; border-radius: 7px; background: var(--accent); color: #fff; border: none; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
   .slot-btn:hover { background: var(--accent2); }
   .slot-btn.full { background: var(--bg2); color: var(--text3); cursor: default; }
 
@@ -147,7 +153,7 @@
 
   /* PRICING */
   .price-toggle { display: flex; background: var(--bg2); border-radius: 8px; padding: 3px; margin-bottom: 16px; gap: 3px; }
-  .price-toggle-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .price-toggle-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; }
   .price-toggle-btn.active { background: var(--accent); color: #fff; }
   .price-set { display: none; }
   .price-set.active { display: block; }
@@ -163,7 +169,7 @@
   .price-feature { font-size: 12px; color: var(--text2); display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
   .price-feature::before { content: '✓'; color: #166534; font-weight: 700; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
   .price-feature strong { color: var(--text); font-weight: 600; }
-  .price-cta { display: block; width: 100%; margin-top: 12px; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; transition: background 0.15s; }
+  .price-cta { display: block; width: 100%; margin-top: 12px; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; transition: background 0.15s; }
   .price-cta:hover { background: var(--accent2); }
   .price-card.featured .price-cta { background: var(--highlight); }
   .price-card.featured .price-cta:hover { opacity: 0.88; }
@@ -184,7 +190,7 @@
     position: fixed; bottom: 100px; right: 24px;
     background: #1a1a2e; color: #fff;
     padding: 12px 16px; border-radius: 12px 12px 4px 12px;
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+    font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 400;
     line-height: 1.5; max-width: 240px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     pointer-events: all; cursor: pointer;
@@ -251,7 +257,6 @@
 
     <!-- CHAT -->
     <div id="panel-chat" class="tab-panel active">
-      <script async type="module" src="https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js"></script>
       <zapier-interfaces-chatbot-embed
         is-popup="false"
         chatbot-id="cml7176g80063a6ttccmada8x"
