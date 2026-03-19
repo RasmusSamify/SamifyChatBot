@@ -552,7 +552,7 @@
   document.body.appendChild(wrap);
 
   // ⬇️ BYT UT MOT ER CALENDLY-LÄNK
-  const CALENDLY_URL = 'https://calendly.com/samify-info/60min'; // <-- ändra här
+  const CALENDLY_URL = 'https://calendly.com/samify-info'; // <-- ändra här
 
   function toggleWidget() {
     document.getElementById('widget').classList.toggle('visible');
