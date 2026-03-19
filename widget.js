@@ -15,6 +15,10 @@
   var style = document.createElement('style');
   style.textContent = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  #samify-widget-container * {
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
   :root {
     --accent: #1a1a2e;
     --accent2: #0f3460;
