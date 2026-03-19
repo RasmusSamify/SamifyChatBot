@@ -29,7 +29,6 @@
 
   /* LAUNCHER */
   #launcher {
-    pointer-events: all;
     position: fixed; bottom: 24px; right: 24px;
     width: 64px; height: 64px; border-radius: 50%;
     background: var(--accent); border: none; cursor: pointer;
@@ -219,7 +218,7 @@
 
   var wrap = document.createElement('div');
   wrap.id = 'samify-widget-container';
-  wrap.style.cssText = 'position:fixed;bottom:0;right:0;z-index:9997;pointer-events:none;';
+  wrap.style.cssText = 'position:fixed;bottom:0;right:0;width:0;height:0;overflow:visible;z-index:9997;';
   wrap.innerHTML = `<button id="launcher" onclick="toggleWidget()" aria-label="Öppna support">
   <svg class="chat-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   <svg class="close-icon" style="display:none" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
