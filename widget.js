@@ -41,10 +41,12 @@
       overflow: hidden;
       transform: scale(0.92) translateY(16px);
       opacity: 0; pointer-events: none;
-      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease, width 0.3s ease, height 0.3s ease, bottom 0.3s ease;
       z-index: 9998;
     }
     #samify-widget.visible { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+    #samify-widget.expanded { width: 520px; height: 780px; bottom: 24px; }
+    @media (max-width: 580px) { #samify-widget.expanded { width: calc(100vw - 16px); height: calc(100vh - 100px); right: 8px; } }
 
     .sw-header {
       background: #1a1a2e; padding: 16px 18px;
@@ -503,14 +505,22 @@
     document.getElementById('sw-home').classList.add('active');
     document.getElementById('sw-back').classList.remove('show');
     document.getElementById('sw-header-title').textContent = 'Samify AI';
+    document.getElementById('samify-widget').classList.remove('expanded');
   }
+
+  var expandScreens = ['sw-chat', 'sw-pricing'];
 
   function swNav(screenId, title) {
     document.querySelectorAll('.sw-screen').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById(screenId).classList.add('active');
     document.getElementById('sw-back').classList.add('show');
     document.getElementById('sw-header-title').textContent = title;
-
+    var widget = document.getElementById('samify-widget');
+    if (expandScreens.indexOf(screenId) !== -1) {
+      widget.classList.add('expanded');
+    } else {
+      widget.classList.remove('expanded');
+    }
   }
 
   function swOpenCalendlyPopup() {
