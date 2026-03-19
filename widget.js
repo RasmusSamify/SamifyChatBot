@@ -187,11 +187,11 @@
 
     /* TOOLTIP */
     #samify-tooltip {
-      position: fixed; bottom: 100px; right: 94px;
+      position: fixed; bottom: 100px; right: 24px;
       background: #1a1a2e; color: #fff;
-      padding: 12px 16px 12px 14px; border-radius: 12px 12px 4px 12px;
-      font-size: 12.5px; font-weight: 400; line-height: 1.55;
-      max-width: 220px; cursor: pointer;
+      padding: 16px 20px 16px 16px; border-radius: 16px 16px 4px 16px;
+      font-size: 14px; font-weight: 500; line-height: 1.6;
+      max-width: 260px; cursor: pointer;
       box-shadow: 0 4px 20px rgba(0,0,0,0.18);
       opacity: 0; transform: translateY(8px) scale(0.95);
       transition: opacity 0.3s ease, transform 0.3s ease;
@@ -199,9 +199,9 @@
     }
     #samify-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
     #samify-tooltip::after {
-      content: ''; position: absolute; bottom: 10px; right: -7px;
-      border-top: 7px solid transparent; border-bottom: 7px solid transparent;
-      border-left: 7px solid #1a1a2e;
+      content: ''; position: absolute; bottom: -8px; right: 20px;
+      border-left: 8px solid transparent; border-right: 8px solid transparent;
+      border-top: 8px solid #1a1a2e;
     }
     #samify-tooltip-close { position: absolute; top: 6px; right: 8px; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 13px; line-height: 1; padding: 0; }
     #samify-tooltip-close:hover { color: #fff; }
@@ -474,9 +474,10 @@
       </div>
 
       <div class="sw-footer">
-        <a href="https://samify.se" target="_blank" style="flex-direction:column;gap:4px;">
-          <img src="https://samify.se/wp-content/uploads/go-x/u/7c566770-2e09-4b98-98b8-c4afcbbeeeaa/image-160x62.png" alt="Samify" style="height:22px;width:auto;display:block;" />
-          <span style="font-size:10px;font-weight:700;color:#a0a0b0;letter-spacing:0.04em;">Powered By Samify AI <span class="sw-pdot" style="vertical-align:middle;"></span></span>
+        <a href="https://samify.se" target="_blank" style="flex-direction:row;align-items:center;gap:6px;">
+          <span style="font-size:11px;font-weight:700;color:#a0a0b0;letter-spacing:0.03em;">Powered By</span>
+          <img src="https://samify.se/wp-content/uploads/go-x/u/7c566770-2e09-4b98-98b8-c4afcbbeeeaa/image-160x62.png" alt="Samify" style="height:18px;width:auto;display:block;" />
+          <span class="sw-pdot"></span>
         </a>
       </div>
     </div>
@@ -555,7 +556,7 @@
   setTimeout(function() {
     var t = document.getElementById('samify-tooltip');
     if (t) t.classList.add('show');
-  }, 5000);
+  }, 400);
 
   window.swToggle = swToggle;
   window.swGoHome = swGoHome;
