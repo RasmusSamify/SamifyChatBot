@@ -111,6 +111,8 @@
       display: flex; align-items: center; justify-content: center;
     }
     .card-icon { font-size: 20px; }
+    .card-icon-wrap svg { stroke: #6b6b7b; }
+    .home-card.wide .card-icon-wrap svg { stroke: rgba(255,255,255,0.85); }
     .card-label { font-size: 12px; font-weight: 700; color: #111118; }
     .card-sub { font-size: 10.5px; color: #a0a0b0; font-weight: 400; }
     .wide-arrow { margin-left: auto; color: rgba(255,255,255,0.4); font-size: 20px; font-weight: 300; }
@@ -237,10 +239,10 @@
         <!-- HOME -->
         <div class="sw-screen active" id="sw-home">
           <div class="home-body">
-            <div class="home-greeting">Hej! Hur kan vi hjälpa dig idag? Välj ett alternativ eller chatta direkt med oss. 👋</div>
+            <div class="home-greeting">Hej! Hur kan vi hjälpa dig idag? Välj ett alternativ eller chatta direkt med oss. </div>
             <div class="home-grid">
               <div class="home-card wide" onclick="swNav('sw-chat','Chatta med oss')">
-                <div class="card-icon-wrap"><span class="card-icon">💬</span></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
                 <div>
                   <div class="card-label">Chatta med oss</div>
                   <div class="card-sub">Svar direkt från vår AI</div>
@@ -248,22 +250,22 @@
                 <div class="wide-arrow">›</div>
               </div>
               <div class="home-card" onclick="swNav('sw-faq','Vanliga frågor')">
-                <div class="card-icon-wrap"><span class="card-icon">❓</span></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
                 <div class="card-label">Vanliga frågor</div>
                 <div class="card-sub">Snabba svar</div>
               </div>
               <div class="home-card" onclick="swNav('sw-booking','Boka möte')">
-                <div class="card-icon-wrap"><span class="card-icon">📅</span></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
                 <div class="card-label">Boka möte</div>
                 <div class="card-sub">30 min, gratis</div>
               </div>
               <div class="home-card" onclick="swNav('sw-pricing','Priser')">
-                <div class="card-icon-wrap"><span class="card-icon">💰</span></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
                 <div class="card-label">Priser</div>
                 <div class="card-sub">Från 4 995 kr/mån</div>
               </div>
               <div class="home-card" onclick="swNav('sw-contact','Kontakt')">
-                <div class="card-icon-wrap"><span class="card-icon">📞</span></div>
+                <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.36a2 2 0 0 1 2-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
                 <div class="card-label">Kontakt</div>
                 <div class="card-sub">info@samify.se</div>
               </div>
@@ -318,11 +320,33 @@
 
         <!-- BOOKING -->
         <div class="sw-screen" id="sw-booking">
-          <div class="inner-body">
-            <div id="sw-calendly-wrap" style="width:100%;height:100%;min-height:500px;display:flex;flex-direction:column;">
-              <div class="calendly-loading" id="sw-cal-loading">
-                <div class="calendly-spinner"></div>
-                Laddar kalender...
+          <div class="inner-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="inner-title">Boka möte</div>
+            <div style="background:#fff;border:1px solid #e8e8ec;border-radius:12px;padding:18px;text-align:center;">
+              <div style="width:48px;height:48px;border-radius:12px;background:#f0f0f8;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1a1a2e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:700;color:#111118;margin-bottom:6px;">Boka ett kostnadsfritt möte</div>
+              <div style="font-size:12px;color:#6b6b7b;margin-bottom:16px;line-height:1.6;">30 minuter · Videomöte · Välj en tid som passar dig direkt i vår kalender.</div>
+              <button onclick="swOpenCalendlyPopup()" style="width:100%;padding:12px;background:#1a1a2e;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#0f3460'" onmouseout="this.style.background='#1a1a2e'">
+                Öppna kalender →
+              </button>
+            </div>
+            <div style="background:#fff;border:1px solid #e8e8ec;border-radius:12px;padding:14px;">
+              <div style="font-size:11px;font-weight:700;color:#a0a0b0;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Vad ingår i mötet?</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#6b6b7b;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Genomgång av era nuvarande processer
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#6b6b7b;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Demo av vad AI kan göra för er
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#6b6b7b;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Prisindikation utan bindning
+                </div>
               </div>
             </div>
           </div>
@@ -333,8 +357,8 @@
           <div class="inner-body">
             <div class="inner-title">Paket & Priser</div>
             <div class="price-toggle">
-              <button class="price-toggle-btn active" onclick="swPricingTab('chatbot',this)">💬 Chatbot</button>
-              <button class="price-toggle-btn" onclick="swPricingTab('automation',this)">⚡ Automatisering</button>
+              <button class="price-toggle-btn active" onclick="swPricingTab('chatbot',this)">Chatbot</button>
+              <button class="price-toggle-btn" onclick="swPricingTab('automation',this)">Automatisering</button>
             </div>
             <div id="sw-price-chatbot" class="price-set active">
               <div class="price-card">
@@ -456,15 +480,13 @@
 
     <div id="samify-tooltip" onclick="swOpenFromTooltip()">
       <button id="samify-tooltip-close" onclick="event.stopPropagation();swCloseTooltip()">✕</button>
-      Hej! Kul att du hittat till Samify — ställ gärna några frågor till mig om du undrar över något! 👋
+      Hej! Kul att du hittat till Samify — ställ gärna några frågor till mig om du undrar över något! 
     </div>
   `;
   document.body.appendChild(wrap);
 
   // ⬇️ BYT UT MOT ER CALENDLY-LÄNK
   var CALENDLY_URL = 'https://calendly.com/samify-info';
-
-  var calendlyLoaded = false;
 
   function swToggle() {
     document.getElementById('samify-widget').classList.toggle('visible');
@@ -484,24 +506,25 @@
     document.getElementById(screenId).classList.add('active');
     document.getElementById('sw-back').classList.add('show');
     document.getElementById('sw-header-title').textContent = title;
-    if (screenId === 'sw-booking' && !calendlyLoaded) {
-      swLoadCalendly();
-    }
+
   }
 
-  function swLoadCalendly() {
-    calendlyLoaded = true;
-    var wrap = document.getElementById('sw-calendly-wrap');
-    var iframe = document.createElement('iframe');
-    iframe.src = CALENDLY_URL + '?embed_domain=' + location.hostname + '&embed_type=inline&hide_gdpr_banner=1';
-    iframe.style.cssText = 'width:100%;flex:1;min-height:500px;border:none;';
-    iframe.onload = function() {
-      var loading = document.getElementById('sw-cal-loading');
-      if (loading) loading.style.display = 'none';
-    };
-    wrap.innerHTML = '';
-    wrap.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;';
-    wrap.appendChild(iframe);
+  function swOpenCalendlyPopup() {
+    // Load Calendly popup widget
+    if (!window.Calendly) {
+      var s = document.createElement('script');
+      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.onload = function() {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = 'https://assets.calendly.com/assets/external/widget.css';
+        document.head.appendChild(l);
+        window.Calendly.initPopupWidget({ url: CALENDLY_URL });
+      };
+      document.head.appendChild(s);
+    } else {
+      window.Calendly.initPopupWidget({ url: CALENDLY_URL });
+    }
   }
 
   function swFaq(btn) { btn.closest('.faq-item').classList.toggle('open'); }
@@ -513,7 +536,7 @@
     btn.classList.add('active');
   }
 
-  function swOpenCalendly() { window.open(CALENDLY_URL, '_blank'); }
+  function swOpenCalendly() { swOpenCalendlyPopup(); }
 
   function swCloseTooltip() {
     var t = document.getElementById('samify-tooltip');
@@ -537,6 +560,7 @@
   window.swFaq = swFaq;
   window.swPricingTab = swPricingTab;
   window.swOpenCalendly = swOpenCalendly;
+  window.swOpenCalendlyPopup = swOpenCalendlyPopup;
   window.swCloseTooltip = swCloseTooltip;
   window.swOpenFromTooltip = swOpenFromTooltip;
 })();
