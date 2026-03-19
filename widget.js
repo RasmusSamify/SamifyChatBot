@@ -123,26 +123,20 @@
   .faq-item.open .faq-a { display: block; }
 
   /* BOOKING */
-  .calendly-banner {
-    display: flex; align-items: center; gap: 12px;
-    background: linear-gradient(135deg, #1a1a2e, #0f3460);
-    border-radius: 12px; padding: 16px; margin-bottom: 16px; cursor: pointer;
-    transition: opacity 0.15s;
+  /* CALENDLY INLINE */
+  #panel-booking { padding: 0 !important; }
+  #panel-booking .panel-body { padding: 0; height: 100%; }
+  .calendly-loading {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; gap: 10px; color: var(--text2); font-size: 13px;
   }
-  .calendly-banner:hover { opacity: 0.9; }
-  .calendly-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-  .calendly-text strong { display: block; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 2px; }
-  .calendly-text span { font-size: 11.5px; color: rgba(255,255,255,0.55); }
-  .calendly-arrow { margin-left: auto; color: rgba(255,255,255,0.4); font-size: 18px; }
-
-  .booking-divider { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; }
-  .booking-slots { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-  .slot { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
-  .slot-day { font-size: 13px; font-weight: 500; color: var(--text); }
-  .slot-time { font-size: 12px; color: var(--text2); margin-top: 2px; }
-  .slot-btn { padding: 7px 14px; border-radius: 7px; background: var(--accent); color: #fff; border: none; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-  .slot-btn:hover { background: var(--accent2); }
-  .slot-btn.full { background: var(--bg2); color: var(--text3); cursor: default; }
+  .calendly-spinner {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 3px solid var(--border); border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .calendly-inline-widget { width: 100%; height: 100%; min-height: 520px; border: none; }
 
   /* CONTACT */
   .contact-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
@@ -178,15 +172,34 @@
   .price-card.featured .price-cta { background: var(--highlight); }
   .price-card.featured .price-cta:hover { opacity: 0.88; }
 
-  /* STATUS */
-  .status-list { display: flex; flex-direction: column; gap: 8px; }
-  .status-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
-  .status-label { font-size: 13px; font-weight: 500; color: var(--text); }
-  .status-badge { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 500; padding: 4px 9px; border-radius: 20px; }
-  .status-badge.ok { background: #dcfce7; color: #166534; }
-  .status-badge.warn { background: #fef9c3; color: #854d0e; }
-  .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .status-updated { font-size: 11px; color: var(--text3); margin-top: 14px; text-align: center; }
+  /* KOM IGÅNG */
+  .start-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+  .start-step { display: flex; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .start-step:last-child { border-bottom: none; }
+  .start-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .start-step.done .start-num { background: #166534; }
+  .start-step-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .start-step-desc { font-size: 12.5px; font-weight: 300; color: var(--text2); line-height: 1.55; }
+  .start-cta-box {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 12px; padding: 18px; text-align: center;
+  }
+  .start-cta-box p { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 12px; line-height: 1.5; }
+  .start-cta-btn {
+    display: inline-block; padding: 11px 24px;
+    background: var(--highlight); color: #fff;
+    border: none; border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: opacity 0.15s; text-decoration: none;
+  }
+  .start-cta-btn:hover { opacity: 0.88; }
 
 
   /* TOOLTIP BUBBLE */
@@ -251,7 +264,7 @@
         <button class="tab-btn" onclick="switchTab('booking', this)">Boka möte</button>
         <button class="tab-btn" onclick="switchTab('pricing', this)">Priser</button>
         <button class="tab-btn" onclick="switchTab('contact', this)">Kontakt</button>
-        <button class="tab-btn" onclick="switchTab('status', this)">Status</button>
+        <button class="tab-btn" onclick="switchTab('start', this)">Kom igång</button>
       </div>
       <button class="tab-scroll-btn tab-scroll-right" id="tab-right" onclick="tabScroll(1)" aria-label="Scrolla höger">&#8250;</button>
     </div>
@@ -343,40 +356,10 @@
     <!-- BOOKING -->
     <div id="panel-booking" class="tab-panel">
       <div class="panel-body">
-        <div class="section-title">Boka möte</div>
-
-        <!-- Calendly CTA — byt ut href mot er Calendly-länk -->
-        <div class="calendly-banner" onclick="openCalendly()">
-          <div class="calendly-icon">📅</div>
-          <div class="calendly-text">
-            <strong>Boka ett kostnadsfritt möte</strong>
-            <span>30 min · Videomöte · Direkt i kalendern</span>
-          </div>
-          <div class="calendly-arrow">→</div>
-        </div>
-
-        <div class="booking-divider">Närmaste lediga tider</div>
-        <div class="booking-slots">
-          <div class="slot">
-            <div>
-              <div class="slot-day">Måndag 24 mars</div>
-              <div class="slot-time">10:00 – 10:30 · Videomöte</div>
-            </div>
-            <button class="slot-btn" onclick="openCalendly()">Boka</button>
-          </div>
-          <div class="slot">
-            <div>
-              <div class="slot-day">Tisdag 25 mars</div>
-              <div class="slot-time">09:00 – 09:30 · Videomöte</div>
-            </div>
-            <button class="slot-btn" onclick="openCalendly()">Boka</button>
-          </div>
-          <div class="slot">
-            <div>
-              <div class="slot-day">Onsdag 26 mars</div>
-              <div class="slot-time">13:00 – 13:30 · Videomöte</div>
-            </div>
-            <button class="slot-btn" onclick="openCalendly()">Boka</button>
+        <div id="calendly-container" style="width:100%;height:100%;min-height:520px;">
+          <div class="calendly-loading" id="calendly-loading">
+            <div class="calendly-spinner"></div>
+            Laddar kalender...
           </div>
         </div>
       </div>
@@ -525,17 +508,36 @@
     </div>
 
     <!-- STATUS -->
-    <div id="panel-status" class="tab-panel">
+    <div id="panel-start" class="tab-panel">
       <div class="panel-body">
-        <div class="section-title">Systemstatus</div>
-        <div class="status-list">
-          <div class="status-row"><span class="status-label">Chatbot</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
-          <div class="status-row"><span class="status-label">API-integrationer</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
-          <div class="status-row"><span class="status-label">E-postautomation</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
-          <div class="status-row"><span class="status-label">Automationsplattform</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
-          <div class="status-row"><span class="status-label">Dashboard</span><span class="status-badge ok"><span class="dot"></span> Driftig</span></div>
+        <div class="section-title">Kom igång</div>
+        <div class="start-steps">
+          <div class="start-step">
+            <div class="start-num">1</div>
+            <div>
+              <div class="start-step-title">Boka ett gratis möte</div>
+              <div class="start-step-desc">30 minuter. Vi lyssnar på era behov och visar vad som är möjligt — ingen bindning.</div>
+            </div>
+          </div>
+          <div class="start-step">
+            <div class="start-num">2</div>
+            <div>
+              <div class="start-step-title">Vi bygger er lösning</div>
+              <div class="start-step-desc">Chatbot, automationer och integrationer på 1–2 veckor. Ni behöver inte göra något.</div>
+            </div>
+          </div>
+          <div class="start-step">
+            <div class="start-num">3</div>
+            <div>
+              <div class="start-step-title">Live — ni märker skillnaden</div>
+              <div class="start-step-desc">Widgeten på er sida, automationerna rullar. Ni sparar tid från dag ett.</div>
+            </div>
+          </div>
         </div>
-        <div class="status-updated">Uppdaterad: idag 08:42</div>
+        <div class="start-cta-box">
+          <p>Redo att sätta företaget på autopilot?</p>
+          <button class="start-cta-btn" onclick="openCalendly()">Boka gratis möte →</button>
+        </div>
       </div>
     </div>
 
@@ -550,7 +552,7 @@
   document.body.appendChild(wrap);
 
   // ⬇️ BYT UT MOT ER CALENDLY-LÄNK
-  const CALENDLY_URL = 'https://calendly.com/samify'; // <-- ändra här
+  const CALENDLY_URL = 'https://calendly.com/samify-info/60min'; // <-- ändra här
 
   function toggleWidget() {
     document.getElementById('widget').classList.toggle('visible');
@@ -594,8 +596,35 @@
   }
 
   function openCalendly() {
+    // Fallback - open in new tab if inline fails
     window.open(CALENDLY_URL, '_blank');
   }
+
+  function loadCalendlyInline() {
+    var container = document.getElementById('calendly-container');
+    if (!container) return;
+    var iframe = document.createElement('iframe');
+    iframe.src = CALENDLY_URL + '?embed_domain=' + location.hostname + '&embed_type=inline&hide_gdpr_banner=1&hide_event_type_details=0&primary_color=1a1a2e';
+    iframe.style.cssText = 'width:100%;height:100%;min-height:520px;border:none;border-radius:0;';
+    iframe.onload = function() {
+      var loading = document.getElementById('calendly-loading');
+      if (loading) loading.style.display = 'none';
+    };
+    container.innerHTML = '';
+    container.appendChild(iframe);
+  }
+
+  // Load Calendly when booking tab is clicked
+  var origSwitchTab = window.switchTab;
+  window.switchTab = function(name, btn) {
+    origSwitchTab(name, btn);
+    if (name === 'booking') {
+      var container = document.getElementById('calendly-container');
+      if (container && !container.querySelector('iframe')) {
+        loadCalendlyInline();
+      }
+    }
+  };
 
 
 
