@@ -123,8 +123,8 @@
     .wide-arrow { margin-left: auto; color: rgba(255,255,255,0.4); font-size: 20px; font-weight: 300; }
 
     /* ROI CARD on home — special gradient */
-    .home-card.roi-card { grid-column: span 2; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 14px 16px; text-align: left; background: linear-gradient(135deg,#e94560 0%,#c0392b 100%); border-color: transparent; }
-    .home-card.roi-card:hover { opacity: 0.92; background: linear-gradient(135deg,#e94560 0%,#c0392b 100%); border-color: transparent; transform: translateY(-1px); }
+    .home-card.roi-card { grid-column: span 2; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 14px 16px; text-align: left; background: linear-gradient(135deg,#0ea57a 0%,#059669 100%); border-color: transparent; }
+    .home-card.roi-card:hover { opacity: 0.92; background: linear-gradient(135deg,#0ea57a 0%,#059669 100%); border-color: transparent; transform: translateY(-1px); }
     .home-card.roi-card .card-label { color: #fff; }
     .home-card.roi-card .card-sub { color: rgba(255,255,255,0.65); }
     .home-card.roi-card .card-icon-wrap { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -268,7 +268,7 @@
     #sw-nudge-banner { display: none; background: linear-gradient(135deg,#1a1a2e 0%,#0f3460 100%); border-radius: 10px; padding: 10px 12px; margin: 0 0 10px; -webkit-align-items: center; align-items: center; -webkit-justify-content: space-between; justify-content: space-between; }
     #sw-nudge-banner.show { display: -webkit-flex; display: flex; animation: swSlideIn 0.28s ease forwards; }
     .nudge-banner-text { font-size: 11px; color: #fff; font-weight: 500; line-height: 1.45; -webkit-flex: 1; flex: 1; }
-    .nudge-banner-btn { background: #e94560; border: none; border-radius: 7px; padding: 6px 11px; font-size: 10.5px; font-weight: 700; color: #fff; cursor: pointer; white-space: nowrap; margin-left: 10px; font-family: 'Montserrat', sans-serif !important; transition: opacity 0.15s; flex-shrink: 0; }
+    .nudge-banner-btn { background: #0ea57a; border: none; border-radius: 7px; padding: 6px 11px; font-size: 10.5px; font-weight: 700; color: #fff; cursor: pointer; white-space: nowrap; margin-left: 10px; font-family: 'Montserrat', sans-serif !important; transition: opacity 0.15s; flex-shrink: 0; }
     .nudge-banner-btn:hover { opacity: 0.85; }
     .nudge-banner-x { color: rgba(255,255,255,0.4); font-size: 14px; cursor: pointer; margin-left: 8px; background: none; border: none; line-height: 1; padding: 0; flex-shrink: 0; }
     .nudge-banner-x:hover { color: #fff; }
