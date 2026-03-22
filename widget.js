@@ -926,22 +926,52 @@
     if (t) { t.classList.remove('show'); setTimeout(function() { t.style.display = 'none'; }, 300); }
   }
 
-  function swOpenFromTooltip() {
-    swCloseTooltip();
-    document.getElementById('samify-widget').classList.add('visible');
-    document.getElementById('samify-launcher').classList.add('open');
+  // swOpenFromTooltip defined inside nudge system above
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  NUDGE SYSTEM
+  // ─────────────────────────────────────────────────────────────────────────
+  var swNudgeShown = false;
+  var swWidgetOpened = false;
+  var swNudgeTimer = null;
+  var swScrollTimer = null;
+
+  var swNudges = [
+    {
+      trigger: 'time',
+      delay: 30000,
+      msg: 'Hej! Hur kan vi hjälpa dig idag?',
+      action: null
+    },
+    {
+      trigger: 'scroll',
+      threshold: 0.5,
+      delay: 8000,
+      msg: 'Vill du se ett konkret räkneexempel för er bransch?',
+      action: 'roi'
+    },
+    {
+      trigger: 'exit',
+      delay: 0,
+      msg: 'Innan du går — vill du se vad AI kan spara er?',
+      action: 'roi'
+    }
+  ];
+
+  var swActiveNudge = null;
+
+  function swShowNudge(nudge) {
+    if (swNudgeShown || swWidgetOpened) return;
+    swNudgeShown = true;
+    swActiveNudge = nudge;
+    var t = document.getElementById('samify-tooltip');
+    if (!t) return;
+    t.style.display = '';
+    t.classList.add('show');
+    swTypewriteTooltip(nudge.msg);
   }
 
-  setTimeout(function() {
-    var t = document.getElementById('samify-tooltip');
-    if (t) {
-      t.classList.add('show');
-      swTypewriteTooltip();
-    }
-  }, 600);
-
-  function swTypewriteTooltip() {
-    var msg = 'Hej! Hur kan vi hjälpa dig idag?';
+  function swTypewriteTooltip(msg) {
     var el = document.getElementById('samify-tooltip-text');
     if (!el) return;
     el.textContent = '';
@@ -955,6 +985,59 @@
     }
     setTimeout(type, 300);
   }
+
+  // Override swOpenFromTooltip to handle nudge actions
+  function swOpenFromTooltip() {
+    swCloseTooltip();
+    document.getElementById('samify-widget').classList.add('visible');
+    document.getElementById('samify-launcher').classList.add('open');
+    swWidgetOpened = true;
+    if (swActiveNudge && swActiveNudge.action === 'roi') {
+      setTimeout(function() { swStartFlow(); }, 350);
+    }
+  }
+
+  // Track widget open to suppress future nudges
+  var origToggle = swToggle;
+  window.swToggle = function() {
+    origToggle();
+    swWidgetOpened = document.getElementById('samify-widget').classList.contains('visible');
+  };
+
+  // TRIGGER 1 — Time on page (30 sec)
+  swNudgeTimer = setTimeout(function() {
+    swShowNudge(swNudges[0]);
+  }, 30000);
+
+  // TRIGGER 2 — Scroll depth (50% of page) + 8 sec dwell
+  window.addEventListener('scroll', function() {
+    if (swNudgeShown || swWidgetOpened) return;
+    var scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    if (scrollPct >= 0.5 && !swScrollTimer) {
+      swScrollTimer = setTimeout(function() {
+        clearTimeout(swNudgeTimer);
+        swShowNudge(swNudges[1]);
+      }, 8000);
+    }
+  }, { passive: true });
+
+  // TRIGGER 3 — Exit intent (mouse leaves viewport upward)
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY <= 0 && !swNudgeShown && !swWidgetOpened) {
+      clearTimeout(swNudgeTimer);
+      clearTimeout(swScrollTimer);
+      swShowNudge(swNudges[2]);
+    }
+  });
+
+  // Initial tooltip — show after 0.6s
+  setTimeout(function() {
+    var t = document.getElementById('samify-tooltip');
+    if (t) {
+      t.classList.add('show');
+      swTypewriteTooltip('Hej! Hur kan vi hjälpa dig idag?');
+    }
+  }, 600);
 
   // Init ROI display
   swCalcROI();
