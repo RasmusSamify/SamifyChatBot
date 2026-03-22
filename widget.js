@@ -4,7 +4,7 @@
   // ─────────────────────────────────────────────
   //  ⚙️  KONFIGURATION — byt ut dessa värden
   // ─────────────────────────────────────────────
-  var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/XXXXX/XXXXXXX/';
+  var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/25909526/upqo7s5/';
   var CALENDLY_URL       = 'https://calendly.com/samify-info';
   // ─────────────────────────────────────────────
 
@@ -81,11 +81,11 @@
     .sw-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #7c3aed; margin-left: 2px; margin-bottom: 8px; flex-shrink: 0; }
     .sw-divider { width: 1px; height: 26px; background: rgba(255,255,255,0.18); margin: 0 14px; flex-shrink: 0; }
     .sw-header-sub { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
-    .sw-title { font-family: 'Montserrat', sans-serif !important; font-size: 9.5px; font-weight: 300; color: rgba(255,255,255,0.4); letter-spacing: 0.13em; text-transform: uppercase; line-height: 1.3; }
+    .sw-title { font-family: 'Montserrat', sans-serif !important; font-size: 9.5px; font-weight: 300; color: rgba(255,255,255,0.85); letter-spacing: 0.13em; text-transform: uppercase; line-height: 1.3; }
     .sw-status { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; margin-top: 3px; }
     .sw-status > * + * { margin-left: 4px; }
     .sw-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
-    .sw-status-text { font-family: 'Montserrat', sans-serif !important; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; }
+    .sw-status-text { font-family: 'Montserrat', sans-serif !important; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.85); letter-spacing: 0.1em; text-transform: uppercase; }
     .sw-online-badge { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.14); border-radius: 20px; padding: 4px 9px; }
     .sw-avatar { display: none; }
 
@@ -478,7 +478,7 @@
               </div>
               <div class="home-card" onclick="swNav('sw-booking','Boka möte')">
                 <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-                <div class="card-label">Boka möte</div><div class="card-sub">30 min, gratis</div>
+                <div class="card-label">Boka möte</div><div class="card-sub">60 min, gratis</div>
               </div>
               <div class="home-card" onclick="swNav('sw-pricing','Priser')">
                 <div class="card-icon-wrap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
@@ -623,7 +623,7 @@
             <div style="background:#fff;border:1px solid #e8e8ec;border-radius:12px;padding:18px;text-align:center;">
               <div style="width:48px;height:48px;border-radius:12px;background:#f0f0f8;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1a1a2e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
               <div style="font-size:14px;font-weight:700;color:#111118;margin-bottom:6px;">Boka ett kostnadsfritt möte</div>
-              <div style="font-size:12px;color:#6b6b7b;margin-bottom:16px;line-height:1.6;">30 minuter · Videomöte · Välj en tid som passar dig.</div>
+              <div style="font-size:12px;color:#6b6b7b;margin-bottom:16px;line-height:1.6;">60 minuter · Videomöte · Välj en tid som passar dig.</div>
               <button onclick="swOpenCalendlyPopup()" style="width:100%;padding:12px;background:#1a1a2e;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#0f3460'" onmouseout="this.style.background='#1a1a2e'">Öppna kalender →</button>
             </div>
             <div style="background:#fff;border:1px solid #e8e8ec;border-radius:12px;padding:14px;">
