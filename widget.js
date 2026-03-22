@@ -4,7 +4,7 @@
   // ─────────────────────────────────────────────
   //  ⚙️  KONFIGURATION — byt ut dessa värden
   // ─────────────────────────────────────────────
-  var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/25909526/upqo7s5/';
+  var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/XXXXX/XXXXXXX/';
   var CALENDLY_URL       = 'https://calendly.com/samify-info';
   // ─────────────────────────────────────────────
 
@@ -52,21 +52,30 @@
       z-index: 9998;
     }
     #samify-widget.visible { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
-    #samify-widget.expanded { width: 520px; height: 780px; bottom: 24px; }
+    #samify-widget.expanded { width: 460px; height: 720px; bottom: 24px; }
     @media (max-width: 580px) {
       #samify-widget { width: calc(100vw - 16px); right: 8px; }
-      #samify-widget.expanded { width: calc(100vw - 16px); height: calc(100vh - 100px); right: 8px; }
+      #samify-widget.expanded { width: calc(100vw - 16px); height: calc(100dvh - 100px); right: 8px; }
     }
 
     /* HEADER */
-    .sw-header { background: #1a1a2e; padding: 16px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-    .sw-back { background: rgba(255,255,255,0.1); border: none; cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: none; align-items: center; justify-content: center; color: #fff; font-size: 16px; transition: background 0.15s; flex-shrink: 0; }
-    .sw-back.show { display: flex; }
-    .sw-back:hover { background: rgba(255,255,255,0.2); }
-    .sw-avatar { width: 36px; height: 36px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
-    .sw-title { font-size: 14px; font-weight: 700; color: #fff; }
-    .sw-status { font-size: 11px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .sw-header { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); padding: 15px 18px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: space-between; justify-content: space-between; flex-shrink: 0; }
+    .sw-header-left { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; }
+    .sw-back { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.15); cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: none; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; color: #fff; font-size: 16px; transition: background 0.15s; flex-shrink: 0; margin-right: 12px; }
+    .sw-back.show { display: -webkit-flex; display: flex; }
+    .sw-back:hover { background: rgba(255,255,255,0.18); }
+    .sw-logo { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; }
+    .sw-logo-text { font-family: 'Montserrat', sans-serif !important; font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1; }
+    .sw-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #7c3aed; margin-left: 2px; margin-bottom: 8px; flex-shrink: 0; }
+    .sw-divider { width: 1px; height: 26px; background: rgba(255,255,255,0.18); margin: 0 14px; flex-shrink: 0; }
+    .sw-header-sub { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
+    .sw-title { font-family: 'Montserrat', sans-serif !important; font-size: 9.5px; font-weight: 300; color: rgba(255,255,255,0.4); letter-spacing: 0.13em; text-transform: uppercase; line-height: 1.3; }
+    .sw-status { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; margin-top: 3px; }
+    .sw-status > * + * { margin-left: 4px; }
     .sw-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
+    .sw-status-text { font-family: 'Montserrat', sans-serif !important; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; }
+    .sw-online-badge { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.14); border-radius: 20px; padding: 4px 9px; }
+    .sw-avatar { display: none; }
 
     /* PROGRESS BAR */
     .sw-progress { height: 3px; background: rgba(255,255,255,0.15); flex-shrink: 0; position: relative; overflow: hidden; }
@@ -74,7 +83,7 @@
 
     /* SCREENS */
     .sw-content { flex: 1; overflow: hidden; position: relative; }
-    .sw-screen { position: absolute; inset: 0; overflow-y: auto; background: #f7f7f8; display: none; flex-direction: column; }
+    .sw-screen { position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #f7f7f8; display: none; flex-direction: column; }
     .sw-screen.active { display: flex; }
     .sw-screen.slide-in { animation: swSlideIn 0.25s ease forwards; }
     .sw-screen.slide-back { animation: swSlideBack 0.22s ease forwards; }
@@ -84,7 +93,7 @@
     /* HOME */
     .home-body { padding: 16px; }
     .home-greeting { font-size: 12.5px; font-weight: 400; color: #6b6b7b; line-height: 1.6; margin-bottom: 14px; background: #fff; border-radius: 12px; padding: 12px 14px; border: 1px solid #e8e8ec; }
-    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; row-gap: 8px; column-gap: 8px; }
     .home-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 12px; padding: 14px 12px; display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; text-align: center; transition: background 0.15s, border-color 0.15s, transform 0.1s; }
     .home-card:hover { background: #f0f0f8; border-color: #1a1a2e; transform: translateY(-1px); }
     .home-card:active { transform: scale(0.97); }
@@ -123,7 +132,7 @@
     .step-label { font-size: 10px; color: #a0a0b0; margin-left: 4px; font-weight: 600; }
 
     /* QUALIFY — chip grid */
-    .chip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .chip-grid { display: grid; grid-template-columns: 1fr 1fr; row-gap: 8px; column-gap: 8px; margin-bottom: 14px; }
     .chip-grid.three-col { grid-template-columns: 1fr 1fr 1fr; }
     .chip { background: #fff; border: 1.5px solid #e8e8ec; border-radius: 10px; padding: 10px 8px; text-align: center; cursor: pointer; transition: all 0.15s; }
     .chip:hover { border-color: #1a1a2e; background: #f7f7f8; }
@@ -135,18 +144,28 @@
     /* SECTION LABEL */
     .section-label { font-size: 10.5px; font-weight: 700; color: #a0a0b0; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
 
+    /* EMAIL INPUT */
+    .sw-email-wrap { position: relative; margin-bottom: 14px; }
+    .sw-email-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .sw-email-input { width: 100%; padding: 11px 14px 11px 36px; border: 1.5px solid #e8e8ec; border-radius: 10px; font-size: 12.5px; font-family: 'Montserrat', sans-serif !important; color: #111118; background: #fff; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.15s; }
+    .sw-email-input:focus { border-color: #1a1a2e; }
+    .sw-email-input::placeholder { color: #c0c0cc; }
+
     /* ROI */
     .roi-field { background: #fff; border: 1.5px solid #e8e8ec; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; transition: border-color 0.15s; }
     .roi-field:focus-within { border-color: #1a1a2e; }
     .roi-field-label { font-size: 10.5px; font-weight: 700; color: #6b6b7b; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
     .roi-field-label span { font-size: 10px; color: #a0a0b0; font-weight: 400; }
-    .roi-slider { width: 100%; accent-color: #e94560; cursor: pointer; }
+    .roi-slider { width: 100%; accent-color: #e94560; cursor: pointer; -webkit-appearance: none; appearance: none; height: 4px; background: #e8e8ec; border-radius: 2px; outline: none; }
+    .roi-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #e94560; cursor: pointer; box-shadow: 0 1px 4px rgba(233,69,96,0.35); }
+    .roi-slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #e94560; cursor: pointer; border: none; box-shadow: 0 1px 4px rgba(233,69,96,0.35); }
+    .roi-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: #e8e8ec; }
     .roi-value { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-top: 4px; letter-spacing: -0.02em; }
     .roi-result-box { background: linear-gradient(135deg,#1a1a2e 0%,#0f3460 100%); border-radius: 12px; padding: 16px; margin: 14px 0; text-align: center; }
     .roi-result-label { font-size: 11px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
     .roi-result-amount { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.03em; }
     .roi-result-sub { font-size: 10.5px; color: rgba(255,255,255,0.45); margin-top: 4px; }
-    .roi-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .roi-breakdown { display: grid; grid-template-columns: 1fr 1fr; row-gap: 8px; column-gap: 8px; margin-bottom: 14px; }
     .roi-stat { background: #fff; border-radius: 9px; padding: 10px 12px; border: 1px solid #e8e8ec; }
     .roi-stat-label { font-size: 10px; color: #a0a0b0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
     .roi-stat-val { font-size: 15px; font-weight: 700; color: #111118; margin-top: 2px; }
@@ -157,13 +176,13 @@
     .case-badge { width: 38px; height: 38px; border-radius: 10px; background: #f0f0f8; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
     .case-title { font-size: 12.5px; font-weight: 700; color: #111118; }
     .case-industry { font-size: 10.5px; color: #a0a0b0; margin-top: 1px; }
-    .case-steps { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 0; }
-    .case-step { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-top: 1px solid #f0f0f4; }
+    .case-steps { padding: 0 14px 14px; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
+    .case-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; padding: 7px 0; border-top: 1px solid #f0f0f4; }
     .case-step:first-child { border-top: none; padding-top: 0; }
-    .case-arrow { font-size: 12px; color: #e94560; flex-shrink: 0; margin-top: 2px; }
+    .case-arrow { font-size: 12px; color: #e94560; -webkit-flex-shrink: 0; flex-shrink: 0; margin-top: 2px; margin-right: 10px; }
     .case-step-text { font-size: 11.5px; color: #6b6b7b; line-height: 1.45; }
-    .case-result { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border-radius: 8px; padding: 9px 12px; margin: 0 14px 14px; }
-    .case-result-icon { font-size: 14px; flex-shrink: 0; }
+    .case-result { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; background: #f0fdf4; border-radius: 8px; padding: 9px 12px; margin: 0 14px 14px; }
+    .case-result-icon { font-size: 14px; -webkit-flex-shrink: 0; flex-shrink: 0; margin-right: 8px; }
     .case-result-text { font-size: 11px; font-weight: 600; color: #166534; line-height: 1.4; }
 
     /* LEAD SUMMARY */
@@ -406,12 +425,19 @@
 
     <div id="samify-widget">
       <div class="sw-header" id="sw-header">
-        <button class="sw-back" id="sw-back" onclick="swGoHome()">‹</button>
-        <div class="sw-avatar">S</div>
-        <div>
-          <div class="sw-title" id="sw-header-title">Samify AI</div>
-          <div class="sw-status"><span class="sw-dot"></span> Online nu</div>
+        <div class="sw-header-left">
+          <button class="sw-back" id="sw-back" onclick="swGoHome()">‹</button>
+          <div class="sw-logo">
+            <span class="sw-logo-text">Samify</span>
+            <span class="sw-logo-dot"></span>
+          </div>
+          <div class="sw-divider"></div>
+          <div class="sw-header-sub">
+            <div class="sw-title" id="sw-header-title">AI &amp; Automation</div>
+            <div class="sw-status"><span class="sw-dot"></span><span class="sw-status-text">Online</span></div>
+          </div>
         </div>
+        <div class="sw-online-badge"><span class="sw-dot"></span></div>
       </div>
       <div class="sw-progress" id="sw-progress" style="display:none"><div class="sw-progress-fill" id="sw-progress-fill" style="width:0%"></div></div>
 
@@ -482,6 +508,12 @@
               <div class="chip" onclick="swSelectChip('size','1-9',this)"><div class="chip-label">1–9</div><div class="chip-sub">Mikro</div></div>
               <div class="chip" onclick="swSelectChip('size','10-49',this)"><div class="chip-label">10–49</div><div class="chip-sub">Liten</div></div>
               <div class="chip" onclick="swSelectChip('size','50-199',this)"><div class="chip-label">50–199</div><div class="chip-sub">Medel</div></div>
+            </div>
+
+            <div class="section-label" style="margin-top:12px;">Din e-postadress</div>
+            <div class="sw-email-wrap">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#a0a0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" id="qualify-email" class="sw-email-input" placeholder="din@email.se" oninput="swCheckQualify()" />
             </div>
 
             <button class="sw-btn sw-btn-primary" id="qualify-next-btn" onclick="swQualifyNext()" disabled style="margin-top:14px;">Nästa →</button>
@@ -657,7 +689,7 @@
   // ─────────────────────────────────────────────────────────────────────────
   //  NAVIGATION
   // ─────────────────────────────────────────────────────────────────────────
-  var expandScreens = ['sw-chat', 'sw-pricing'];
+  var expandScreens = ['sw-chat', 'sw-pricing', 'sw-qualify', 'sw-roi', 'sw-case'];
 
   function swToggle() {
     document.getElementById('samify-widget').classList.toggle('visible');
@@ -665,11 +697,15 @@
     swCloseTooltip();
   }
 
+  function swSetTitle(text) {
+    document.getElementById('sw-header-title').textContent = text;
+  }
+
   function swGoHome() {
     document.querySelectorAll('.sw-screen').forEach(function(s) { s.classList.remove('active','slide-in','slide-back'); });
     document.getElementById('sw-home').classList.add('active','slide-back');
     document.getElementById('sw-back').classList.remove('show');
-    document.getElementById('sw-header-title').textContent = 'Samify AI';
+    swSetTitle('AI & Automation');
     document.getElementById('samify-widget').classList.remove('expanded');
     document.getElementById('sw-progress').style.display = 'none';
   }
@@ -679,7 +715,7 @@
     var el = document.getElementById(screenId);
     el.classList.add('active','slide-in');
     document.getElementById('sw-back').classList.add('show');
-    document.getElementById('sw-header-title').textContent = title;
+    swSetTitle(title);
     document.getElementById('samify-widget').classList.toggle('expanded', expandScreens.indexOf(screenId) !== -1);
     document.getElementById('sw-progress').style.display = 'none';
   }
@@ -688,8 +724,8 @@
     document.querySelectorAll('.sw-screen').forEach(function(s) { s.classList.remove('active','slide-in'); });
     document.getElementById(screenId).classList.add('active','slide-in');
     document.getElementById('sw-back').classList.add('show');
-    document.getElementById('sw-header-title').textContent = title;
-    document.getElementById('samify-widget').classList.remove('expanded');
+    swSetTitle(title);
+    document.getElementById('samify-widget').classList.toggle('expanded', expandScreens.indexOf(screenId) !== -1);
     var prog = document.getElementById('sw-progress');
     prog.style.display = 'block';
     document.getElementById('sw-progress-fill').style.width = progressPct + '%';
@@ -699,9 +735,10 @@
   //  FLOW — START
   // ─────────────────────────────────────────────────────────────────────────
   function swStartFlow() {
-    leadData = { industry: null, size: null, roiHours: 10, roiRate: 500, roiPct: 60, roiSaving: 0 };
-    // Reset chips
+    leadData = { industry: null, size: null, email: '', roiHours: 10, roiRate: 500, roiPct: 60, roiSaving: 0 };
     document.querySelectorAll('#industry-chips .chip, #size-chips .chip').forEach(function(c){ c.classList.remove('selected'); });
+    var emailEl = document.getElementById('qualify-email');
+    if (emailEl) emailEl.value = '';
     document.getElementById('qualify-next-btn').disabled = true;
     swNavFlow('sw-qualify', 'Din AI-analys', 10);
   }
@@ -714,10 +751,17 @@
     document.querySelectorAll('#' + group + ' .chip').forEach(function(c){ c.classList.remove('selected'); });
     el.classList.add('selected');
     leadData[type] = value;
-    document.getElementById('qualify-next-btn').disabled = !(leadData.industry && leadData.size);
+    swCheckQualify();
+  }
+
+  function swCheckQualify() {
+    var email = (document.getElementById('qualify-email').value || '').trim();
+    var validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    document.getElementById('qualify-next-btn').disabled = !(leadData.industry && leadData.size && validEmail);
   }
 
   function swQualifyNext() {
+    leadData.email = (document.getElementById('qualify-email').value || '').trim();
     swCalcROI();
     swNavFlow('sw-roi', 'Din AI-analys', 45);
   }
@@ -794,29 +838,29 @@
   // ─────────────────────────────────────────────────────────────────────────
   //  ZAPIER WEBHOOK
   // ─────────────────────────────────────────────────────────────────────────
-function swSendToZapier() {
-  if (!ZAPIER_WEBHOOK_URL || ZAPIER_WEBHOOK_URL.indexOf('XXXXX') !== -1) return;
-  var data = industryData[leadData.industry] || industryData['ovrigt'];
-  var payload = {
-    timestamp:         new Date().toISOString(),
-    source:            window.location.href,
-    industry:          data.label,
-    industry_key:      leadData.industry,
-    company_size:      leadData.size,
-    manual_hours_week: leadData.roiHours,
-    hourly_rate:       leadData.roiRate,
-    automation_pct:    leadData.roiPct,
-    roi_annual_kr:     leadData.roiSaving,
-    roi_monthly_kr:    leadData.roiMonthly,
-    freed_hours_week:  leadData.roiWeekH
-  };
-  fetch(ZAPIER_WEBHOOK_URL, {
-    method: 'POST',
-    mode: 'no-cors',        // ← detta löser CORS
-    body: JSON.stringify(payload)
-    // ← ingen Content-Type header
-  }).catch(function() {});
-}
+  function swSendToZapier() {
+    if (!ZAPIER_WEBHOOK_URL || ZAPIER_WEBHOOK_URL.indexOf('XXXXX') !== -1) return;
+    var data = industryData[leadData.industry] || industryData['ovrigt'];
+    var payload = {
+      timestamp:         new Date().toISOString(),
+      source:            window.location.href,
+      email:             leadData.email || '',
+      industry:          data.label,
+      industry_key:      leadData.industry,
+      company_size:      leadData.size,
+      manual_hours_week: leadData.roiHours,
+      hourly_rate:      leadData.roiRate,
+      automation_pct:   leadData.roiPct,
+      roi_annual_kr:    leadData.roiSaving,
+      roi_monthly_kr:   leadData.roiMonthly,
+      freed_hours_week: leadData.roiWeekH
+    };
+    fetch(ZAPIER_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(function() {}); // Silent fail
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   //  BOOK WITH DATA (pre-fill Calendly + send Zapier)
@@ -891,6 +935,7 @@ function swSendToZapier() {
   window.swNav              = swNav;
   window.swStartFlow        = swStartFlow;
   window.swSelectChip       = swSelectChip;
+  window.swCheckQualify     = swCheckQualify;
   window.swQualifyNext      = swQualifyNext;
   window.swCalcROI          = swCalcROI;
   window.swRoiNext          = swRoiNext;
