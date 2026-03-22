@@ -65,7 +65,7 @@
     .sw-back.show { display: -webkit-flex; display: flex; }
     .sw-back:hover { background: rgba(255,255,255,0.18); }
     .sw-logo { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; }
-    .sw-logo-text { font-family: 'Montserrat', sans-serif !important; font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1; }
+    .sw-logo-text { font-family: 'Montserrat', sans-serif !important; font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.12em; line-height: 1; }
     .sw-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #7c3aed; margin-left: 2px; margin-bottom: 8px; flex-shrink: 0; }
     .sw-divider { width: 1px; height: 26px; background: rgba(255,255,255,0.18); margin: 0 14px; flex-shrink: 0; }
     .sw-header-sub { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }
