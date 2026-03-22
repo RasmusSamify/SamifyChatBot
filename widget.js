@@ -264,7 +264,16 @@
     #sw-chat zapier-interfaces-chatbot-embed { flex: 1; width: 100% !important; height: 100% !important; border: none; display: block; }
 
     /* TOOLTIP */
-    #samify-tooltip { position: fixed; bottom: 100px; right: 24px; background: #1a1a2e; color: #fff; padding: 16px 20px 16px 16px; border-radius: 16px 16px 4px 16px; font-size: 14px; font-weight: 500; line-height: 1.6; max-width: 260px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.18); opacity: 0; transform: translateY(8px) scale(0.95); transition: opacity 0.3s ease, transform 0.3s ease; z-index: 9999; pointer-events: all; }
+    /* NUDGE BANNER */
+    #sw-nudge-banner { display: none; background: linear-gradient(135deg,#1a1a2e 0%,#0f3460 100%); border-radius: 10px; padding: 10px 12px; margin: 0 0 10px; -webkit-align-items: center; align-items: center; -webkit-justify-content: space-between; justify-content: space-between; }
+    #sw-nudge-banner.show { display: -webkit-flex; display: flex; animation: swSlideIn 0.28s ease forwards; }
+    .nudge-banner-text { font-size: 11px; color: #fff; font-weight: 500; line-height: 1.45; -webkit-flex: 1; flex: 1; }
+    .nudge-banner-btn { background: #e94560; border: none; border-radius: 7px; padding: 6px 11px; font-size: 10.5px; font-weight: 700; color: #fff; cursor: pointer; white-space: nowrap; margin-left: 10px; font-family: 'Montserrat', sans-serif !important; transition: opacity 0.15s; flex-shrink: 0; }
+    .nudge-banner-btn:hover { opacity: 0.85; }
+    .nudge-banner-x { color: rgba(255,255,255,0.4); font-size: 14px; cursor: pointer; margin-left: 8px; background: none; border: none; line-height: 1; padding: 0; flex-shrink: 0; }
+    .nudge-banner-x:hover { color: #fff; }
+
+        #samify-tooltip { position: fixed; bottom: 100px; right: 24px; background: #1a1a2e; color: #fff; padding: 16px 20px 16px 16px; border-radius: 16px 16px 4px 16px; font-size: 14px; font-weight: 500; line-height: 1.6; max-width: 260px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.18); opacity: 0; transform: translateY(8px) scale(0.95); transition: opacity 0.3s ease, transform 0.3s ease; z-index: 9999; pointer-events: all; }
     #samify-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
     #samify-tooltip::after { content: ''; position: absolute; bottom: -8px; right: 20px; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 8px solid #1a1a2e; }
     #samify-tooltip-close { position: absolute; top: 6px; right: 8px; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 13px; line-height: 1; padding: 0; }
@@ -457,6 +466,11 @@
         <!-- HOME -->
         <div class="sw-screen active" id="sw-home">
           <div class="home-body">
+            <div id="sw-nudge-banner">
+              <span class="nudge-banner-text">Vill du se vad AI kan spara er?</span>
+              <button class="nudge-banner-btn" onclick="swNudgeCTA()">Beräkna →</button>
+              <button class="nudge-banner-x" onclick="swHideNudgeBanner()">✕</button>
+            </div>
             <div class="home-greeting">Hej! Hur kan vi hjälpa dig idag? Välj ett alternativ eller chatta direkt med oss.</div>
             <div class="home-grid">
               <div class="home-card wide" onclick="swNav('sw-chat','Chatta med oss')">
@@ -961,14 +975,42 @@
   var swActiveNudge = null;
 
   function swShowNudge(nudge) {
-    if (swNudgeShown || swWidgetOpened) return;
+    if (swNudgeShown) return;
     swNudgeShown = true;
     swActiveNudge = nudge;
-    var t = document.getElementById('samify-tooltip');
-    if (!t) return;
-    t.style.display = '';
-    t.classList.add('show');
-    swTypewriteTooltip(nudge.msg);
+    var widgetOpen = document.getElementById('samify-widget').classList.contains('visible');
+    if (widgetOpen) {
+      // Widget is open — show banner inside home screen
+      swShowNudgeBanner(nudge);
+    } else {
+      // Widget is closed — show tooltip above launcher
+      var t = document.getElementById('samify-tooltip');
+      if (!t) return;
+      t.style.display = '';
+      t.classList.add('show');
+      swTypewriteTooltip(nudge.msg);
+    }
+  }
+
+  function swShowNudgeBanner(nudge) {
+    // Make sure we're on home screen
+    var home = document.getElementById('sw-home');
+    var banner = document.getElementById('sw-nudge-banner');
+    if (!banner) return;
+    // Update text based on nudge
+    var textEl = banner.querySelector('.nudge-banner-text');
+    if (textEl) textEl.textContent = nudge.msg || 'Vill du se vad AI kan spara er?';
+    banner.classList.add('show');
+  }
+
+  function swHideNudgeBanner() {
+    var banner = document.getElementById('sw-nudge-banner');
+    if (banner) banner.classList.remove('show');
+  }
+
+  function swNudgeCTA() {
+    swHideNudgeBanner();
+    swStartFlow();
   }
 
   function swTypewriteTooltip(msg) {
@@ -994,6 +1036,9 @@
     swWidgetOpened = true;
     if (swActiveNudge && swActiveNudge.action === 'roi') {
       setTimeout(function() { swStartFlow(); }, 350);
+    } else if (swActiveNudge) {
+      // Tooltip was showing — switch to banner inside widget
+      setTimeout(function() { swShowNudgeBanner(swActiveNudge); }, 400);
     }
   }
 
@@ -1059,5 +1104,8 @@
   window.swOpenCalendlyPopup = swOpenCalendlyPopup;
   window.swCloseTooltip     = swCloseTooltip;
   window.swTypewriteTooltip = swTypewriteTooltip;
+  window.swShowNudgeBanner  = swShowNudgeBanner;
+  window.swHideNudgeBanner  = swHideNudgeBanner;
+  window.swNudgeCTA         = swNudgeCTA;
   window.swOpenFromTooltip  = swOpenFromTooltip;
 })();
