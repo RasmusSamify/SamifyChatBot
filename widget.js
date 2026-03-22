@@ -4,7 +4,7 @@
   // ─────────────────────────────────────────────
   //  ⚙️  KONFIGURATION — byt ut dessa värden
   // ─────────────────────────────────────────────
-  var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/XXXXX/XXXXXXX/';
+  var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/25909526/upqo7s5/';
   var CALENDLY_URL       = 'https://calendly.com/samify-info';
   // ─────────────────────────────────────────────
 
