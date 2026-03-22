@@ -33,7 +33,19 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
       transition: transform 0.2s, background 0.2s;
       z-index: 9999;
+      overflow: hidden;
     }
+    #samify-launcher::after {
+      content: '';
+      position: absolute;
+      top: -60%; left: -80%;
+      width: 50%; height: 220%;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
+      transform: skewX(-15deg);
+      animation: swShimmer 4s ease-in-out infinite;
+    }
+    @keyframes swShimmer { 0%,70%{left:-80%} 85%{left:140%} 100%{left:140%} }
+    @keyframes swBlink { 0%,100%{opacity:1} 50%{opacity:0} }
     #samify-launcher:hover { transform: scale(1.07); background: #0f3460; }
     #samify-launcher.open .si-chat { display: none; }
     #samify-launcher.open .si-close { display: block !important; }
@@ -675,7 +687,7 @@
 
     <div id="samify-tooltip" onclick="swOpenFromTooltip()">
       <button id="samify-tooltip-close" onclick="event.stopPropagation();swCloseTooltip()">✕</button>
-      Hej! Kul att du hittat till Samify — ställ gärna några frågor till mig om du undrar över något!
+      <span id="samify-tooltip-text"></span><span id="samify-tooltip-cursor" style="display:inline-block;width:1.5px;height:12px;background:rgba(255,255,255,0.8);margin-left:2px;vertical-align:middle;animation:swBlink 0.7s step-end infinite;">​</span>
     </div>
   `;
   document.body.appendChild(wrap);
@@ -922,8 +934,27 @@
 
   setTimeout(function() {
     var t = document.getElementById('samify-tooltip');
-    if (t) t.classList.add('show');
-  }, 400);
+    if (t) {
+      t.classList.add('show');
+      swTypewriteTooltip();
+    }
+  }, 600);
+
+  function swTypewriteTooltip() {
+    var msg = 'Hej! Hur kan vi hjälpa dig idag?';
+    var el = document.getElementById('samify-tooltip-text');
+    if (!el) return;
+    el.textContent = '';
+    var i = 0;
+    function type() {
+      if (i < msg.length) {
+        el.textContent += msg[i];
+        i++;
+        setTimeout(type, 42 + Math.random() * 28);
+      }
+    }
+    setTimeout(type, 300);
+  }
 
   // Init ROI display
   swCalcROI();
@@ -944,5 +975,6 @@
   window.swOpenCalendly     = swOpenCalendly;
   window.swOpenCalendlyPopup = swOpenCalendlyPopup;
   window.swCloseTooltip     = swCloseTooltip;
+  window.swTypewriteTooltip = swTypewriteTooltip;
   window.swOpenFromTooltip  = swOpenFromTooltip;
 })();
