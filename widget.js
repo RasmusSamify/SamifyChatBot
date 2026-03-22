@@ -97,8 +97,8 @@
     .home-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 12px; padding: 14px 12px; display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; text-align: center; transition: background 0.15s, border-color 0.15s, transform 0.1s; }
     .home-card:hover { background: #f0f0f8; border-color: #1a1a2e; transform: translateY(-1px); }
     .home-card:active { transform: scale(0.97); }
-    .home-card.wide { grid-column: span 2; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 14px 16px; text-align: left; background: #1a1a2e; border-color: #1a1a2e; }
-    .home-card.wide:hover { background: #0f3460; border-color: #0f3460; }
+    .home-card.wide { grid-column: span 2; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 14px 16px; text-align: left; background: linear-gradient(135deg,#1a1a2e 0%,#0f3460 100%); border-color: transparent; }
+    .home-card.wide:hover { background: linear-gradient(135deg,#0f3460 0%,#1a1a2e 100%); border-color: transparent; opacity: 0.92; }
     .home-card.wide .card-label { color: #fff; }
     .home-card.wide .card-sub { color: rgba(255,255,255,0.55); }
     .home-card.wide .card-icon-wrap { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -428,8 +428,7 @@
         <div class="sw-header-left">
           <button class="sw-back" id="sw-back" onclick="swGoHome()">‹</button>
           <div class="sw-logo">
-            <span class="sw-logo-text">Samify</span>
-            <span class="sw-logo-dot"></span>
+            <img src="https://samify.se/wp-content/uploads/go-x/u/7c566770-2e09-4b98-98b8-c4afcbbeeeaa/image-160x62.png" alt="Samify" style="height:22px;width:auto;display:block;filter:brightness(0) invert(1);" />
           </div>
           <div class="sw-divider"></div>
           <div class="sw-header-sub">
