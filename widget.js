@@ -863,10 +863,11 @@
   // ─────────────────────────────────────────────────────────────────────────
   //  ZAPIER WEBHOOK
   // ─────────────────────────────────────────────────────────────────────────
-  function swSendToZapier() {
+  async function swSendToZapier() {
     if (!ZAPIER_WEBHOOK_URL || ZAPIER_WEBHOOK_URL.indexOf('XXXXX') !== -1) return;
+    
     var data = industryData[leadData.industry] || industryData['ovrigt'];
-    var params = new URLSearchParams({
+    var payload = {
       timestamp:         new Date().toISOString(),
       source:            window.location.href,
       email:             leadData.email || '',
@@ -879,11 +880,21 @@
       roi_annual_kr:     leadData.roiSaving,
       roi_monthly_kr:    leadData.roiMonthly || 0,
       freed_hours_week:  leadData.roiWeekH || 0
-    });
-    fetch(ZAPIER_WEBHOOK_URL + '?' + params.toString(), {
-      method: 'GET',
-      mode: 'no-cors'
-    }).catch(function() {});
+    };
+
+    try {
+      // Vi använder fetch med 'keepalive' så att anropet slutförs även om widgeten ändrar status
+      await fetch(ZAPIER_WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true 
+      });
+      console.log('Analys skickad till Zapier');
+    } catch (err) {
+      console.error('Kunde inte skicka till Zapier:', err);
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
