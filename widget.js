@@ -864,28 +864,26 @@
   //  ZAPIER WEBHOOK
   // ─────────────────────────────────────────────────────────────────────────
   function swSendToZapier() {
-    if (!ZAPIER_WEBHOOK_URL || ZAPIER_WEBHOOK_URL.indexOf('XXXXX') !== -1) return;
-    var data = industryData[leadData.industry] || industryData['ovrigt'];
-    var payload = {
-      timestamp:         new Date().toISOString(),
-      source:            window.location.href,
-      email:             leadData.email || '',
-      industry:          data.label,
-      industry_key:      leadData.industry,
-      company_size:      leadData.size,
-      manual_hours_week: leadData.roiHours,
-      hourly_rate:      leadData.roiRate,
-      automation_pct:   leadData.roiPct,
-      roi_annual_kr:    leadData.roiSaving,
-      roi_monthly_kr:   leadData.roiMonthly,
-      freed_hours_week: leadData.roiWeekH
-    };
-    fetch(ZAPIER_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).catch(function() {}); // Silent fail
-  }
+  if (!ZAPIER_WEBHOOK_URL || ZAPIER_WEBHOOK_URL.indexOf('XXXXX') !== -1) return;
+  var data = industryData[leadData.industry] || industryData['ovrigt'];
+  var params = new URLSearchParams({
+    timestamp:         new Date().toISOString(),
+    source:            window.location.href,
+    email:             leadData.email || '',
+    industry:          data.label,
+    industry_key:      leadData.industry || '',
+    company_size:      leadData.size || '',
+    manual_hours_week: leadData.roiHours,
+    hourly_rate:       leadData.roiRate,
+    automation_pct:    leadData.roiPct,
+    roi_annual_kr:     leadData.roiSaving,
+    roi_monthly_kr:    leadData.roiMonthly || 0,
+    freed_hours_week:  leadData.roiWeekH || 0
+  });
+  // GET via image pixel — ingen CORS, ingen preflight
+  var img = new Image();
+  img.src = ZAPIER_WEBHOOK_URL + '?' + params.toString();
+}
 
   // ─────────────────────────────────────────────────────────────────────────
   //  BOOK WITH DATA (pre-fill Calendly + send Zapier)
