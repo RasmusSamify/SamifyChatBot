@@ -4,6 +4,9 @@ import cssInjectedByJs from 'vite-plugin-css-injected-by-js'
 
 export default defineConfig({
   plugins: [react(), cssInjectedByJs()],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  },
   build: {
     lib: {
       entry: 'src/main.jsx',
