@@ -833,20 +833,32 @@ function ContactScreen() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [state, setState] = useState('idle') // idle | sending | ok | error
+  const [errDetail, setErrDetail] = useState('')
 
   async function submit(e) {
     e.preventDefault()
     if (!email.trim() || !message.trim() || state === 'sending') return
     setState('sending')
+    setErrDetail('')
     try {
       const res = await fetch(API_LEAD, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ name, company, email, message }),
       })
-      const data = await res.json()
-      setState(data.ok ? 'ok' : 'error')
-    } catch {
+      let data = null
+      try { data = await res.json() } catch {}
+      if (res.ok && data?.ok) {
+        setState('ok')
+      } else {
+        const reason = data?.error || `HTTP ${res.status}`
+        console.error('[Samify] /api/lead misslyckades:', res.status, data)
+        setErrDetail(reason)
+        setState('error')
+      }
+    } catch (err) {
+      console.error('[Samify] /api/lead nätverksfel:', err)
+      setErrDetail(err?.message || 'network')
       setState('error')
     }
   }
@@ -884,7 +896,14 @@ function ContactScreen() {
         {state === 'error' && (
           <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 p-3 text-[12px] text-rose-200 flex items-start gap-2">
             <AlertCircle size={14} className="mt-0.5 shrink-0" />
-            Det gick inte att skicka just nu. Testa igen, eller mejla <a href={`mailto:${CONTACT_EMAIL}`} className="underline font-semibold text-[var(--purple-soft)] hover:text-[var(--bone)] transition">{CONTACT_EMAIL}</a>.
+            <div>
+              Det gick inte att skicka just nu. Testa igen, eller mejla <a href={`mailto:${CONTACT_EMAIL}`} className="underline font-semibold text-[var(--purple-soft)] hover:text-[var(--bone)] transition">{CONTACT_EMAIL}</a>.
+              {errDetail && (
+                <div className="mt-1.5 text-[10.5px] text-rose-300/70 font-mono tracking-tight">
+                  fel: {errDetail}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
