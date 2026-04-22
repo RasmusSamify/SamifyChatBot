@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 
 const API_CHAT = '/api/chat'
-const API_LEAD = '/api/lead'
+const API_LEAD = '/api/contact'
 const CONTACT_EMAIL = 'info@samify.se'
 
 const styles = `

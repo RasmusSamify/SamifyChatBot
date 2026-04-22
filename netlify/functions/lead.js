@@ -72,4 +72,4 @@ function jsonResponse(data, status = 200) {
   })
 }
 
-export const config = { path: '/api/lead' }
+export const config = { path: ['/api/contact', '/api/lead'] }
