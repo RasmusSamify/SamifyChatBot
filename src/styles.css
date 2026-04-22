@@ -7,6 +7,11 @@
   #samify-widget-root * {
     box-sizing: border-box;
   }
+  #samify-widget-root {
+    font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   #samify-widget-root button {
     background: transparent;
     border: 0;
