@@ -2,769 +2,97 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Samify — AI-kollegor för svenska SMB</title>
-  <meta name="description" content="Samify bygger AI-kollegor för svenska SMB: chatbottar, CRM, integrationer, RAG och automationer. Kartläggning, prototyp, driftsättning.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Samify — AI-kollega</title>
+  <meta name="description" content="Samify · AI-kollegor för svenska SMB. Chatta, räkna besparing, boka demo — allt här.">
   <style>
-    :root {
-      --ink:        #1C1A17;
-      --ink-2:      #0E0C0A;
-      --bone:       #F6F2EE;
-      --bone-2:     #EFE9E2;
-      --bone-3:     #E6DFD5;
-      --gold:       #B5844A;
-      --gold-soft:  #D4B07A;
-      --purple:     #7c3aed;
-      --purple-soft:#a78bfa;
-    }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
+    html, body { height: 100%; background: #0E0C0A; }
     body {
       font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: var(--bone);
-      color: var(--ink);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
+      color: #F6F2EE;
+      overflow: hidden;
+      position: relative;
     }
-
-    img, svg { display: block; max-width: 100%; }
-
-    .serif  { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
-    .italic { font-style: italic; }
-
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
-
-    .noise {
-      pointer-events: none;
+    .stage {
       position: fixed; inset: 0; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 180px;
-      opacity: .4;
-      mix-blend-mode: multiply;
+      background:
+        radial-gradient(1000px 600px at 18% 20%, rgba(124,58,237,.22), transparent 60%),
+        radial-gradient(900px 500px at 82% 80%, rgba(181,132,74,.16), transparent 60%),
+        radial-gradient(700px 500px at 50% 50%, rgba(124,58,237,.08), transparent 70%),
+        #0E0C0A;
     }
-
-    /* ── NAV ── */
-    .nav {
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(246,242,238,.75);
-      border-bottom: 1px solid rgba(28,26,23,.08);
-    }
-    .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 32px; max-width: 1200px; margin: 0 auto;
-    }
-    .logo {
-      display: inline-flex; align-items: baseline; gap: 4px;
-      font-weight: 800; font-size: 18px; letter-spacing: -0.01em;
-    }
-    .logo-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--purple);
-      transform: translateY(-6px);
-    }
-    .nav-links {
-      display: none; gap: 28px;
-      font-size: 13px; font-weight: 500;
-    }
-    .nav-links a {
-      color: var(--ink); text-decoration: none; opacity: .7;
-      transition: opacity .2s;
-    }
-    .nav-links a:hover { opacity: 1; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 18px;
-      border: 0; cursor: pointer;
-      font-family: inherit;
-      font-size: 13px; font-weight: 600; letter-spacing: -0.005em;
-      border-radius: 999px;
-      transition: transform .15s ease, background .2s, color .2s, box-shadow .2s;
-    }
-    .btn-dark {
-      background: var(--ink); color: var(--bone);
-    }
-    .btn-dark:hover {
-      background: var(--purple);
-      transform: translateY(-1px);
-      box-shadow: 0 10px 24px -10px rgba(124,58,237,.55);
-    }
-    .btn-ghost {
-      background: transparent; color: var(--ink);
-      border: 1px solid rgba(28,26,23,.18);
-    }
-    .btn-ghost:hover {
-      background: rgba(28,26,23,.05);
-      border-color: var(--ink);
-    }
-
-    @media (min-width: 900px) {
-      .nav-links { display: inline-flex; }
-    }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto;
-      padding: 80px 32px 100px;
-    }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 6px 14px;
-      border: 1px solid rgba(28,26,23,.14);
-      background: rgba(255,255,255,.5);
-      backdrop-filter: blur(8px);
-      border-radius: 999px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-    }
-    .eyebrow::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--purple);
-      box-shadow: 0 0 12px rgba(124,58,237,.8);
-    }
-    .hero h1 {
-      font-family: 'Instrument Serif', serif;
-      font-weight: 400;
-      font-size: clamp(52px, 9vw, 104px);
-      line-height: .95;
-      letter-spacing: -0.02em;
-      margin-bottom: 28px;
-    }
-    .hero h1 .accent { color: var(--gold); font-style: italic; }
-    .hero p {
-      max-width: 580px;
-      font-size: clamp(16px, 1.4vw, 18px);
-      line-height: 1.6;
-      color: rgba(28,26,23,.72);
-      margin-bottom: 36px;
-    }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .hero-meta {
-      position: absolute; top: 100px; right: 32px;
-      text-align: right;
-      display: none;
-    }
-    .hero-meta .small {
-      font-family: 'Instrument Serif', serif; font-style: italic;
-      font-size: 15px; color: rgba(28,26,23,.55); margin-bottom: 4px;
-    }
-    .hero-meta .place {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
-      text-transform: uppercase; color: rgba(28,26,23,.45);
-    }
-    @media (min-width: 1024px) { .hero-meta { display: block; } }
-
-    /* ── SECTION ── */
-    .section { position: relative; z-index: 1; padding: 100px 0; }
-    .section-head { max-width: 720px; margin-bottom: 56px; }
-    .kicker {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
-      text-transform: uppercase; color: var(--purple);
-      margin-bottom: 14px;
-    }
-    .section-head h2 {
-      font-family: 'Instrument Serif', serif; font-weight: 400;
-      font-size: clamp(36px, 5vw, 56px);
-      line-height: 1.05; letter-spacing: -0.015em;
-    }
-    .section-head h2 .accent { color: var(--gold); font-style: italic; }
-    .section-head p {
-      margin-top: 18px;
-      font-size: 16px; color: rgba(28,26,23,.7);
-      max-width: 560px;
-    }
-
-    /* ── SERVICES GRID ── */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      position: relative;
-      padding: 28px 26px 26px;
-      border-radius: 20px;
-      background: #fff;
-      border: 1px solid rgba(28,26,23,.07);
-      box-shadow: 0 1px 2px rgba(28,26,23,.03);
-      transition: transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .35s, border-color .2s;
-      overflow: hidden;
-    }
-    .card::before {
+    .stage::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(500px 200px at 0% 0%, rgba(124,58,237,.06), transparent 60%);
-      opacity: 0; transition: opacity .35s;
+      background-image: repeating-linear-gradient(135deg,
+        rgba(246,242,238,.025) 0 1px,
+        transparent 1px 16px);
       pointer-events: none;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 24px 48px -16px rgba(28,26,23,.18);
-      border-color: rgba(124,58,237,.25);
+    .stage::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 220px;
+      opacity: .5;
+      mix-blend-mode: overlay;
+      pointer-events: none;
     }
-    .card:hover::before { opacity: 1; }
-    .card-icon {
-      width: 44px; height: 44px;
-      display: grid; place-items: center;
-      background: rgba(124,58,237,.08);
-      color: var(--purple);
-      border-radius: 12px;
-      margin-bottom: 20px;
+    .mark {
+      position: fixed; z-index: 1;
+      top: 28px; left: 32px;
+      display: inline-flex; align-items: baseline; gap: 4px;
+      font-weight: 800; font-size: 16px; letter-spacing: -0.01em;
+      color: rgba(246,242,238,.9);
     }
-    .card h3 {
-      font-size: 17px; font-weight: 700; letter-spacing: -0.005em;
-      margin-bottom: 8px;
+    .mark::after {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: #7c3aed; transform: translateY(-5px);
     }
-    .card p {
-      font-size: 13.5px; line-height: 1.55;
-      color: rgba(28,26,23,.66);
+    .corner {
+      position: fixed; z-index: 1;
+      bottom: 28px; left: 32px;
+      font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; font-weight: 700;
+      color: rgba(246,242,238,.35);
     }
-    .card .tag {
-      margin-top: 16px;
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--gold);
-    }
-
-    /* ── METHOD (tabs) ── */
-    .method { background: var(--ink-2); color: var(--bone); }
-    .method .section-head h2 { color: var(--bone); }
-    .method .kicker { color: var(--gold-soft); }
-    .method .section-head p { color: rgba(246,242,238,.65); }
-
-    .tabs {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      padding: 8px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      margin-bottom: 28px;
-    }
-    .tab {
-      flex: 1 1 auto; min-width: 200px;
-      padding: 14px 18px;
-      border: 0; cursor: pointer;
-      background: transparent;
-      color: rgba(246,242,238,.6);
-      font-family: inherit;
-      font-size: 13px; font-weight: 600;
-      text-align: left;
-      border-radius: 10px;
-      transition: color .2s, background .3s;
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    .tab .step-num {
-      font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em;
-      color: rgba(246,242,238,.4);
-    }
-    .tab:hover { color: var(--bone); background: rgba(255,255,255,.03); }
-    .tab[aria-selected="true"] {
-      background: var(--bone);
-      color: var(--ink);
-    }
-    .tab[aria-selected="true"] .step-num { color: var(--purple); }
-
-    .tabpanel {
-      padding: 40px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 20px;
-      display: none;
-    }
-    .tabpanel.is-active { display: grid; }
-    .tabpanel {
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-    @media (min-width: 860px) {
-      .tabpanel { grid-template-columns: 1.1fr 1fr; gap: 56px; }
-    }
-    .tabpanel h3 {
-      font-family: 'Instrument Serif', serif; font-weight: 400;
-      font-size: 34px; line-height: 1.1; letter-spacing: -0.01em;
-      margin-bottom: 16px;
-    }
-    .tabpanel h3 .accent { color: var(--gold-soft); font-style: italic; }
-    .tabpanel p {
-      font-size: 15px; line-height: 1.65;
-      color: rgba(246,242,238,.72);
-      margin-bottom: 22px;
-    }
-    .bullets { list-style: none; display: grid; gap: 12px; }
-    .bullets li {
-      display: grid; grid-template-columns: 22px 1fr; gap: 12px;
-      font-size: 13.5px; line-height: 1.5;
-      color: rgba(246,242,238,.8);
-    }
-    .bullets svg { color: var(--purple-soft); margin-top: 2px; }
-
-    .meta-box {
-      border-left: 1px solid rgba(255,255,255,.1);
-      padding-left: 32px;
-      display: grid; gap: 22px; align-content: start;
-    }
-    .meta-row .label {
-      font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em;
-      text-transform: uppercase; color: rgba(246,242,238,.5);
-      margin-bottom: 6px;
-    }
-    .meta-row .value {
-      font-family: 'Instrument Serif', serif;
-      font-size: 24px; line-height: 1.1; color: var(--bone);
-    }
-
-    /* ── CASES ── */
-    .cases { background: var(--bone-2); }
-    .cases-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
-    }
-    .case {
-      position: relative;
-      padding: 28px 26px;
-      border-radius: 20px;
-      background: var(--ink-2);
-      color: var(--bone);
-      overflow: hidden;
-      transition: transform .35s;
-    }
-    .case:hover { transform: translateY(-4px); }
-    .case.muted {
-      background: transparent;
-      border: 1px dashed rgba(28,26,23,.2);
-      color: var(--ink);
-    }
-    .case-tag {
-      display: inline-block;
-      padding: 4px 10px;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      background: rgba(181,132,74,.18);
-      color: var(--gold-soft);
-      margin-bottom: 18px;
-    }
-    .case.muted .case-tag {
-      background: rgba(28,26,23,.06);
-      color: rgba(28,26,23,.55);
-    }
-    .case h3 {
-      font-family: 'Instrument Serif', serif; font-weight: 400;
-      font-size: 28px; line-height: 1.1; letter-spacing: -0.01em;
-      margin-bottom: 10px;
-    }
-    .case p {
-      font-size: 13.5px; line-height: 1.55;
-      color: rgba(246,242,238,.7);
-      margin-bottom: 18px;
-    }
-    .case.muted p { color: rgba(28,26,23,.6); }
-    .case .stack {
-      display: flex; flex-wrap: wrap; gap: 6px;
-    }
-    .chip {
-      padding: 4px 10px;
-      font-size: 11px; font-weight: 500;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      color: rgba(246,242,238,.75);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-    .case.muted .chip {
-      background: rgba(28,26,23,.04);
-      color: rgba(28,26,23,.55);
-      border-color: rgba(28,26,23,.1);
-    }
-
-    /* ── CTA ── */
-    .cta {
-      padding: 110px 0;
+    .hint {
+      position: fixed; z-index: 1;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
       text-align: center;
+      font-family: 'Instrument Serif', Georgia, serif;
+      color: rgba(246,242,238,.35);
+      pointer-events: none;
     }
-    .cta h2 {
-      font-family: 'Instrument Serif', serif; font-weight: 400;
-      font-size: clamp(44px, 7vw, 76px); line-height: 1;
-      letter-spacing: -0.02em;
-      margin-bottom: 20px;
+    .hint .big {
+      font-size: clamp(28px, 5vw, 48px);
+      font-style: italic;
+      line-height: 1;
     }
-    .cta h2 .accent { color: var(--gold); font-style: italic; }
-    .cta p {
-      max-width: 520px; margin: 0 auto 32px;
-      font-size: 16px; color: rgba(28,26,23,.7);
+    .hint .small {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px; letter-spacing: 0.3em;
+      text-transform: uppercase; font-weight: 700;
+      color: rgba(246,242,238,.28);
     }
-    .cta .actions {
-      display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 12px;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 32px;
-      border-top: 1px solid rgba(28,26,23,.08);
-      display: flex; flex-wrap: wrap;
-      align-items: center; justify-content: space-between;
-      gap: 14px;
-      font-size: 11px; letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(28,26,23,.45);
-      font-weight: 600;
-    }
-
     @media (max-width: 640px) {
-      .hero { padding: 56px 24px 72px; }
-      .section { padding: 72px 0; }
-      .container { padding: 0 20px; }
-      .tabpanel { padding: 28px; }
-      .meta-box { border-left: 0; padding-left: 0; border-top: 1px solid rgba(255,255,255,.1); padding-top: 24px; }
+      .mark   { top: 20px; left: 20px; }
+      .corner { bottom: 20px; left: 20px; }
     }
   </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="noise"></div>
-
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#" class="logo">
-        Samify<span class="logo-dot"></span>
-      </a>
-      <div class="nav-links">
-        <a href="#tjanster">Tjänster</a>
-        <a href="#metoden">Metoden</a>
-        <a href="#arbete">Arbete</a>
-        <a href="#kontakt">Kontakt</a>
-      </div>
-      <button class="btn btn-dark" data-open-chat>
-        Boka demo
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </button>
-    </div>
-  </nav>
-
-  <header class="hero">
-    <span class="eyebrow">AI-kollegor · Editionen 2026</span>
-    <h1 class="serif">
-      Propplösare<br>
-      <span class="accent">för flaskhalsar.</span>
-    </h1>
-    <p>
-      Ni har inte för lite folk — ni har för många manuella steg. Samify bygger AI-kollegor
-      som tar bort dem. Möt en av dem i hörnet nere till höger →
-    </p>
-    <div class="hero-actions">
-      <button class="btn btn-dark" data-open-chat>
-        Prata med Samify
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </button>
-      <a href="#tjanster" class="btn btn-ghost">Se vad vi bygger</a>
-    </div>
-    <div class="hero-meta">
-      <div class="small">— en liten demo —</div>
-      <div class="place">Kalmar · Sverige</div>
-    </div>
-  </header>
-
-  <section id="tjanster" class="section">
-    <div class="container">
-      <div class="section-head">
-        <div class="kicker">Tjänster · 01</div>
-        <h2>Vad <span class="accent">vi bygger</span></h2>
-        <p>
-          Sex sätt att ta bort manuella steg i verksamheten. Ingen teknikjargong — bara
-          färre mejl, snabbare svar, och kollegor som slipper upprepa sig.
-        </p>
-      </div>
-
-      <div class="services-grid">
-        <article class="card">
-          <div class="card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <h3>Chatbottar &amp; intranät-AI</h3>
-          <p>AI-kollegor som svarar kunder, guidar medarbetare och bokar möten — dygnet runt, på svenska.</p>
-          <span class="tag">Widget · RAG · Handoff</span>
-        </article>
-
-        <article class="card">
-          <div class="card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <h3>Samify CRM</h3>
-          <p>Ett CRM som faktiskt stannar i bruk: byggt för svenska SMB, lätt att ta in, tungt på automation.</p>
-          <span class="tag">Supabase · React · Svenska</span>
-        </article>
-
-        <article class="card">
-          <div class="card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/><path d="M11 8v6"/></svg>
-          </div>
-          <h3>RAG &amp; kunskapsbas</h3>
-          <p>Sök i era policies, offerter och handböcker med naturligt språk. Svar med källor — inga hallucinationer.</p>
-          <span class="tag">Vektorsök · Citeringar · GDPR</span>
-        </article>
-
-        <article class="card">
-          <div class="card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
-          <h3>Integrationer</h3>
-          <p>Vi kopplar ihop det ni redan har: Fortnox, HubSpot, Zapier, Google Workspace, Teams, Slack.</p>
-          <span class="tag">Zapier · API · Webhooks</span>
-        </article>
-
-        <article class="card">
-          <div class="card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 11h4a2 2 0 0 1 2 2v5"/><path d="M9 11V6a2 2 0 0 1 2-2h4"/></svg>
-          </div>
-          <h3>Automationer</h3>
-          <p>Mejl-triage, lead-scoring, uppföljning och rapporter — bryt de manuella stegen som stjäl er bästa tid.</p>
-          <span class="tag">Triggers · Flöden · KPI</span>
-        </article>
-
-        <article class="card">
-          <div class="card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a1.724 1.724 0 0 0 2.573 1.066 1.724 1.724 0 0 1 2.573 2.573A1.724 1.724 0 0 0 18.21 9.17a1.724 1.724 0 0 1 0 2.66 1.724 1.724 0 0 0-1.064 2.573 1.724 1.724 0 0 1-2.573 2.573A1.724 1.724 0 0 0 12 20.042a1.724 1.724 0 0 1-2.573-1.066 1.724 1.724 0 0 0-2.573-1.066 1.724 1.724 0 0 1-2.573-2.573A1.724 1.724 0 0 0 5.79 11.83a1.724 1.724 0 0 1 0-2.66A1.724 1.724 0 0 0 4.281 6.64a1.724 1.724 0 0 1 2.573-2.573A1.724 1.724 0 0 0 9.427 3 1.724 1.724 0 0 1 12 3z"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <h3>AI-agenter</h3>
-          <p>Röst, bokning, triage, handoff. Agenter som kan fatta beslut, eskalera rätt och lämna rena spår.</p>
-          <span class="tag">Röst · Verktyg · Human-in-loop</span>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="metoden" class="section method">
-    <div class="container">
-      <div class="section-head">
-        <div class="kicker">Metoden · 02</div>
-        <h2>Tre steg <span class="accent">från idé till prod</span></h2>
-        <p>
-          Inga 40-sidors förstudier. Vi börjar med er största flaskhals, bygger den i
-          vekor, och kör den i produktion innan kvartalet är slut.
-        </p>
-      </div>
-
-      <div class="tabs" role="tablist">
-        <button class="tab" role="tab" aria-selected="true" data-tab="1">
-          <span class="step-num">STEG 01</span>
-          <span>Kartläggning</span>
-        </button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="2">
-          <span class="step-num">STEG 02</span>
-          <span>Prototyp</span>
-        </button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="3">
-          <span class="step-num">STEG 03</span>
-          <span>Driftsättning</span>
-        </button>
-      </div>
-
-      <div class="tabpanel is-active" data-panel="1" role="tabpanel">
-        <div>
-          <h3>Workshop &amp; <span class="accent">flaskhals-analys</span></h3>
-          <p>
-            En halvdag där vi kartlägger de manuella stegen som kostar er mest tid. Vi går
-            igenom era system, läser era flöden och plockar ut de tre mest värdefulla
-            use-casen.
-          </p>
-          <ul class="bullets">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Workshop 3h · på plats eller remote
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Kartläggning av system, flöden och data
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              ROI-skiss per use-case
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Val av första projekt — inget låser er vid mer
-            </li>
-          </ul>
-        </div>
-        <aside class="meta-box">
-          <div class="meta-row"><div class="label">Tid</div><div class="value">Cirka 1 vecka</div></div>
-          <div class="meta-row"><div class="label">Leverans</div><div class="value">Kartläggningsrapport + plan</div></div>
-          <div class="meta-row"><div class="label">Vi bestämmer</div><div class="value">Ert första &quot;ja&quot;-projekt</div></div>
-        </aside>
-      </div>
-
-      <div class="tabpanel" data-panel="2" role="tabpanel">
-        <div>
-          <h3>Funktionell <span class="accent">prototyp på 2-3 veckor</span></h3>
-          <p>
-            Vi bygger en fungerande prototyp ni kan testa på riktigt — inte en mock.
-            Den är kopplad till era system, har rätt data, och ger svar ni kan granska.
-            Ni ser verkligt värde innan ni fattar beslut om skarp drift.
-          </p>
-          <ul class="bullets">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Iterativa demos varje vecka
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Ni testar mot riktiga case
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Kod och data lever i er miljö
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Beslut: skala upp eller stäng ner — ni äger
-            </li>
-          </ul>
-        </div>
-        <aside class="meta-box">
-          <div class="meta-row"><div class="label">Tid</div><div class="value">2-3 veckor</div></div>
-          <div class="meta-row"><div class="label">Leverans</div><div class="value">Körbar prototyp + data-flöde</div></div>
-          <div class="meta-row"><div class="label">Vi bestämmer</div><div class="value">Om det är värt att gå i prod</div></div>
-        </aside>
-      </div>
-
-      <div class="tabpanel" data-panel="3" role="tabpanel">
-        <div>
-          <h3>Driftsättning &amp; <span class="accent">löpande förbättring</span></h3>
-          <p>
-            Vi tar prototypen till skarp drift, utbildar teamet, och står för löpande
-            förbättring. Ni får månadsvis insikt i vad AI-kollegorna gör, vad de missar,
-            och var nästa flaskhals ligger.
-          </p>
-          <ul class="bullets">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Prod-miljö med övervakning &amp; backup
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Utbildning för teamet som ska äga lösningen
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Månadsrapport — svarsvolym, eskaleringar, effekt
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              GDPR-dokumentation &amp; datapolicy
-            </li>
-          </ul>
-        </div>
-        <aside class="meta-box">
-          <div class="meta-row"><div class="label">Tid</div><div class="value">1-2 veckor + löpande</div></div>
-          <div class="meta-row"><div class="label">Leverans</div><div class="value">Produktionsmiljö + SLA</div></div>
-          <div class="meta-row"><div class="label">Ni äger</div><div class="value">Koden, datan, beslutet</div></div>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <section id="arbete" class="section cases">
-    <div class="container">
-      <div class="section-head">
-        <div class="kicker">Arbete · 03</div>
-        <h2>Utvalda <span class="accent">projekt</span></h2>
-        <p>
-          Tre exempel på vad AI-kollegor faktiskt gör — från intranät-assistent till
-          internt säljverktyg.
-        </p>
-      </div>
-
-      <div class="cases-grid">
-        <article class="case">
-          <span class="case-tag">Kund · El-kretsen</span>
-          <h3>ELvis Hub</h3>
-          <p>
-            Intranät-assistent för El-kretsens medarbetare. Söker i policies &amp; rutiner,
-            svarar på regelfrågor med källhänvisning, kör quiz och stöttar compliance-arbetet.
-          </p>
-          <div class="stack">
-            <span class="chip">RAG</span>
-            <span class="chip">Supabase</span>
-            <span class="chip">Quiz</span>
-            <span class="chip">Compliance</span>
-          </div>
-        </article>
-
-        <article class="case">
-          <span class="case-tag">Internt · Samify</span>
-          <h3>Samify CRM</h3>
-          <p>
-            Eget CRM som ersatte ett gammalt single-file HTML-verktyg. React-front,
-            Supabase-back, automation av lead-flöden och uppföljningar.
-          </p>
-          <div class="stack">
-            <span class="chip">React</span>
-            <span class="chip">Supabase</span>
-            <span class="chip">Automation</span>
-          </div>
-        </article>
-
-        <article class="case muted">
-          <span class="case-tag">Nästa · Ert case?</span>
-          <h3>Ert första projekt</h3>
-          <p>
-            Vi startar med ert mest irriterande manuella flöde. Kartläggning i vecka 1,
-            prototyp i vecka 3, i prod innan kvartalet är slut.
-          </p>
-          <div class="stack">
-            <span class="chip">1 vecka kartläggning</span>
-            <span class="chip">3 veckor prototyp</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="kontakt" class="cta">
-    <div class="container">
-      <h2>Börja <span class="accent">här.</span></h2>
-      <p>
-        Öppna chatten eller boka en halvtimme. Vi ställer tre frågor, ni får en uppskattning.
-      </p>
-      <div class="actions">
-        <button class="btn btn-dark" data-open-chat>
-          Öppna chatten
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </button>
-        <a href="mailto:info@samify.se" class="btn btn-ghost">info@samify.se</a>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div>№ 004 · Samify Widget™</div>
-    <div>Kalmar · Sverige · 2026</div>
-  </footer>
-
-  <script>
-    // Tabs
-    const tabs = document.querySelectorAll('.tab');
-    const panels = document.querySelectorAll('.tabpanel');
-    tabs.forEach(t => t.addEventListener('click', () => {
-      const id = t.dataset.tab;
-      tabs.forEach(x => x.setAttribute('aria-selected', x === t ? 'true' : 'false'));
-      panels.forEach(p => p.classList.toggle('is-active', p.dataset.panel === id));
-    }));
-
-    // Scroll-hint launcher for "Boka demo" / "Öppna chatten" buttons
-    document.querySelectorAll('[data-open-chat]').forEach(b => b.addEventListener('click', () => {
-      const launcher = document.querySelector('#samify-widget-root button');
-      if (launcher) launcher.click();
-    }));
-  </script>
+  <div class="stage"></div>
+  <div class="mark">Samify</div>
+  <div class="hint">
+    <div class="big">Möt er nya kollega</div>
+    <span class="small">↘ nere till höger</span>
+  </div>
+  <div class="corner">№ 004 · AI-kollegor · Kalmar</div>
 
   <script src="./widget.js"></script>
 </body>
