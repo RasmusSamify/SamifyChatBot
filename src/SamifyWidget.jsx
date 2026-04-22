@@ -2,14 +2,12 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   X, Send, ChevronLeft, ChevronRight, ChevronDown, MessageCircle, Users, HelpCircle,
-  Calculator, Briefcase, Radio, Mail, Check, Sparkles, Clock, MapPin,
-  FileSearch, UserCheck, Zap, Globe, GitCommit, GitBranch, Star, ExternalLink,
-  ArrowUpRight, Plus, Minus, Send as SendIcon, Loader2, AlertCircle,
+  Calculator, Briefcase, Lightbulb, Mail, Check, FileSearch, TrendingUp, BookOpen,
+  Zap, Bot, ArrowUpRight, Loader2, AlertCircle,
 } from 'lucide-react'
 
 const API_CHAT = '/api/chat'
 const API_LEAD = '/api/lead'
-const GITHUB_USER = 'RasmusSamify'
 const CONTACT_EMAIL = 'info@samify.se'
 
 const styles = `
@@ -149,7 +147,7 @@ function PanelHeader({ screen, setScreen, onClose }) {
   const titles = {
     home: null,
     chat: 'Chatta', about: 'Om Samify', faq: 'Vanliga frågor',
-    roi: 'ROI-kalkylator', projects: 'Projekt', live: 'Live',
+    roi: 'ROI-kalkylator', areas: 'Branscher', tips: 'Dagens tips',
     contact: 'Kontakt',
   }
   return (
@@ -211,12 +209,12 @@ function LiveClock() {
 /* ── Home (tile grid) ───────────────────────────────────────────── */
 function Home({ setScreen }) {
   const tiles = [
-    { key: 'chat',     icon: MessageCircle, label: 'CHATTA',       sub: 'Prata med Claude' },
-    { key: 'about',    icon: Users,         label: 'OM SAMIFY',    sub: 'Vilka vi är' },
-    { key: 'faq',      icon: HelpCircle,    label: 'FAQ',          sub: 'Vanliga frågor' },
-    { key: 'roi',      icon: Calculator,    label: 'ROI',          sub: 'Räkna besparing' },
-    { key: 'projects', icon: Briefcase,     label: 'PROJEKT',      sub: 'Vad vi har byggt' },
-    { key: 'live',     icon: Radio,         label: 'LIVE',         sub: 'Senaste aktivitet' },
+    { key: 'chat',  icon: MessageCircle, label: 'CHATTA',      sub: 'Prata med Claude' },
+    { key: 'about', icon: Users,         label: 'OM SAMIFY',   sub: 'Vilka vi är' },
+    { key: 'faq',   icon: HelpCircle,    label: 'FAQ',         sub: 'Vanliga frågor' },
+    { key: 'roi',   icon: Calculator,    label: 'ROI',         sub: 'Räkna besparing' },
+    { key: 'areas', icon: Briefcase,     label: 'BRANSCHER',   sub: 'Där vi jobbar' },
+    { key: 'tips',  icon: Lightbulb,     label: 'DAGENS TIPS', sub: 'Ny insikt varje dag' },
   ]
   return (
     <div className="h-full flex flex-col text-[var(--bone)]">
@@ -385,7 +383,7 @@ function ChatScreen({ setScreen }) {
             className="shrink-0 w-9 h-9 grid place-items-center rounded-xl bg-gradient-to-br from-[var(--purple)] to-[#5b21b6] text-white shadow-[0_8px_24px_-8px_rgba(124,58,237,.7)] disabled:opacity-30 disabled:shadow-none hover:brightness-110 transition"
             aria-label="Skicka"
           >
-            {busy ? <Loader2 size={14} className="animate-spin" /> : <SendIcon size={14} />}
+            {busy ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
           </button>
         </div>
       </div>
@@ -628,204 +626,203 @@ function Slider({ label, value, set, min, max, step, suffix, format }) {
   )
 }
 
-/* ── Projects screen ────────────────────────────────────────────── */
-function ProjectsScreen({ setScreen }) {
-  const cases = [
-    {
-      tag: 'Kund · El-kretsen',
-      title: 'ELvis Hub',
-      desc: 'Intranät-AI: söker i policies, svarar med källor, kör compliance-quiz för medarbetare.',
-      stack: ['RAG', 'Supabase', 'Quiz', 'GDPR'],
-      accent: true,
-    },
-    {
-      tag: 'Internt · Samify',
-      title: 'Samify CRM',
-      desc: 'Eget CRM byggt i React + Supabase. Ersatte ett gammalt single-file HTML-verktyg.',
-      stack: ['React', 'Supabase', 'Automation'],
-      accent: true,
-    },
-    {
-      tag: 'Nästa',
-      title: 'Ert första projekt',
-      desc: 'Vi startar med ert mest irriterande manuella flöde. Kartläggning i vecka 1, prototyp i vecka 3.',
-      stack: ['1v kartläggning', '3v prototyp'],
-      accent: false,
-    },
-  ]
+/* ── Areas screen (branscher + kompetenser) ─────────────────────── */
+const AREAS = [
+  {
+    icon: MessageCircle,
+    title: 'Kundservice & support',
+    desc: 'AI-triage, chatbottar med handoff, RAG-FAQ. För e-handel, tjänsteföretag, SaaS och alla med en supportinbox som svämmar över.',
+    tags: ['Triage', 'Chatbot', 'Handoff'],
+  },
+  {
+    icon: TrendingUp,
+    title: 'Sälj & CRM',
+    desc: 'Lead-scoring, säljarassistenter, CRM-automation. För SMB med säljorganisation som vill lägga tid på kunder, inte på admin.',
+    tags: ['CRM', 'Lead-scoring', 'Supabase'],
+  },
+  {
+    icon: BookOpen,
+    title: 'Intern AI & intranät',
+    desc: 'Policy-sök, compliance-RAG, HR-bottar, utbildnings-quiz. För återvinning, produktion, teknikhandel, och HR-tunga verksamheter.',
+    tags: ['RAG', 'Compliance', 'Quiz'],
+  },
+  {
+    icon: Zap,
+    title: 'Automationer & integrationer',
+    desc: 'Zapier, Fortnox, HubSpot, Google Workspace, egna API:er. För alla med fler än två system som ska prata med varandra.',
+    tags: ['Zapier', 'API', 'Webhooks'],
+  },
+  {
+    icon: FileSearch,
+    title: 'Kunskap & RAG',
+    desc: 'Vektor-sök, källhänvisning, GDPR-säkert. För regelverk, handböcker, offerter och compliance-tunga branscher där svaren måste kunna granskas.',
+    tags: ['pgvector', 'GDPR', 'Källor'],
+  },
+  {
+    icon: Bot,
+    title: 'AI-agenter',
+    desc: 'Röst, verktygsanvändning, human-in-the-loop. Nästa generations assistenter som inte bara svarar — de bokar, triggar, eskalerar.',
+    tags: ['Agent', 'Voice', 'Tools'],
+  },
+]
+
+function AreasScreen({ setScreen }) {
   return (
-    <div className="h-full overflow-y-auto scrollbar-hidden px-5 pb-5 text-[var(--bone)] space-y-3">
-      <div className="text-[12px] text-[var(--bone)]/55 pb-2">
-        Tre exempel på vad AI-kollegor gör i verkligheten.
+    <div className="h-full overflow-y-auto scrollbar-hidden px-5 pb-5 text-[var(--bone)] space-y-2.5">
+      <div className="text-[12px] text-[var(--bone)]/60 pb-2 leading-snug">
+        Områden där vi byggt — eller håller på att bygga — AI-kollegor. Känner ni igen er bransch eller er flaskhals? Då är det bara att boka.
       </div>
-      {cases.map((c, i) => (
-        <motion.article
+      {AREAS.map((a, i) => (
+        <motion.div
           key={i}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 * i }}
-          className={`relative rounded-2xl p-4 overflow-hidden ${
-            c.accent
-              ? 'hairline-strong bg-white/[0.04]'
-              : 'border border-dashed border-[var(--bone)]/20 bg-transparent'
-          }`}
+          transition={{ delay: 0.04 * i }}
+          className="rounded-xl p-3.5 hairline bg-white/[0.02]"
         >
-          {c.accent && <div className="absolute inset-0 diag-lines pointer-events-none" />}
-          <div className="relative">
-            <div className={`inline-block px-2 py-0.5 rounded-full text-[9.5px] font-bold tracking-[0.18em] uppercase mb-3 ${
-              c.accent
-                ? 'bg-[var(--gold)]/15 text-[var(--gold-soft)]'
-                : 'bg-[var(--bone)]/10 text-[var(--bone)]/60'
-            }`}>
-              {c.tag}
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+              <a.icon size={16} />
             </div>
-            <div className="font-serif text-[22px] leading-tight mb-1.5">{c.title}</div>
-            <div className="text-[12.5px] leading-relaxed text-[var(--bone)]/70 mb-3">{c.desc}</div>
-            <div className="flex flex-wrap gap-1.5">
-              {c.stack.map((s, j) => (
-                <span key={j} className="px-2 py-0.5 rounded-full text-[10.5px] font-medium bg-white/[0.05] hairline text-[var(--bone)]/70">
-                  {s}
-                </span>
-              ))}
+            <div className="flex-1 min-w-0">
+              <div className="font-sans text-[13.5px] font-bold text-[var(--bone)] mb-1 leading-tight">{a.title}</div>
+              <div className="text-[12px] text-[var(--bone)]/65 leading-snug mb-2">{a.desc}</div>
+              <div className="flex flex-wrap gap-1">
+                {a.tags.map((t, j) => (
+                  <span key={j} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-white/[0.04] hairline text-[var(--bone)]/60">{t}</span>
+                ))}
+              </div>
             </div>
           </div>
-        </motion.article>
+        </motion.div>
       ))}
       <button
         onClick={() => setScreen('contact')}
-        className="w-full rounded-2xl py-3 px-4 bg-[var(--bone)] text-[var(--ink-2)] font-bold text-[13px] tracking-wide flex items-center justify-center gap-2 hover:bg-[var(--gold-soft)] transition mt-2"
+        className="w-full rounded-2xl py-3 px-4 bg-[var(--bone)] text-[var(--ink-2)] font-bold text-[13px] tracking-wide flex items-center justify-center gap-2 hover:bg-[var(--gold-soft)] transition mt-3"
       >
         <Mail size={14} />
-        Diskutera ert case
+        Känner ni igen er? Kontakta oss
       </button>
     </div>
   )
 }
 
-/* ── Live screen (GitHub feed) ──────────────────────────────────── */
-function LiveScreen() {
-  const [events, setEvents] = useState(null)
-  const [err, setErr] = useState(false)
-  const [lastFetch, setLastFetch] = useState(null)
+/* ── Tips screen (dagens roterande insikt) ──────────────────────── */
+const TIPS = [
+  { kat: 'Automation',    title: 'AI-triage sparar 4-6h/vecka per supportperson.',                 body: 'AI sorterar, taggar, skickar vidare. Människan svarar bara på det som faktiskt kräver hjärna. Resten försvinner aldrig — det blir bara bättre sorterat.' },
+  { kat: 'Leverans',      title: 'Börja med ETT flöde. Inte alla.',                                body: 'De som försöker AI-ifiera hela verksamheten samtidigt hinner aldrig i mål. Välj er värsta flaskhals, bygg där, skala efter.' },
+  { kat: 'RAG',           title: 'Alltid källhänvisningar — aldrig svar från ingenstans.',         body: 'En RAG som citerar kan granskas. En som bara "svarar" hallucinerar obemärkt. Källor är inte en detalj — det är skillnaden mellan användbart och farligt.' },
+  { kat: 'Produkt',       title: 'Kontext > modell-kvalitet.',                                     body: 'Den billigaste modellen med rätt kontext slår den dyraste utan. Lägg 80% av tiden på data, prompts och tool-design — inte på att byta modell.' },
+  { kat: 'Agent',         title: 'Human-in-the-loop som default.',                                 body: 'Agenter ska aldrig skicka mejl, fakturor eller binda företag utan mänsklig approval. Inte än. Kanske aldrig, för vissa beslut.' },
+  { kat: 'Säkerhet',      title: 'Hosta i EU. Kryptera on-rest. GDPR från dag ett.',               body: 'Svenska SMB har inte råd att krånglas in i transatlantisk data-debatt. Bygg så det aldrig är en fråga — EU-hosting, tydliga DPA:er, minimal datalagring.' },
+  { kat: 'Metod',         title: 'Inga 40-sidors förstudier.',                                     body: 'Ingen kund ändrar beslut av en 40-sidors rapport. De ändrar beslut av en körbar prototyp. Kartläggning → prototyp → drift, 5 veckor, inte 5 månader.' },
+  { kat: 'ROI',           title: 'Ett AI-svar kostar under 1 öre. Ett manuellt 5-500 kr.',         body: 'Räkna kostnad per interaktion, inte licens-total. Ett Claude-svar: ~0,3 öre. En människa som skriver samma: flera minuter och lönesekunder.' },
+  { kat: 'Svenska',       title: 'Nyanser spelar roll.',                                           body: 'En AI tränad på engelska men körd på svensk input missar dialekter, formalitet och bransch-jargong. Testa på riktiga svenska dokument innan ni skarp-köper.' },
+  { kat: 'Chatbot',       title: 'Chatbot ≠ AI-agent.',                                            body: 'En chatbot svarar. En agent agerar. Båda har sin plats — men blanda inte ihop när ni specar. Fel val kostar tre veckors arbete.' },
+  { kat: 'Data',          title: 'Data-hygien före AI.',                                           body: 'Har ni 3 CRM, 2 kalkylblad och en SharePoint där gammal data bor? Städa först. Annars hallucinerar AI:n på er röra istället för att hjälpa.' },
+  { kat: 'Cache',         title: 'Prompt caching = snabbare + billigare.',                         body: 'Anthropics prompt caching sänker kostnaden med upp till 90% för återkommande system-prompts. Slå på från dag ett — gratis vinst, direkt.' },
+  { kat: 'Säljprocess',   title: 'Säljande chat ≠ kladdig telemarketing.',                         body: 'Den bästa säljbotten frågar mer än den pitchar. Hjälp besökaren förstå sitt problem. Erbjudandet kommer när det är dags — inte i första meningen.' },
+  { kat: 'Integration',   title: 'Zapier + Claude = MVP på en dag.',                               body: 'Ni behöver inte kod för allt. En Zapier-webhook till Claude API är ofta nog för första versionen — validera idén där, kodifiera sen.' },
+  { kat: 'Utvärdering',   title: 'Mät innan. Mät efter. Mät igen.',                                body: 'Utan före-siffror har ni inget att jämföra AI-förbättringen med. Dokumentera nuläge (tid, felfrekvens, NPS) innan ni driftsätter.' },
+  { kat: 'Test',          title: 'Testa med riktiga kunder så tidigt som möjligt.',                body: 'Interna testare är vänliga. Riktiga kunder är ärliga. Kör intern prototyp vecka 1, extern betatest vecka 2.' },
+  { kat: 'Ägarskap',      title: 'Koden och datan ska vara er — alltid.',                          body: 'Vi skriver ingen vendor-lock-kod. Ingen "hosted plattform" som ni inte kan lämna. Koden lever i era repos. Datan i er infrastruktur.' },
+  { kat: 'Transparens',   title: 'Visa när AI:n svarar. Inte efteråt.',                            body: 'Användare som vet att de pratar med AI är tacksamma. De som tror de pratar med en människa blir förbannade när de inser. Bygg det öppet.' },
+  { kat: 'Fel',           title: 'Planera för felaktiga svar — det KOMMER hända.',                 body: 'Error-budget, eskaleringsvägar, månadsvisa rapporter på missar. Perfektion finns inte. Förbättringshastighet gör det.' },
+  { kat: 'Support',       title: '80% av supportfrågorna är repetitiva.',                          body: 'Låt AI ta dem. Frigör människan till de 20% som faktiskt bygger kundrelation. 80/20 gäller även här.' },
+  { kat: 'Skala',         title: 'En AI-kollega skalar utan pausregler.',                          body: 'Klockan 03:00 en söndag svarar AI:n lika snabbt som måndag 10:00. Ingen semester, ingen sjukskrivning. Det är skalningsfördelen ni köper.' },
+  { kat: 'SMB',           title: 'Små företag har störst vinst per AI-krona.',                     body: 'En stor bank sparar 0,01% av sin budget. Ett 15-mans tjänsteföretag sparar 10% av sin tid. Procenten finns där ni är små. Agera nu.' },
+  { kat: 'Onboarding',    title: 'Onboarda AI-kollegan som en människa.',                          body: 'En ny medarbetare lär sig verksamheten på 3 veckor. Ge AI:n samma: dokument, kontext, bakgrundshistoria. Inte bara en snabb prompt.' },
+  { kat: 'Output',        title: 'Begränsa output-format — annars blir det bara prat.',            body: 'Säg åt AI:n: "svara i JSON med dessa fält", "max 3 meningar", "inga bullets". Fria svar → pratbubblor. Strukturerade svar → data ni kan använda.' },
+  { kat: 'Vector',        title: 'pgvector räcker längre än ni tror.',                             body: 'Ni behöver troligen inte Pinecone, inte Weaviate. Postgres + pgvector hanterar miljoner dokument utan problem — och ni har redan en Postgres.' },
+  { kat: 'Prompt',        title: 'System-prompten är där magin sitter.',                           body: 'Bra prompts är långa och specifika — "du är X, tonen är Y, aldrig Z". Spendera tid här, inte på runtime-formuleringar.' },
+  { kat: 'Volym',         title: 'Mät interaktioner, inte användare.',                             body: 'En chatbot som 100 användare pratar med 5 gånger vardera har mer värde än en som 1000 trycker på en gång. Engagemang slår registreringar.' },
+  { kat: 'Start',         title: 'Börja med det mest irriterande.',                                body: 'Den där uppgiften alla klagar på varje måndag? Som ingen vill göra? Det är där AI-kollegan ska börja sitt liv. Direkt värde, direkt buy-in.' },
+  { kat: 'Stack',         title: 'React + Supabase + Anthropic räcker långt.',                     body: 'Vår default-stack för AI-kollegor. 95% av fallen täcks. Enkel stack, snabb leverans, inga exotiska beroenden ni måste förklara för revisorn.' },
+  { kat: 'Fokus',         title: 'Sluta bygga features. Börja lösa problem.',                      body: 'En AI-tjänst som säger "vi har 47 integrationer" vinner inget. En som säger "vi löste problemet på 3 veckor" vinner kontraktet.' },
+]
 
-  async function load() {
-    try {
-      const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public?per_page=20`)
-      if (!res.ok) throw new Error('gh')
-      const data = await res.json()
-      setEvents(data)
-      setLastFetch(new Date())
-      setErr(false)
-    } catch {
-      setErr(true)
-    }
-  }
+function dayOfYearIndex() {
+  const now = new Date()
+  const start = new Date(now.getFullYear(), 0, 0)
+  const day = Math.floor((now - start) / 86400000)
+  return day
+}
 
-  useEffect(() => {
-    load()
-    const i = setInterval(load, 60_000)
-    return () => clearInterval(i)
-  }, [])
+function TipsScreen() {
+  const [offset, setOffset] = useState(0)
+  const base = dayOfYearIndex()
+  const idx = (((base + offset) % TIPS.length) + TIPS.length) % TIPS.length
+  const tip = TIPS[idx]
+  const isToday = offset === 0
 
-  const interesting = useMemo(() => {
-    if (!events) return []
-    return events
-      .filter(e => ['PushEvent', 'CreateEvent', 'PublicEvent', 'PullRequestEvent', 'ReleaseEvent'].includes(e.type))
-      .slice(0, 12)
-  }, [events])
+  const label = isToday
+    ? 'Dagens tips'
+    : offset < 0
+      ? `${Math.abs(offset)} dag${Math.abs(offset) === 1 ? '' : 'ar'} tidigare`
+      : `${offset} dag${offset === 1 ? '' : 'ar'} framåt`
 
   return (
     <div className="h-full flex flex-col text-[var(--bone)]">
       <div className="px-5 pt-1 pb-3 flex items-center gap-2">
-        <span className="live-dot w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.7)]" />
-        <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-[var(--bone)]/60">Live · GitHub-aktivitet</span>
-        {lastFetch && (
-          <span className="text-[10.5px] text-[var(--bone)]/40 ml-auto">
-            uppdaterad {fmtAgo(lastFetch)}
-          </span>
-        )}
+        <Lightbulb size={13} className="text-[var(--gold-soft)]" />
+        <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-[var(--bone)]/60">{label}</span>
+        <span className="text-[10.5px] text-[var(--bone)]/40 ml-auto">{idx + 1} / {TIPS.length}</span>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hidden px-5 pb-5 space-y-2">
-        {!events && !err && (
-          <div className="flex items-center gap-2 text-[12px] text-[var(--bone)]/55 pt-2">
-            <Loader2 size={14} className="animate-spin" /> Hämtar senaste aktivitet…
-          </div>
+
+      <div className="flex-1 overflow-y-auto scrollbar-hidden px-5 pb-3">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="relative rounded-2xl p-5 hairline-strong bg-gradient-to-br from-[var(--purple)]/15 via-[var(--ink-3)] to-[var(--ink-2)] overflow-hidden"
+          >
+            <div className="absolute inset-0 diag-lines pointer-events-none" />
+            <div className="relative">
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[var(--gold)]/15 mb-4">
+                <span className="w-1 h-1 rounded-full bg-[var(--gold-soft)]" />
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--gold-soft)]">{tip.kat}</span>
+              </div>
+              <div className="font-sans text-[19px] font-extrabold leading-[1.2] tracking-tight mb-3 text-[var(--bone)]">
+                {tip.title}
+              </div>
+              <div className="text-[13px] text-[var(--bone)]/72 leading-relaxed">
+                {tip.body}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="text-[10.5px] text-[var(--bone)]/40 mt-3 text-center tracking-wide">
+          — Samify-insikter
+        </div>
+      </div>
+
+      <div className="p-3 pt-2 flex items-center gap-2">
+        <button
+          onClick={() => setOffset(o => o - 1)}
+          className="flex-1 rounded-xl py-2.5 hairline bg-white/[0.03] hover:bg-white/[0.06] text-[12px] font-bold tracking-wide flex items-center justify-center gap-1.5 text-[var(--bone)]/75 hover:text-[var(--bone)] transition"
+        >
+          <ChevronLeft size={14} /> Föregående
+        </button>
+        {!isToday && (
+          <button
+            onClick={() => setOffset(0)}
+            className="rounded-xl py-2.5 px-3 hairline bg-white/[0.03] hover:bg-white/[0.06] text-[11px] font-semibold text-[var(--bone)]/75 hover:text-[var(--bone)] transition"
+          >
+            Idag
+          </button>
         )}
-        {err && (
-          <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 p-3 text-[12px] text-rose-200 flex items-start gap-2">
-            <AlertCircle size={14} className="mt-0.5 shrink-0" />
-            Kunde inte nå GitHub just nu.
-          </div>
-        )}
-        {interesting.map((e, i) => (
-          <GitHubEventRow key={e.id || i} e={e} delay={i * 0.03} />
-        ))}
-        {events && interesting.length === 0 && !err && (
-          <div className="text-[12px] text-[var(--bone)]/55 pt-2">
-            Inga publika events att visa just nu.
-          </div>
-        )}
+        <button
+          onClick={() => setOffset(o => o + 1)}
+          className="flex-1 rounded-xl py-2.5 hairline bg-white/[0.03] hover:bg-white/[0.06] text-[12px] font-bold tracking-wide flex items-center justify-center gap-1.5 text-[var(--bone)]/75 hover:text-[var(--bone)] transition"
+        >
+          Nästa <ChevronRight size={14} />
+        </button>
       </div>
     </div>
-  )
-}
-
-function GitHubEventRow({ e, delay }) {
-  const icon = {
-    PushEvent: GitCommit, CreateEvent: GitBranch, PublicEvent: Star,
-    PullRequestEvent: GitBranch, ReleaseEvent: Star,
-  }[e.type] || GitCommit
-  const Icon = icon
-
-  const detail = useMemo(() => {
-    if (e.type === 'PushEvent') {
-      const n = e.payload?.commits?.length || 0
-      const msg = e.payload?.commits?.[0]?.message?.split('\n')[0] || ''
-      return `${n} commit${n === 1 ? '' : 's'}${msg ? ` · "${truncate(msg, 60)}"` : ''}`
-    }
-    if (e.type === 'CreateEvent') {
-      return `skapade ${e.payload?.ref_type || 'ref'} ${e.payload?.ref || ''}`.trim()
-    }
-    if (e.type === 'PullRequestEvent') {
-      return `PR ${e.payload?.action}: ${truncate(e.payload?.pull_request?.title || '', 60)}`
-    }
-    if (e.type === 'ReleaseEvent') {
-      return `release ${e.payload?.release?.tag_name || ''}`
-    }
-    if (e.type === 'PublicEvent') {
-      return 'gjorde repo publikt'
-    }
-    return e.type
-  }, [e])
-
-  const repo = e.repo?.name || 'repo'
-  const when = fmtAgo(new Date(e.created_at))
-  const url = `https://github.com/${repo}`
-
-  return (
-    <motion.a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, x: -6 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay }}
-      className="block rounded-xl p-3 hairline bg-white/[0.02] hover:bg-white/[0.04] transition group"
-    >
-      <div className="flex items-start gap-3">
-        <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
-          <Icon size={13} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-sans text-[12px] font-bold text-[var(--bone)] truncate">{repo.split('/').pop()}</span>
-            <span className="text-[10px] text-[var(--bone)]/40 shrink-0">{when}</span>
-          </div>
-          <div className="text-[11.5px] text-[var(--bone)]/60 leading-snug">{detail}</div>
-        </div>
-        <ExternalLink size={11} className="text-[var(--bone)]/25 group-hover:text-[var(--purple-soft)] transition shrink-0 mt-0.5" />
-      </div>
-    </motion.a>
   )
 }
 
@@ -1052,14 +1049,14 @@ export default function SamifyWidget() {
                     transition={{ duration: 0.22 }}
                     className="absolute inset-0"
                   >
-                    {screen === 'home'     && <Home setScreen={setScreen} />}
-                    {screen === 'chat'     && <ChatScreen setScreen={setScreen} />}
-                    {screen === 'about'    && <AboutScreen setScreen={setScreen} />}
-                    {screen === 'faq'      && <FaqScreen />}
-                    {screen === 'roi'      && <RoiScreen setScreen={setScreen} />}
-                    {screen === 'projects' && <ProjectsScreen setScreen={setScreen} />}
-                    {screen === 'live'     && <LiveScreen />}
-                    {screen === 'contact'  && <ContactScreen />}
+                    {screen === 'home'    && <Home setScreen={setScreen} />}
+                    {screen === 'chat'    && <ChatScreen setScreen={setScreen} />}
+                    {screen === 'about'   && <AboutScreen setScreen={setScreen} />}
+                    {screen === 'faq'     && <FaqScreen />}
+                    {screen === 'roi'     && <RoiScreen setScreen={setScreen} />}
+                    {screen === 'areas'   && <AreasScreen setScreen={setScreen} />}
+                    {screen === 'tips'    && <TipsScreen />}
+                    {screen === 'contact' && <ContactScreen />}
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -1075,22 +1072,3 @@ export default function SamifyWidget() {
   )
 }
 
-/* ── utils ──────────────────────────────────────────────────────── */
-function truncate(s, n) {
-  if (!s) return ''
-  return s.length > n ? s.slice(0, n - 1) + '…' : s
-}
-
-function fmtAgo(date) {
-  const diff = Date.now() - date.getTime()
-  const s = Math.floor(diff / 1000)
-  if (s < 60) return 'nyss'
-  const m = Math.floor(s / 60)
-  if (m < 60) return `${m} min sen`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}h sen`
-  const d = Math.floor(h / 24)
-  if (d < 30) return `${d}d sen`
-  const mo = Math.floor(d / 30)
-  return `${mo}mån sen`
-}
