@@ -9,6 +9,7 @@
   }
   #samify-widget-root {
     font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, sans-serif;
+    color: #F6F2EE;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -21,8 +22,16 @@
     color: inherit;
     cursor: pointer;
   }
-  #samify-widget-root input {
+  #samify-widget-root input,
+  #samify-widget-root textarea {
     font: inherit;
     color: inherit;
+  }
+  #samify-widget-root a {
+    color: inherit;
+    text-decoration: none;
+  }
+  #samify-widget-root a:hover {
+    text-decoration: underline;
   }
 }

@@ -884,7 +884,7 @@ function ContactScreen() {
         {state === 'error' && (
           <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 p-3 text-[12px] text-rose-200 flex items-start gap-2">
             <AlertCircle size={14} className="mt-0.5 shrink-0" />
-            Det gick inte att skicka just nu. Testa igen, eller mejla <a href={`mailto:${CONTACT_EMAIL}`} className="underline font-semibold">{CONTACT_EMAIL}</a>.
+            Det gick inte att skicka just nu. Testa igen, eller mejla <a href={`mailto:${CONTACT_EMAIL}`} className="underline font-semibold text-[var(--purple-soft)] hover:text-[var(--bone)] transition">{CONTACT_EMAIL}</a>.
           </div>
         )}
       </div>
@@ -966,13 +966,14 @@ function ProactiveNudge({ onOpen, onClose }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-      className="absolute bottom-20 right-0 w-[280px] rounded-2xl bg-[var(--ink-2)]/95 backdrop-blur hairline-strong text-[var(--bone)] p-3.5 pr-10 shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)]"
+      className="absolute bottom-20 right-0 w-[280px] rounded-2xl hairline-strong p-3.5 pr-10 shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)]"
+      style={{ background: '#0E0C0A', color: '#F6F2EE' }}
     >
       <div className="flex items-start gap-2.5">
         <div className="shrink-0 mt-0.5"><Orb size={24} /></div>
         <div>
-          <div className="text-[12.5px] font-semibold">Största tidstjuven just nu?</div>
-          <div className="text-[11.5px] text-[var(--bone)]/65 mt-0.5">
+          <div className="text-[12.5px] font-semibold text-[var(--bone)]">Största tidstjuven just nu?</div>
+          <div className="text-[11.5px] text-[var(--bone)]/80 mt-0.5">
             Räkna besparing, chatta med Claude, eller boka 30 min. Allt här.
           </div>
           <button
@@ -985,11 +986,11 @@ function ProactiveNudge({ onOpen, onClose }) {
       </div>
       <button
         onClick={onClose}
-        className="absolute top-2 right-2 w-6 h-6 grid place-items-center rounded-full text-[var(--bone)]/50 hover:text-[var(--bone)] hover:bg-white/5 transition"
+        className="absolute top-2 right-2 w-6 h-6 grid place-items-center rounded-full text-[var(--bone)]/60 hover:text-[var(--bone)] hover:bg-white/5 transition"
       >
         <X size={12} />
       </button>
-      <span className="absolute -bottom-1.5 right-8 w-3 h-3 rotate-45 bg-[var(--ink-2)]/95 hairline-strong border-t-0 border-l-0" />
+      <span className="absolute -bottom-1.5 right-8 w-3 h-3 rotate-45 hairline-strong border-t-0 border-l-0" style={{ background: '#0E0C0A' }} />
     </motion.div>
   )
 }
