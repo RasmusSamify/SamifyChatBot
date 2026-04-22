@@ -13,7 +13,7 @@ const GITHUB_USER = 'RasmusSamify'
 const CONTACT_EMAIL = 'info@samify.se'
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&display=swap');
 
   #samify-widget-root {
     --ink:        #1C1A17;
@@ -28,7 +28,6 @@ const styles = `
     --green:      #34d399;
   }
 
-  #samify-widget-root .font-serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
   #samify-widget-root .font-sans  { font-family: 'Montserrat', system-ui, sans-serif; }
 
   @keyframes samifyOrbRotate { to { transform: rotate(360deg); } }

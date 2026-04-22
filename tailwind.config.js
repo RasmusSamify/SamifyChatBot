@@ -6,7 +6,12 @@ export default {
     preflight: false,
   },
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans:  ['Montserrat', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        serif: ['Montserrat', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
