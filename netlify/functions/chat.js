@@ -1,5 +1,5 @@
-const MODEL = 'claude-haiku-4-5'
-const MAX_TOKENS = 450
+const MODEL = 'claude-sonnet-4-6'
+const MAX_TOKENS = 500
 
 const SYSTEM_PROMPT = `Du är "Samify" — en AI-kollega som representerar Samify, ett svenskt teknik-bolag från Kalmar som bygger AI-agenter, CRM-system och automationer för svenska små- och medelstora företag.
 
