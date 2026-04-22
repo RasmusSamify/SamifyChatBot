@@ -6,8 +6,9 @@ import {
   Zap, Bot, ArrowUpRight, Loader2, AlertCircle,
 } from 'lucide-react'
 
-const API_CHAT = '/api/chat'
-const API_LEAD = '/api/contact'
+const API_ORIGIN = 'https://samifychatbot.netlify.app'
+const API_CHAT = `${API_ORIGIN}/api/chat`
+const API_LEAD = `${API_ORIGIN}/api/contact`
 const CONTACT_EMAIL = 'info@samify.se'
 
 const styles = `
@@ -852,12 +853,12 @@ function ContactScreen() {
         setState('ok')
       } else {
         const reason = data?.error || `HTTP ${res.status}`
-        console.error('[Samify] /api/lead misslyckades:', res.status, data)
+        console.error('[Samify] kontakt-POST misslyckades:', API_LEAD, res.status, data)
         setErrDetail(reason)
         setState('error')
       }
     } catch (err) {
-      console.error('[Samify] /api/lead nätverksfel:', err)
+      console.error('[Samify] kontakt-POST nätverksfel:', API_LEAD, err)
       setErrDetail(err?.message || 'network')
       setState('error')
     }
