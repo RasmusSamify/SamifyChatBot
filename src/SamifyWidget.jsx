@@ -300,26 +300,26 @@ function LiveClock() {
   )
 }
 
-/* ── Kund-loggor (monokrom bone) ────────────────────────────────── */
-function ClientLogos({ compact = false }) {
+/* ── Kund-loggor: en strip med små bone-pills, originalfärger ──── */
+function ClientLogosStrip({ size = 'sm' }) {
+  const h = size === 'lg' ? 'h-11' : 'h-8'
+  const maxLogo = size === 'lg' ? 'max-h-7' : 'max-h-5'
   return (
-    <div className="rounded-2xl p-4 hairline bg-white/[0.02] relative overflow-hidden">
-      <div className="text-[10px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/45 mb-3 text-center">
-        I drift hos
-      </div>
-      <div className={`grid ${compact ? 'grid-cols-4 gap-3' : 'grid-cols-2 gap-4'} items-center`}>
-        {CLIENT_LOGOS.map(l => (
-          <div key={l.name} className="flex items-center justify-center" title={l.alt}>
-            <img
-              src={`${LOGO_BASE}/${l.file}`}
-              alt={l.alt}
-              loading="lazy"
-              className="max-h-7 max-w-full object-contain opacity-60 hover:opacity-90 transition"
-              style={{ filter: 'grayscale(1) brightness(2.4) contrast(0.9)' }}
-            />
-          </div>
-        ))}
-      </div>
+    <div className="grid grid-cols-4 gap-1.5">
+      {CLIENT_LOGOS.map(l => (
+        <div
+          key={l.name}
+          title={l.alt}
+          className={`rounded-md bg-[var(--bone)] flex items-center justify-center px-2 ${h} transition hover:bg-white`}
+        >
+          <img
+            src={`${LOGO_BASE}/${l.file}`}
+            alt={l.alt}
+            loading="lazy"
+            className={`${maxLogo} max-w-full object-contain`}
+          />
+        </div>
+      ))}
     </div>
   )
 }
@@ -336,7 +336,7 @@ function Home({ setScreen }) {
   ]
   return (
     <div className="h-full flex flex-col text-[var(--bone)]">
-      <div className="px-5 pt-1 pb-5">
+      <div className="px-5 pt-1 pb-3">
         <div className="relative rounded-2xl p-4 overflow-hidden hairline-strong bg-gradient-to-br from-[var(--purple)]/20 via-[var(--ink-3)] to-[var(--ink-2)]">
           <div className="absolute inset-0 diag-lines pointer-events-none" />
           <div className="relative">
@@ -346,9 +346,14 @@ function Home({ setScreen }) {
             <div className="font-serif text-[22px] leading-[1.05] mb-2">
               Bygg bort ert största <span className="italic text-[var(--gold-soft)]">manuella steg</span>.
             </div>
-            <div className="text-[12px] text-[var(--bone)]/65 leading-snug">
+            <div className="text-[12px] text-[var(--bone)]/65 leading-snug mb-3.5">
               Fråga mig vad som är möjligt, räkna på besparing, eller boka 30 min — allt här i widgeten.
             </div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[9px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/45">I drift hos</span>
+              <span className="h-px flex-1 bg-[var(--bone)]/10" />
+            </div>
+            <ClientLogosStrip />
           </div>
         </div>
       </div>
@@ -376,12 +381,8 @@ function Home({ setScreen }) {
           ))}
         </div>
 
-        <div className="mt-4">
-          <ClientLogos compact />
-        </div>
-
-        <div className="mt-3 pb-3 text-[10.5px] text-[var(--bone)]/45 text-center tracking-wide">
-          Krypterat · GDPR-kompatibelt · Drivs av <span className="shimmer-text font-semibold">Samify</span>
+        <div className="mt-3 pb-2 text-[10px] text-[var(--bone)]/40 text-center tracking-[0.18em] uppercase">
+          Krypterat · GDPR · Drivs av <span className="shimmer-text font-semibold">Samify</span>
         </div>
       </div>
 
@@ -568,7 +569,14 @@ function AboutScreen({ setScreen }) {
         </div>
       </div>
 
-      <ClientLogos />
+      <div className="rounded-2xl p-4 hairline bg-white/[0.02]">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <span className="h-px w-6 bg-[var(--bone)]/15" />
+          <span className="text-[10px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/55">I drift hos</span>
+          <span className="h-px w-6 bg-[var(--bone)]/15" />
+        </div>
+        <ClientLogosStrip size="lg" />
+      </div>
 
       <div className="grid grid-cols-2 gap-2">
         {facts.map(f => (
