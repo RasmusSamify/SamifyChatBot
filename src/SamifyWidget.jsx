@@ -324,32 +324,23 @@ function ClientLogosStrip({ size = 'sm' }) {
   )
 }
 
-/* ── Home (tile grid) ───────────────────────────────────────────── */
+/* ── Home (bento) ───────────────────────────────────────────────── */
 function Home({ setScreen }) {
-  const tiles = [
-    { key: 'chat',  icon: MessageCircle, label: 'CHATTA',      sub: 'Prata med Claude' },
-    { key: 'about', icon: Users,         label: 'OM SAMIFY',   sub: 'Vilka vi är' },
-    { key: 'faq',   icon: HelpCircle,    label: 'FAQ',         sub: 'Vanliga frågor' },
-    { key: 'roi',   icon: Calculator,    label: 'ROI',         sub: 'Räkna besparing' },
-    { key: 'areas', icon: Briefcase,     label: 'BRANSCHER',   sub: 'Där vi jobbar' },
-    { key: 'tips',  icon: Lightbulb,     label: 'DAGENS TIPS', sub: 'Ny insikt varje dag' },
-  ]
+  const todaysTip = TIPS[dayOfYearIndex() % TIPS.length]
+
   return (
     <div className="h-full flex flex-col text-[var(--bone)]">
-      <div className="px-5 pt-1 pb-3">
+      <div className="px-4 pt-1 pb-3">
         <div className="relative rounded-2xl p-4 overflow-hidden hairline-strong bg-gradient-to-br from-[var(--purple)]/20 via-[var(--ink-3)] to-[var(--ink-2)]">
           <div className="absolute inset-0 diag-lines pointer-events-none" />
           <div className="relative">
             <div className="text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--gold-soft)] mb-1.5">
               Propplösare för flaskhalsar
             </div>
-            <div className="font-serif text-[22px] leading-[1.05] mb-2">
+            <div className="font-serif text-[20px] leading-[1.05] mb-2">
               Bygg bort ert största <span className="italic text-[var(--gold-soft)]">manuella steg</span>.
             </div>
-            <div className="text-[12px] text-[var(--bone)]/65 leading-snug mb-3.5">
-              Fråga mig vad som är möjligt, räkna på besparing, eller boka 30 min — allt här i widgeten.
-            </div>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2 mt-3">
               <span className="text-[9px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/45">I drift hos</span>
               <span className="h-px flex-1 bg-[var(--bone)]/10" />
             </div>
@@ -358,30 +349,132 @@ function Home({ setScreen }) {
         </div>
       </div>
 
-      <div className="px-5 flex-1 overflow-y-auto scrollbar-hidden">
-        <div className="grid grid-cols-2 gap-2">
-          {tiles.map((t, i) => (
-            <motion.button
-              key={t.key}
-              onClick={() => setScreen(t.key)}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 + i * 0.04 }}
-              whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.97 }}
-              className="group relative rounded-2xl p-4 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition overflow-hidden"
-            >
-              <div className="w-9 h-9 rounded-xl grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] mb-3 group-hover:bg-[var(--purple)]/25 transition">
-                <t.icon size={18} />
+      <div className="px-4 flex-1 overflow-y-auto scrollbar-hidden">
+        <div className="grid grid-cols-3 grid-rows-[88px_88px_72px] gap-2">
+          {/* CHATTA — featured 2x2 */}
+          <motion.button
+            onClick={() => setScreen('chat')}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="col-span-2 row-span-2 group relative rounded-2xl p-4 text-left hairline-strong overflow-hidden bg-gradient-to-br from-[var(--purple)]/18 via-[var(--ink-3)] to-[var(--ink-2)] hover:from-[var(--purple)]/28 transition"
+          >
+            <div className="absolute inset-0 diag-lines pointer-events-none" />
+            <div className="relative h-full flex flex-col">
+              <div className="flex items-start justify-between">
+                <Orb size={36} state="idle" />
+                <ArrowUpRight size={16} className="text-[var(--bone)]/30 group-hover:text-[var(--purple-soft)] transition" />
               </div>
-              <div className="font-sans text-[13px] font-bold tracking-wide leading-none mb-1">{t.label}</div>
-              <div className="text-[10.5px] text-[var(--bone)]/50 uppercase tracking-wider">{t.sub}</div>
-              <ArrowUpRight size={14} className="absolute top-3 right-3 text-[var(--bone)]/20 group-hover:text-[var(--purple-soft)] transition" />
-            </motion.button>
-          ))}
+              <div className="mt-auto">
+                <div className="font-sans text-[16px] font-extrabold tracking-tight leading-none mb-1.5">Chatta med Claude</div>
+                <div className="text-[11.5px] text-[var(--bone)]/65 leading-snug mb-3">
+                  Berätta er flaskhals — jag svarar på sekunden.
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-bold text-[var(--bone)]/55">
+                  <span className="live-dot w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.7)]" />
+                  Online · svar inom ~10 s
+                </div>
+              </div>
+            </div>
+          </motion.button>
+
+          {/* ROI — kompakt */}
+          <motion.button
+            onClick={() => setScreen('roi')}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.10 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition overflow-hidden"
+          >
+            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--gold)]/15 text-[var(--gold-soft)] mb-2">
+              <Calculator size={14} />
+            </div>
+            <div className="font-sans text-[11.5px] font-bold tracking-wide leading-none mb-0.5">ROI</div>
+            <div className="text-[9.5px] text-[var(--bone)]/50 uppercase tracking-wider">Räkna besparing</div>
+          </motion.button>
+
+          {/* DAGENS TIPS — preview */}
+          <motion.button
+            onClick={() => setScreen('tips')}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--gold-soft)]/40 transition overflow-hidden"
+          >
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Lightbulb size={11} className="text-[var(--gold-soft)]" />
+              <span className="text-[8.5px] font-bold tracking-[0.2em] uppercase text-[var(--gold-soft)]">Dagens tips</span>
+            </div>
+            <div className="font-sans text-[11px] font-bold leading-tight text-[var(--bone)]/90 line-clamp-3">
+              {todaysTip.title}
+            </div>
+          </motion.button>
+
+          {/* OM SAMIFY */}
+          <motion.button
+            onClick={() => setScreen('about')}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.20 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-2.5"
+          >
+            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+              <Users size={13} />
+            </div>
+            <div className="min-w-0">
+              <div className="font-sans text-[11px] font-bold tracking-wide leading-none mb-0.5 truncate">OM SAMIFY</div>
+              <div className="text-[9px] text-[var(--bone)]/50 uppercase tracking-wider truncate">Vilka vi är</div>
+            </div>
+          </motion.button>
+
+          {/* FAQ */}
+          <motion.button
+            onClick={() => setScreen('faq')}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-2.5"
+          >
+            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+              <HelpCircle size={13} />
+            </div>
+            <div className="min-w-0">
+              <div className="font-sans text-[11px] font-bold tracking-wide leading-none mb-0.5 truncate">FAQ</div>
+              <div className="text-[9px] text-[var(--bone)]/50 uppercase tracking-wider truncate">Vanliga frågor</div>
+            </div>
+          </motion.button>
+
+          {/* BRANSCHER */}
+          <motion.button
+            onClick={() => setScreen('areas')}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.30 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-2.5"
+          >
+            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+              <Briefcase size={13} />
+            </div>
+            <div className="min-w-0">
+              <div className="font-sans text-[11px] font-bold tracking-wide leading-none mb-0.5 truncate">BRANSCHER</div>
+              <div className="text-[9px] text-[var(--bone)]/50 uppercase tracking-wider truncate">Där vi jobbar</div>
+            </div>
+          </motion.button>
         </div>
 
-        <div className="mt-3 pb-2 text-[10px] text-[var(--bone)]/40 text-center tracking-[0.18em] uppercase">
+        <div className="mt-3 pb-1 text-[9.5px] text-[var(--bone)]/40 text-center tracking-[0.18em] uppercase">
           Krypterat · GDPR · Drivs av <span className="shimmer-text font-semibold">Samify</span>
         </div>
       </div>
@@ -390,11 +483,11 @@ function Home({ setScreen }) {
         onClick={() => setScreen('contact')}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
-        className="mx-3 mb-3 rounded-2xl py-3.5 px-4 bg-[var(--bone)] text-[var(--ink-2)] font-bold text-[13px] tracking-wide flex items-center justify-center gap-2 hover:bg-[var(--gold-soft)] transition"
+        className="mx-3 mb-3 rounded-2xl py-3 px-4 bg-[var(--bone)] text-[var(--ink-2)] font-bold text-[12.5px] tracking-wide flex items-center justify-center gap-2 hover:bg-[var(--gold-soft)] transition"
       >
-        <Mail size={14} />
+        <Mail size={13} />
         KONTAKTA OSS · 30 min gratis
-        <ChevronRight size={14} />
+        <ChevronRight size={13} />
       </motion.button>
     </div>
   )
