@@ -369,14 +369,11 @@ function Home({ setScreen }) {
                 <ArrowUpRight size={16} className="text-[var(--bone)]/30 group-hover:text-[var(--purple-soft)] transition" />
               </div>
               <div className="mt-auto">
-                <div className="flex items-baseline gap-1.5 mb-1">
-                  <span className="font-sans text-[16px] font-extrabold tracking-tight leading-none">Chatta med Sam</span>
-                  <span className="font-serif italic text-[12px] text-[var(--gold-soft)] leading-none">.</span>
+                <div className="flex items-baseline gap-1.5 leading-none">
+                  <span className="font-sans text-[16px] font-extrabold tracking-tight">Sam</span>
+                  <span className="font-serif italic text-[13px] text-[var(--gold-soft)]">— Smart Automation Manager</span>
                 </div>
-                <div className="text-[9px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/35 mb-2">
-                  S·A·M · Smart Automation Manager
-                </div>
-                <div className="text-[11.5px] text-[var(--bone)]/65 leading-snug mb-3">
+                <div className="text-[11.5px] text-[var(--bone)]/65 leading-snug mt-2 mb-3">
                   Berätta er flaskhals — jag svarar på sekunden.
                 </div>
                 <div className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-bold text-[var(--bone)]/55">
