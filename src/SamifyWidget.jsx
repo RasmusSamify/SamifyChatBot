@@ -7,9 +7,102 @@ import {
 } from 'lucide-react'
 
 const API_ORIGIN = 'https://samifychatbot.netlify.app'
-const API_CHAT = `${API_ORIGIN}/api/chat`
-const API_LEAD = `${API_ORIGIN}/api/contact`
+const API_CHAT   = `${API_ORIGIN}/api/chat`
+const SUPABASE_URL = 'https://axypazcbgcogtdqqimvi.supabase.co'
+const API_PULSE  = `${SUPABASE_URL}/functions/v1/widget-pulse`
+const API_INTAKE = `${SUPABASE_URL}/functions/v1/widget-intake`
 const CONTACT_EMAIL = 'info@samify.se'
+
+const LOGO_BASE = `${API_ORIGIN}/logos`
+const CLIENT_LOGOS = [
+  { name: 'El-kretsen',     file: 'elkretsen.svg',     alt: 'El-kretsen' },
+  { name: 'VVStrygg',       file: 'vvstrygg.png',      alt: 'VVStrygg Norden' },
+  { name: 'Nivell System',  file: 'nivell.gif',        alt: 'Nivell System' },
+  { name: 'Hönshyltegård',  file: 'honshyltegard.png', alt: 'Hönshyltegård' },
+]
+
+/* ── Telemetri ──────────────────────────────────────────────────── */
+const SESSION_STORAGE_KEY = 'samify_widget_session'
+const eventBuffer = []
+let flushTimer = null
+let sessionStarted = false
+
+function getSessionKey() {
+  try {
+    let key = sessionStorage.getItem(SESSION_STORAGE_KEY)
+    if (!key) {
+      key = (crypto?.randomUUID?.() || `s_${Date.now()}_${Math.random().toString(36).slice(2)}`)
+      sessionStorage.setItem(SESSION_STORAGE_KEY, key)
+    }
+    return key
+  } catch {
+    return `s_${Date.now()}_${Math.random().toString(36).slice(2)}`
+  }
+}
+
+function getUTM(search) {
+  const p = new URLSearchParams(search || window.location.search)
+  return {
+    utm_source:   p.get('utm_source')   || null,
+    utm_medium:   p.get('utm_medium')   || null,
+    utm_campaign: p.get('utm_campaign') || null,
+  }
+}
+
+async function sendPulse(payload) {
+  try {
+    await fetch(API_PULSE, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      keepalive: true,
+      body: JSON.stringify(payload),
+    })
+  } catch {
+    /* fire-and-forget */
+  }
+}
+
+function ensureSession() {
+  if (sessionStarted) return
+  sessionStarted = true
+  const session_key = getSessionKey()
+  sendPulse({
+    session_key,
+    session: {
+      page_url: window.location.href.slice(0, 500),
+      page_host: window.location.hostname.slice(0, 200),
+      referrer: document.referrer?.slice(0, 500) || null,
+      ...getUTM(),
+    },
+  })
+}
+
+function flush() {
+  flushTimer = null
+  if (!eventBuffer.length) return
+  const batch = eventBuffer.splice(0, eventBuffer.length)
+  sendPulse({ session_key: getSessionKey(), events: batch })
+}
+
+function track(type, screen, payload) {
+  ensureSession()
+  eventBuffer.push({
+    type,
+    screen: screen || null,
+    payload: payload || null,
+    occurred_at: new Date().toISOString(),
+  })
+  if (eventBuffer.length >= 8) {
+    flush()
+  } else if (!flushTimer) {
+    flushTimer = setTimeout(flush, 1500)
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', flush)
+  window.addEventListener('beforeunload', flush)
+}
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&display=swap');
@@ -207,6 +300,30 @@ function LiveClock() {
   )
 }
 
+/* ── Kund-loggor (monokrom bone) ────────────────────────────────── */
+function ClientLogos({ compact = false }) {
+  return (
+    <div className="rounded-2xl p-4 hairline bg-white/[0.02] relative overflow-hidden">
+      <div className="text-[10px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/45 mb-3 text-center">
+        I drift hos
+      </div>
+      <div className={`grid ${compact ? 'grid-cols-4 gap-3' : 'grid-cols-2 gap-4'} items-center`}>
+        {CLIENT_LOGOS.map(l => (
+          <div key={l.name} className="flex items-center justify-center" title={l.alt}>
+            <img
+              src={`${LOGO_BASE}/${l.file}`}
+              alt={l.alt}
+              loading="lazy"
+              className="max-h-7 max-w-full object-contain opacity-60 hover:opacity-90 transition"
+              style={{ filter: 'grayscale(1) brightness(2.4) contrast(0.9)' }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /* ── Home (tile grid) ───────────────────────────────────────────── */
 function Home({ setScreen }) {
   const tiles = [
@@ -259,6 +376,10 @@ function Home({ setScreen }) {
           ))}
         </div>
 
+        <div className="mt-4">
+          <ClientLogos compact />
+        </div>
+
         <div className="mt-3 pb-3 text-[10.5px] text-[var(--bone)]/45 text-center tracking-wide">
           Krypterat · GDPR-kompatibelt · Drivs av <span className="shimmer-text font-semibold">Samify</span>
         </div>
@@ -306,6 +427,7 @@ function ChatScreen({ setScreen }) {
     const next = [...messages, { role: 'user', content }]
     setMessages(next)
     setBusy(true)
+    track('chat_message', 'chat', { role: 'user', content: content.slice(0, 500) })
     try {
       const res = await fetch(API_CHAT, {
         method: 'POST',
@@ -315,11 +437,14 @@ function ChatScreen({ setScreen }) {
       const data = await res.json()
       if (data.reply) {
         setMessages(m => [...m, { role: 'assistant', content: data.reply }])
+        track('chat_message', 'chat', { role: 'assistant', content: data.reply.slice(0, 500) })
       } else {
         setErr(data.error || 'unknown')
+        track('chat_error', 'chat', { reason: data.error || 'unknown' })
       }
-    } catch {
+    } catch (e) {
       setErr('network')
+      track('chat_error', 'chat', { reason: 'network', message: e?.message?.slice(0, 200) })
     } finally {
       setBusy(false)
     }
@@ -417,14 +542,15 @@ function ChatBubble({ m }) {
 function AboutScreen({ setScreen }) {
   const facts = [
     { k: 'BAS',     v: 'Kalmar, Sverige' },
-    { k: 'START',   v: '2024' },
+    { k: 'MODELL',  v: 'Bygger + driver' },
     { k: 'FOKUS',   v: 'Svenska SMB' },
     { k: 'STACK',   v: 'React · Supabase · Claude' },
   ]
   const values = [
-    { t: 'Koden ni äger',    d: 'Ni behåller all kod och all data. Ingen vendor lock-in.' },
-    { t: 'Svenska först',    d: 'Byggt på svenska, för svenska företag. GDPR från dag ett.' },
-    { t: 'Snabbhet > process',d: 'Kartläggning på en vecka. Prototyp på tre. Drift innan kvartalet är slut.' },
+    { t: 'Skräddarsytt — inte hyllvara',  d: 'Varje lösning byggs runt just era flöden. Ingen generisk SaaS att tvinga in företaget i.' },
+    { t: 'Drift som tjänst',              d: 'Vi bygger OCH driver. Månadsavgift täcker servrar, AI-kostnad, övervakning och vidareutveckling. Ni äger datan, vi sköter resten.' },
+    { t: 'Svenska först',                 d: 'Byggt på svenska, för svenska företag. GDPR från dag ett, EU-hosting när det går.' },
+    { t: 'Snabbhet > process',            d: 'Kartläggning på en vecka. Prototyp på tre. I drift innan kvartalet är slut.' },
   ]
   return (
     <div className="h-full overflow-y-auto scrollbar-hidden px-5 pb-5 text-[var(--bone)] space-y-5">
@@ -433,14 +559,16 @@ function AboutScreen({ setScreen }) {
         <div className="relative">
           <div className="text-[10px] tracking-[0.22em] uppercase font-bold text-[var(--gold-soft)] mb-1">Samify</div>
           <div className="font-serif text-[26px] leading-[1.05] mb-3">
-            AI-kollegor <span className="italic text-[var(--gold-soft)]">byggda</span><br />för svenska SMB.
+            AI-kollegor <span className="italic text-[var(--gold-soft)]">byggda och drivna</span><br />för svenska SMB.
           </div>
           <p className="text-[12.5px] text-[var(--bone)]/70 leading-relaxed">
             Vi är ett litet teknik-bolag från Kalmar. Vi bygger chatbottar, CRM-system, RAG-lösningar och
-            automationer — det är AI-kollegor som tar bort företagets mest irriterande manuella steg.
+            automationer — och driver dem åt er. Inget överlämnat projekt; en kollega som finns kvar.
           </p>
         </div>
       </div>
+
+      <ClientLogos />
 
       <div className="grid grid-cols-2 gap-2">
         {facts.map(f => (
@@ -503,10 +631,11 @@ function AboutScreen({ setScreen }) {
 function FaqScreen() {
   const qa = [
     { q: 'Hur snabbt kan ni leverera?', a: 'Kartläggning på 1 vecka, en körbar prototyp på 2-3 veckor, och driftsatt lösning innan kvartalet är slut. Vi siktar på värde från första sprinten — inte på 40-sidors förstudier.' },
-    { q: 'Vad kostar det?', a: 'Det beror helt på omfattning. Kartläggningen är gratis — efter den har vi en rimlig uppskattning på pris och tid för ert specifika case.' },
-    { q: 'Är våra data säkra?', a: 'Ja. Vi bygger GDPR-kompatibelt från dag ett, kör svensk/EU-hosting när det går, och all data ligger i er egen miljö. Ingen "vi skickar till US"-hantering.' },
-    { q: 'Hur lång bindningstid?', a: 'Ingen. Ni äger koden, datan, och alla integrationer. Vi fortsätter så länge vi tillför värde — inte för att ett kontrakt säger så.' },
-    { q: 'Vad händer om AI:n svarar fel?', a: 'Alla AI-kollegor vi bygger har eskaleringsspår till människa, och månadsvisa rapporter på vad de missar. Vi finjusterar löpande — och ni ser datan.' },
+    { q: 'Vad kostar det?', a: 'Vi tar månadsavgift som täcker drift, AI-kostnad, övervakning och vidareutveckling — storleken beror på case. Kartläggningen är gratis och ger en konkret offert efter en vecka.' },
+    { q: 'Får vi källkoden?', a: 'Lösningen drivs som tjänst — ni äger datan och kan exportera när som helst, men driften (servrar, AI-modeller, övervakning, uppdateringar) sköts av oss. Ni slipper alltså få hem ett system att underhålla själva.' },
+    { q: 'Är våra data säkra?', a: 'Ja. GDPR-kompatibelt från dag ett, EU-hosting när det går, krypterat in transit och at rest. Datan är er — ni kan begära export eller radering när som helst.' },
+    { q: 'Hur lång bindningstid?', a: 'Tre månader initialt så vi hinner driftsätta ordentligt, sedan rullande månadsvis. Ingen 24-månaderscell. Slutar vi tillföra värde — då slutar ni betala.' },
+    { q: 'Vad händer om AI:n svarar fel?', a: 'Alla AI-kollegor vi bygger har eskaleringsspår till människa, och månadsvisa rapporter på vad de missar. Vi finjusterar löpande — det är en del av månadsavgiften, inget sidoprojekt.' },
     { q: 'Jobbar ni på plats eller remote?', a: 'Både och. Kartläggningsworkshopen kör vi gärna på plats hos er. Utveckling är remote, med demos varje vecka.' },
     { q: 'Vilka system kan ni koppla ihop?', a: 'Det mesta: Fortnox, HubSpot, Zapier, Google Workspace, Teams, Slack, Supabase, egna REST-APIs, webhooks. Om det har ett API — då kan vi koppla.' },
   ]
@@ -564,6 +693,13 @@ function RoiScreen({ setScreen }) {
   const hourlyCost = salary / 160
   const monthlySavings = Math.round(monthlyHours * hourlyCost)
   const yearly = monthlySavings * 12
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      track('roi_change', 'roi', { emails, minPer, salary, monthlySavings })
+    }, 700)
+    return () => clearTimeout(t)
+  }, [emails, minPer, salary, monthlySavings])
 
   return (
     <div className="h-full overflow-y-auto scrollbar-hidden px-5 pb-5 text-[var(--bone)]">
@@ -726,7 +862,7 @@ const TIPS = [
   { kat: 'Integration',   title: 'Zapier + Claude = MVP på en dag.',                               body: 'Ni behöver inte kod för allt. En Zapier-webhook till Claude API är ofta nog för första versionen — validera idén där, kodifiera sen.' },
   { kat: 'Utvärdering',   title: 'Mät innan. Mät efter. Mät igen.',                                body: 'Utan före-siffror har ni inget att jämföra AI-förbättringen med. Dokumentera nuläge (tid, felfrekvens, NPS) innan ni driftsätter.' },
   { kat: 'Test',          title: 'Testa med riktiga kunder så tidigt som möjligt.',                body: 'Interna testare är vänliga. Riktiga kunder är ärliga. Kör intern prototyp vecka 1, extern betatest vecka 2.' },
-  { kat: 'Ägarskap',      title: 'Koden och datan ska vara er — alltid.',                          body: 'Vi skriver ingen vendor-lock-kod. Ingen "hosted plattform" som ni inte kan lämna. Koden lever i era repos. Datan i er infrastruktur.' },
+  { kat: 'Ägarskap',      title: 'Datan är er. Alltid.',                                            body: 'Lösningen drivs som tjänst, men datan är er — exporterbar när som helst, krypterad i EU. Ni slipper underhålla en kodbas; vi slipper bygga "lösningen som ändå inte används om sex månader".' },
   { kat: 'Transparens',   title: 'Visa när AI:n svarar. Inte efteråt.',                            body: 'Användare som vet att de pratar med AI är tacksamma. De som tror de pratar med en människa blir förbannade när de inser. Bygg det öppet.' },
   { kat: 'Fel',           title: 'Planera för felaktiga svar — det KOMMER hända.',                 body: 'Error-budget, eskaleringsvägar, månadsvisa rapporter på missar. Perfektion finns inte. Förbättringshastighet gör det.' },
   { kat: 'Support',       title: '80% av supportfrågorna är repetitiva.',                          body: 'Låt AI ta dem. Frigör människan till de 20% som faktiskt bygger kundrelation. 80/20 gäller även här.' },
@@ -755,6 +891,10 @@ function TipsScreen() {
   const idx = (((base + offset) % TIPS.length) + TIPS.length) % TIPS.length
   const tip = TIPS[idx]
   const isToday = offset === 0
+
+  useEffect(() => {
+    track('tip_view', 'tips', { idx, kat: tip.kat })
+  }, [idx])
 
   const label = isToday
     ? 'Dagens tips'
@@ -841,26 +981,35 @@ function ContactScreen() {
     if (!email.trim() || !message.trim() || state === 'sending') return
     setState('sending')
     setErrDetail('')
+    track('contact_attempt', 'contact', { hasName: !!name, hasCompany: !!company })
     try {
-      const res = await fetch(API_LEAD, {
+      const res = await fetch(API_INTAKE, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ name, company, email, message }),
+        body: JSON.stringify({
+          session_key: getSessionKey(),
+          page_url: window.location.href,
+          name, company, email, message,
+        }),
       })
       let data = null
       try { data = await res.json() } catch {}
       if (res.ok && data?.ok) {
         setState('ok')
+        track('contact_success', 'contact')
+        flush()
       } else {
         const reason = data?.error || `HTTP ${res.status}`
-        console.error('[Samify] kontakt-POST misslyckades:', API_LEAD, res.status, data)
+        console.error('[Samify] kontakt-POST misslyckades:', API_INTAKE, res.status, data)
         setErrDetail(reason)
         setState('error')
+        track('contact_error', 'contact', { reason })
       }
     } catch (err) {
-      console.error('[Samify] kontakt-POST nätverksfel:', API_LEAD, err)
+      console.error('[Samify] kontakt-POST nätverksfel:', API_INTAKE, err)
       setErrDetail(err?.message || 'network')
       setState('error')
+      track('contact_error', 'contact', { reason: 'network', message: err?.message?.slice(0, 200) })
     }
   }
 
@@ -1023,8 +1172,15 @@ export default function SamifyWidget() {
   const [nudgeDismissed, setNudgeDismissed] = useState(false)
 
   useEffect(() => {
+    ensureSession()
+  }, [])
+
+  useEffect(() => {
     if (open || nudgeDismissed) return
-    const t = setTimeout(() => setNudge(true), 3800)
+    const t = setTimeout(() => {
+      setNudge(true)
+      track('nudge_shown')
+    }, 3800)
     return () => clearTimeout(t)
   }, [open, nudgeDismissed])
 
@@ -1036,6 +1192,14 @@ export default function SamifyWidget() {
     }
   }, [open])
 
+  useEffect(() => {
+    if (open) track('open', screen)
+  }, [open])
+
+  useEffect(() => {
+    if (open) track('screen_view', screen)
+  }, [open, screen])
+
   return (
     <>
       <style>{styles}</style>
@@ -1044,7 +1208,7 @@ export default function SamifyWidget() {
           {nudge && !open && (
             <ProactiveNudge
               onOpen={() => { setOpen(true); setNudge(false) }}
-              onClose={() => { setNudge(false); setNudgeDismissed(true) }}
+              onClose={() => { setNudge(false); setNudgeDismissed(true); track('nudge_dismissed') }}
             />
           )}
         </AnimatePresence>
@@ -1059,7 +1223,7 @@ export default function SamifyWidget() {
               className="absolute bottom-20 right-0 w-[400px] h-[680px] max-sm:fixed max-sm:inset-0 max-sm:w-screen max-sm:h-[100dvh] max-sm:rounded-none rounded-[28px] overflow-hidden mesh-bg text-[var(--bone)] shadow-[0_40px_100px_-20px_rgba(0,0,0,.65)] hairline-strong flex flex-col"
               style={{ transformOrigin: 'bottom right' }}
             >
-              <PanelHeader screen={screen} setScreen={setScreen} onClose={() => setOpen(false)} />
+              <PanelHeader screen={screen} setScreen={setScreen} onClose={() => { track('close', screen); setOpen(false) }} />
               <div className="flex-1 min-h-0 relative">
                 <AnimatePresence mode="wait">
                   <motion.div

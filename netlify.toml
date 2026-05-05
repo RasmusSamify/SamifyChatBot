@@ -15,3 +15,20 @@
     Access-Control-Allow-Origin = "*"
     Cache-Control = "public, max-age=300, must-revalidate"
     Content-Type = "application/javascript; charset=utf-8"
+
+[[headers]]
+  for = "/logos/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=86400, immutable"
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow"
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200

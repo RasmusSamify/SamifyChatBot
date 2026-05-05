@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Samify · Widget Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Montserrat', system-ui, sans-serif; background: #0E0C0A; color: #F6F2EE; }
+    .font-serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .font-mono  { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    .hairline       { border: 1px solid rgba(246,242,238,.08); }
+    .hairline-strong{ border: 1px solid rgba(246,242,238,.14); }
+    .mesh-bg {
+      background:
+        radial-gradient(1200px 600px at 10% 10%,  rgba(124,58,237,.10), transparent 55%),
+        radial-gradient(900px  500px at 90% 20%, rgba(181,132,74,.08),  transparent 60%),
+        #0E0C0A;
+    }
+    .scrollbar-hidden::-webkit-scrollbar { display: none; }
+    .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+    .live-dot { animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+  </style>
+</head>
+<body class="mesh-bg min-h-screen">
+  <div id="app"></div>
+
+  <script type="module">
+    import React, { useState, useEffect, useMemo, useRef } from 'https://esm.sh/react@18.3.1'
+    import { createRoot } from 'https://esm.sh/react-dom@18.3.1/client'
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.46.0'
+    import htm from 'https://esm.sh/htm@3.1.1'
+
+    const html = htm.bind(React.createElement)
+    const e = React.createElement
+
+    const SUPABASE_URL = 'https://axypazcbgcogtdqqimvi.supabase.co'
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4eXBhemNiZ2NvZ3RkcXFpbXZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTQzNTQsImV4cCI6MjA5MDM5MDM1NH0.UJmVxHtK1SUWjkiXBO6KlRsAAy4pFo9B32dtnhWGy7E'
+    const ALLOWED_DOMAIN = '@samify.se'
+    const isAllowed = (u) => !!u?.email && u.email.toLowerCase().endsWith(ALLOWED_DOMAIN)
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
+      auth: { persistSession: true, storageKey: 'samify-admin-auth' },
+    })
+
+    const fmt = new Intl.NumberFormat('sv-SE')
+    const dateFmt = new Intl.DateTimeFormat('sv-SE', { dateStyle: 'short', timeStyle: 'short' })
+
+    function timeAgo(iso) {
+      if (!iso) return '–'
+      const diff = (Date.now() - new Date(iso).getTime()) / 1000
+      if (diff < 60) return Math.floor(diff) + 's'
+      if (diff < 3600) return Math.floor(diff/60) + 'm'
+      if (diff < 86400) return Math.floor(diff/3600) + 'h'
+      return Math.floor(diff/86400) + 'd'
+    }
+
+    /* ─── Login ──────────────────────────────────────────────────── */
+    function Login({ onAuth }) {
+      const [email, setEmail] = useState('')
+      const [password, setPassword] = useState('')
+      const [busy, setBusy] = useState(false)
+      const [err, setErr] = useState('')
+
+      async function submit(ev) {
+        ev.preventDefault()
+        setBusy(true); setErr('')
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+        setBusy(false)
+        if (error) { setErr(error.message); return }
+        if (!isAllowed(data?.user)) {
+          setErr('Det här kontot saknar åtkomst. Använd din ' + ALLOWED_DOMAIN + '-adress.')
+          await supabase.auth.signOut()
+          return
+        }
+        onAuth(data.user)
+      }
+
+      return e('div', { className: 'min-h-screen flex items-center justify-center px-6' },
+        e('form', { onSubmit: submit, className: 'w-full max-w-sm rounded-2xl hairline-strong p-6 bg-white/[0.02]' },
+          e('div', { className: 'text-[10px] tracking-[0.22em] uppercase font-bold text-amber-200/70 mb-1' }, 'Samify · Admin'),
+          e('h1', { className: 'font-serif text-2xl mb-5' }, 'Widget Analytics'),
+          e('label', { className: 'block mb-3' },
+            e('div', { className: 'text-[10.5px] font-bold tracking-[0.18em] uppercase text-white/55 mb-1.5' }, 'E-post'),
+            e('input', {
+              type: 'email', required: true, value: email,
+              onChange: ev => setEmail(ev.target.value),
+              placeholder: 'namn@samify.se',
+              autoComplete: 'email',
+              className: 'w-full rounded-xl bg-white/[0.04] hairline px-3 py-2.5 text-[13px] outline-none focus:border-purple-400/55',
+            }),
+          ),
+          e('label', { className: 'block mb-4' },
+            e('div', { className: 'text-[10.5px] font-bold tracking-[0.18em] uppercase text-white/55 mb-1.5' }, 'Lösenord'),
+            e('input', {
+              type: 'password', required: true, value: password,
+              onChange: ev => setPassword(ev.target.value),
+              className: 'w-full rounded-xl bg-white/[0.04] hairline px-3 py-2.5 text-[13px] outline-none focus:border-purple-400/55',
+            }),
+          ),
+          err && e('div', { className: 'text-[12px] text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-lg px-3 py-2 mb-3' }, err),
+          e('button', {
+            type: 'submit', disabled: busy,
+            className: 'w-full rounded-xl py-3 px-4 bg-white text-black font-bold text-[12.5px] tracking-wide disabled:opacity-40 hover:bg-amber-200 transition',
+          }, busy ? 'Loggar in…' : 'Logga in'),
+          e('div', { className: 'text-[10.5px] text-white/35 mt-4 text-center' }, 'Samma inlogg som CRM · ' + ALLOWED_DOMAIN + '-adresser'),
+        ),
+      )
+    }
+
+    /* ─── KPI Card ──────────────────────────────────────────────── */
+    function Kpi({ label, value, sub, accent }) {
+      const accentClass = accent === 'purple' ? 'text-purple-300' : accent === 'green' ? 'text-emerald-300' : accent === 'gold' ? 'text-amber-200' : 'text-white'
+      return e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-4' },
+        e('div', { className: 'text-[10px] font-bold tracking-[0.22em] uppercase text-white/45 mb-2' }, label),
+        e('div', { className: `font-serif text-[36px] leading-none ${accentClass}` }, value),
+        sub && e('div', { className: 'text-[11px] text-white/50 mt-1.5' }, sub),
+      )
+    }
+
+    /* ─── Funnel bar ─────────────────────────────────────────────── */
+    function Bar({ value, max, label, count, accent = 'bg-purple-400/40' }) {
+      const pct = max > 0 ? Math.max(2, (value / max) * 100) : 0
+      return e('div', { className: 'mb-2.5' },
+        e('div', { className: 'flex items-baseline justify-between mb-1' },
+          e('div', { className: 'text-[11px] font-bold tracking-[0.16em] uppercase text-white/65' }, label),
+          e('div', { className: 'text-[12.5px] text-white' },
+            e('span', { className: 'font-mono' }, fmt.format(count)),
+            value !== count ? null : null,
+          ),
+        ),
+        e('div', { className: 'h-2 rounded-full bg-white/[0.05] overflow-hidden' },
+          e('div', { className: `h-full ${accent}`, style: { width: pct + '%', transition: 'width .4s' } }),
+        ),
+      )
+    }
+
+    /* ─── Översikt ──────────────────────────────────────────────── */
+    function Overview({ data }) {
+      const { sessions, leads, funnel, topScreens, recentChat, recentSessions } = data
+      const today = funnel[0]
+      const opensTotal = funnel.reduce((a,b) => a + (b.opened||0), 0)
+      const chattedTotal = funnel.reduce((a,b) => a + (b.chatted||0), 0)
+      const convertedTotal = funnel.reduce((a,b) => a + (b.converted||0), 0)
+      const sessionsTotal = funnel.reduce((a,b) => a + (b.sessions||0), 0)
+      const conv = sessionsTotal > 0 ? Math.round((convertedTotal/sessionsTotal)*1000)/10 : 0
+      const screensMax = topScreens[0]?.views || 1
+
+      return e(React.Fragment, null,
+        e('div', { className: 'grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6' },
+          e(Kpi, { label: 'Sessioner', value: fmt.format(sessionsTotal), sub: 'Senaste 30 dagarna' }),
+          e(Kpi, { label: 'Öppningar', value: fmt.format(opensTotal), sub: opensTotal && sessionsTotal ? Math.round((opensTotal/sessionsTotal)*100) + '% av besökarna öppnar' : '–', accent: 'purple' }),
+          e(Kpi, { label: 'Chat-svar', value: fmt.format(chattedTotal), sub: 'Personer som skickade en fråga', accent: 'gold' }),
+          e(Kpi, { label: 'Leads', value: fmt.format(leads.length), sub: conv + '% konvertering totalt', accent: 'green' }),
+        ),
+
+        e('div', { className: 'grid grid-cols-1 lg:grid-cols-2 gap-3 mb-6' },
+          e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-5' },
+            e('div', { className: 'flex items-baseline justify-between mb-4' },
+              e('div', { className: 'text-[10px] tracking-[0.22em] uppercase font-bold text-amber-200/70' }, 'Funnel'),
+              e('div', { className: 'text-[11px] text-white/45' }, 'Senaste 30 dagar'),
+            ),
+            e(Bar, { label: 'Sessioner',  value: sessionsTotal,  max: sessionsTotal, count: sessionsTotal,   accent: 'bg-white/30' }),
+            e(Bar, { label: 'Öppnade',    value: opensTotal,     max: sessionsTotal, count: opensTotal,      accent: 'bg-purple-400/60' }),
+            e(Bar, { label: 'Chattade',   value: chattedTotal,   max: sessionsTotal, count: chattedTotal,    accent: 'bg-amber-200/60' }),
+            e(Bar, { label: 'Konverterade',value: convertedTotal,max: sessionsTotal, count: convertedTotal,  accent: 'bg-emerald-400/70' }),
+          ),
+          e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-5' },
+            e('div', { className: 'text-[10px] tracking-[0.22em] uppercase font-bold text-amber-200/70 mb-4' }, 'Mest besökta skärmar'),
+            topScreens.length === 0
+              ? e('div', { className: 'text-[12px] text-white/45' }, 'Inga skärm-events än.')
+              : topScreens.slice(0, 8).map(s =>
+                  e('div', { key: s.screen, className: 'flex items-baseline justify-between text-[12.5px] py-1.5' },
+                    e('span', { className: 'capitalize' }, s.screen),
+                    e('span', { className: 'font-mono text-white/70' }, fmt.format(s.views)),
+                  ),
+                ),
+          ),
+        ),
+
+        e('div', { className: 'grid grid-cols-1 lg:grid-cols-2 gap-3' },
+          e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-5' },
+            e('div', { className: 'text-[10px] tracking-[0.22em] uppercase font-bold text-amber-200/70 mb-4' }, 'Senaste sessioner'),
+            recentSessions.length === 0
+              ? e('div', { className: 'text-[12px] text-white/45' }, 'Inga sessioner än. Öppna widgeten på samifychatbot.netlify.app för att producera testdata.')
+              : recentSessions.slice(0, 10).map(s =>
+                  e('div', { key: s.session_key, className: 'flex items-center justify-between text-[12px] py-1.5 border-b border-white/[0.04] last:border-0' },
+                    e('div', { className: 'flex items-center gap-2 min-w-0' },
+                      e('span', { className: `live-dot w-1.5 h-1.5 rounded-full ${s.converted ? 'bg-emerald-400' : s.opened ? 'bg-purple-400' : 'bg-white/30'}` }),
+                      e('span', { className: 'truncate text-white/80' }, s.page_host || 'okänd'),
+                    ),
+                    e('span', { className: 'font-mono text-white/45 text-[11px]' }, timeAgo(s.last_seen_at)),
+                  ),
+                ),
+          ),
+          e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-5' },
+            e('div', { className: 'text-[10px] tracking-[0.22em] uppercase font-bold text-amber-200/70 mb-4' }, 'Senaste chat-frågor'),
+            recentChat.length === 0
+              ? e('div', { className: 'text-[12px] text-white/45' }, 'Inga chat-frågor än.')
+              : recentChat.slice(0, 10).map((q, i) =>
+                  e('div', { key: i, className: 'py-2 border-b border-white/[0.04] last:border-0' },
+                    e('div', { className: 'text-[12.5px] text-white/85 leading-snug line-clamp-2' }, q.question),
+                    e('div', { className: 'text-[10.5px] text-white/45 mt-1 font-mono' }, timeAgo(q.occurred_at), ' · ', q.page_host || 'okänd'),
+                  ),
+                ),
+          ),
+        ),
+      )
+    }
+
+    /* ─── Score-badge ────────────────────────────────────────────── */
+    function scoreBucket(score) {
+      if (score >= 75) return { label: 'Het',  ring: 'ring-emerald-400/40', text: 'text-emerald-300', bg: 'bg-emerald-400/10' }
+      if (score >= 55) return { label: 'Varm', ring: 'ring-amber-300/40',   text: 'text-amber-200',   bg: 'bg-amber-300/10' }
+      if (score >= 35) return { label: 'Ljum', ring: 'ring-purple-400/40',  text: 'text-purple-300',  bg: 'bg-purple-400/10' }
+      return                  { label: 'Kall', ring: 'ring-white/15',       text: 'text-white/55',    bg: 'bg-white/[0.04]' }
+    }
+
+    function ScoreBadge({ score, signals }) {
+      const b = scoreBucket(score)
+      const tip = signals
+        ? `msg-längd: ${signals.msg_len} tkn · chat-frågor: ${signals.chat_msgs} · ROI: ${signals.roi_events ? 'ja' : 'nej'} · skärmar: ${signals.unique_screens} · intent: ${signals.has_intent_word ? 'ja' : 'nej'}`
+        : ''
+      return e('div', {
+        className: `inline-flex items-center gap-2 rounded-full ring-1 px-2.5 py-1 ${b.ring} ${b.bg}`,
+        title: tip,
+      },
+        e('span', { className: `text-[10.5px] font-bold tracking-[0.18em] uppercase ${b.text}` }, b.label),
+        e('span', { className: `font-mono font-bold text-[12px] ${b.text}` }, score),
+      )
+    }
+
+    /* ─── Leads-flik ─────────────────────────────────────────────── */
+    function LeadsTab({ leads, onUpdate }) {
+      const [filter, setFilter] = useState('')
+      const [statusFilter, setStatusFilter] = useState('all')
+      const [sortBy, setSortBy] = useState('created')
+      const [convertingId, setConvertingId] = useState(null)
+      const [convertError, setConvertError] = useState('')
+
+      const filtered = useMemo(() => {
+        let out = leads.filter(l => {
+          if (statusFilter !== 'all' && l.status !== statusFilter) return false
+          if (!filter) return true
+          const q = filter.toLowerCase()
+          return [l.name, l.company, l.email, l.message].some(v => (v || '').toLowerCase().includes(q))
+        })
+        if (sortBy === 'score') out = [...out].sort((a, b) => (b.score || 0) - (a.score || 0))
+        else                     out = [...out].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        return out
+      }, [leads, filter, statusFilter, sortBy])
+
+      function exportCsv() {
+        const head = 'created_at,status,score,name,company,email,message,page_url,session_key\n'
+        const body = filtered.map(l => [
+          l.created_at, l.status, l.score, l.name, l.company, l.email,
+          (l.message || '').replace(/\n/g, ' '), l.page_url, l.session_key,
+        ].map(v => `"${(v ?? '').toString().replace(/"/g, '""')}"`).join(',')).join('\n')
+        const blob = new Blob([head + body], { type: 'text/csv;charset=utf-8' })
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `samify-leads-${new Date().toISOString().slice(0,10)}.csv`
+        a.click()
+      }
+
+      async function changeStatus(id, status) {
+        await supabase.from('widget_leads').update({
+          status,
+          contacted_at: status === 'contacted' ? new Date().toISOString() : null,
+        }).eq('id', id)
+        onUpdate()
+      }
+
+      async function convertToClient(lead) {
+        if (!confirm(`Konvertera "${lead.company || lead.name || lead.email}" till en CRM-klient?\n\nSkapas som "prospect" i clients-tabellen och leadens status sätts till "converted".`)) return
+        setConvertingId(lead.id)
+        setConvertError('')
+        const { data, error } = await supabase.rpc('convert_widget_lead_to_client', { p_lead_id: lead.id })
+        setConvertingId(null)
+        if (error) {
+          setConvertError(error.message)
+          return
+        }
+        onUpdate()
+      }
+
+      return e(React.Fragment, null,
+        e('div', { className: 'flex flex-wrap items-center gap-2 mb-4' },
+          e('input', {
+            value: filter, onChange: ev => setFilter(ev.target.value),
+            placeholder: 'Sök namn, mejl, meddelande…',
+            className: 'flex-1 min-w-[200px] rounded-xl bg-white/[0.04] hairline px-3 py-2 text-[13px] outline-none focus:border-purple-400/55',
+          }),
+          e('select', {
+            value: statusFilter, onChange: ev => setStatusFilter(ev.target.value),
+            className: 'rounded-xl bg-white/[0.04] hairline px-3 py-2 text-[12.5px] outline-none',
+            title: 'Filtrera status',
+          },
+            e('option', { value: 'all' }, 'Alla statusar'),
+            e('option', { value: 'new' }, 'Nya'),
+            e('option', { value: 'contacted' }, 'Kontaktade'),
+            e('option', { value: 'qualified' }, 'Kvalificerade'),
+            e('option', { value: 'converted' }, 'Konverterade'),
+            e('option', { value: 'spam' }, 'Spam'),
+          ),
+          e('select', {
+            value: sortBy, onChange: ev => setSortBy(ev.target.value),
+            className: 'rounded-xl bg-white/[0.04] hairline px-3 py-2 text-[12.5px] outline-none',
+            title: 'Sortering',
+          },
+            e('option', { value: 'created' }, 'Senaste först'),
+            e('option', { value: 'score' }, 'Score (högst först)'),
+          ),
+          e('button', {
+            onClick: exportCsv,
+            className: 'rounded-xl bg-white text-black font-bold text-[11.5px] tracking-wide px-4 py-2 hover:bg-amber-200 transition',
+          }, 'CSV (' + filtered.length + ')'),
+        ),
+        convertError && e('div', { className: 'rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2 text-[12px] text-rose-200 mb-3' },
+          'Kunde inte konvertera: ', convertError,
+        ),
+        filtered.length === 0
+          ? e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-8 text-center text-[13px] text-white/45' },
+              leads.length === 0 ? 'Inga leads än. Skicka ett meddelande från widgeten för att testa.' : 'Inget matchade din filter.')
+          : e('div', { className: 'space-y-2' },
+              filtered.map(l =>
+                e('div', { key: l.id, className: 'rounded-2xl hairline bg-white/[0.02] p-4' },
+                  e('div', { className: 'flex items-baseline justify-between mb-2 flex-wrap gap-2' },
+                    e('div', { className: 'flex items-baseline gap-3 flex-wrap' },
+                      e(ScoreBadge, { score: l.score ?? 30, signals: l.signals }),
+                      e('div', null,
+                        e('div', { className: 'font-bold text-[14px]' }, l.name || e('span', { className: 'text-white/40' }, '(inget namn)')),
+                        e('div', { className: 'text-[11.5px] text-white/55' },
+                          l.company || '–', ' · ',
+                          e('a', { href: 'mailto:' + l.email, className: 'text-purple-300 hover:underline' }, l.email),
+                        ),
+                      ),
+                    ),
+                    e('div', { className: 'flex items-center gap-2 flex-wrap' },
+                      e('span', { className: 'font-mono text-[10.5px] text-white/45' }, dateFmt.format(new Date(l.created_at))),
+                      e('select', {
+                        value: l.status,
+                        onChange: ev => changeStatus(l.id, ev.target.value),
+                        className: 'rounded-lg bg-white/[0.04] hairline px-2 py-1 text-[11px]',
+                      },
+                        ['new','contacted','qualified','converted','spam'].map(s =>
+                          e('option', { key: s, value: s }, s),
+                        ),
+                      ),
+                      l.client_id
+                        ? e('span', { className: 'rounded-lg bg-emerald-400/10 ring-1 ring-emerald-400/30 px-2 py-1 text-[11px] text-emerald-300' }, 'I CRM')
+                        : e('button', {
+                            onClick: () => convertToClient(l),
+                            disabled: convertingId === l.id,
+                            className: 'rounded-lg bg-purple-500/15 ring-1 ring-purple-400/40 hover:bg-purple-500/25 px-2.5 py-1 text-[11px] font-bold text-purple-100 transition disabled:opacity-50',
+                          }, convertingId === l.id ? 'Konverterar…' : 'Konvertera'),
+                    ),
+                  ),
+                  e('div', { className: 'text-[12.5px] text-white/80 leading-relaxed whitespace-pre-wrap border-l-2 border-purple-400/40 pl-3' }, l.message),
+                  l.page_url && e('div', { className: 'text-[10.5px] text-white/35 mt-2 font-mono truncate' }, l.page_url),
+                ),
+              ),
+            ),
+      )
+    }
+
+    /* ─── Chat-flik ──────────────────────────────────────────────── */
+    function ChatTab({ recentChat }) {
+      return e('div', { className: 'space-y-2' },
+        recentChat.length === 0
+          ? e('div', { className: 'rounded-2xl hairline bg-white/[0.02] p-8 text-center text-[13px] text-white/45' }, 'Inga chat-frågor än.')
+          : recentChat.map((q, i) =>
+              e('div', { key: i, className: 'rounded-2xl hairline bg-white/[0.02] p-4' },
+                e('div', { className: 'text-[13px] text-white/85 leading-relaxed mb-2' }, q.question),
+                e('div', { className: 'text-[10.5px] text-white/40 font-mono flex gap-3 flex-wrap' },
+                  e('span', null, dateFmt.format(new Date(q.occurred_at))),
+                  e('span', null, q.page_host || 'okänd'),
+                  e('span', { className: 'truncate max-w-[200px]' }, q.session_key),
+                ),
+              ),
+            ),
+      )
+    }
+
+    /* ─── Sessions-flik ──────────────────────────────────────────── */
+    function SessionsTab({ sessions }) {
+      return e('div', { className: 'rounded-2xl hairline bg-white/[0.02] overflow-hidden' },
+        e('div', { className: 'grid grid-cols-12 px-4 py-2 text-[10px] tracking-[0.18em] uppercase font-bold text-white/45 border-b border-white/[0.05]' },
+          e('div', { className: 'col-span-3' }, 'Session'),
+          e('div', { className: 'col-span-3' }, 'Domän'),
+          e('div', { className: 'col-span-2' }, 'Device'),
+          e('div', { className: 'col-span-1 text-right' }, 'Events'),
+          e('div', { className: 'col-span-1 text-center' }, 'Öppnad'),
+          e('div', { className: 'col-span-1 text-center' }, 'Konv.'),
+          e('div', { className: 'col-span-1 text-right' }, 'Senast'),
+        ),
+        sessions.length === 0
+          ? e('div', { className: 'p-8 text-center text-[13px] text-white/45' }, 'Inga sessioner än.')
+          : sessions.map(s =>
+              e('div', { key: s.session_key, className: 'grid grid-cols-12 items-center px-4 py-2.5 text-[12px] border-b border-white/[0.03] last:border-0' },
+                e('div', { className: 'col-span-3 truncate font-mono text-[10.5px] text-white/55' }, s.session_key),
+                e('div', { className: 'col-span-3 truncate text-white/80' }, s.page_host || '–'),
+                e('div', { className: 'col-span-2 capitalize text-white/60' }, s.device_type || '–'),
+                e('div', { className: 'col-span-1 text-right font-mono' }, fmt.format(s.events_count || 0)),
+                e('div', { className: 'col-span-1 text-center' }, s.opened ? '✓' : '–'),
+                e('div', { className: 'col-span-1 text-center text-emerald-300' }, s.converted ? '✓' : '–'),
+                e('div', { className: 'col-span-1 text-right text-white/45 font-mono text-[11px]' }, timeAgo(s.last_seen_at)),
+              ),
+            ),
+      )
+    }
+
+    /* ─── Dashboard ──────────────────────────────────────────────── */
+    function Dashboard({ user, onLogout }) {
+      const [tab, setTab] = useState('overview')
+      const [data, setData] = useState({ sessions: [], leads: [], events: [], funnel: [], topScreens: [], recentChat: [], recentSessions: [] })
+      const [loading, setLoading] = useState(true)
+      const [refreshTick, setRefreshTick] = useState(0)
+
+      async function load() {
+        setLoading(true)
+        const since = new Date(Date.now() - 30 * 86400 * 1000).toISOString()
+        const [sessionsRes, leadsRes, funnelRes, topScreensRes, recentChatRes] = await Promise.all([
+          supabase.from('widget_sessions').select('*').gte('started_at', since).order('last_seen_at', { ascending: false }).limit(500),
+          supabase.from('widget_leads_scored_v1').select('*').order('created_at', { ascending: false }).limit(200),
+          supabase.from('widget_funnel_v1').select('*').limit(30),
+          supabase.from('widget_top_screens_v1').select('*'),
+          supabase.from('widget_recent_chat_questions_v1').select('*').limit(50),
+        ])
+        setData({
+          sessions:        sessionsRes.data || [],
+          leads:           leadsRes.data || [],
+          funnel:          funnelRes.data || [],
+          topScreens:      topScreensRes.data || [],
+          recentChat:      recentChatRes.data || [],
+          recentSessions:  (sessionsRes.data || []).slice(0, 20),
+        })
+        setLoading(false)
+      }
+
+      useEffect(() => { load() }, [refreshTick])
+      useEffect(() => {
+        const t = setInterval(() => setRefreshTick(x => x + 1), 30_000)
+        return () => clearInterval(t)
+      }, [])
+
+      const tabs = [
+        { id: 'overview', label: 'Översikt' },
+        { id: 'leads',    label: 'Leads (' + data.leads.length + ')' },
+        { id: 'chat',     label: 'Chat (' + data.recentChat.length + ')' },
+        { id: 'sessions', label: 'Sessioner (' + data.sessions.length + ')' },
+      ]
+
+      return e('div', { className: 'min-h-screen' },
+        e('header', { className: 'border-b border-white/[0.06] sticky top-0 bg-[#0E0C0A]/85 backdrop-blur-md z-20' },
+          e('div', { className: 'max-w-6xl mx-auto px-6 py-4 flex items-center justify-between' },
+            e('div', null,
+              e('div', { className: 'text-[10px] tracking-[0.22em] uppercase font-bold text-amber-200/70' }, 'Samify · Admin'),
+              e('div', { className: 'font-serif text-[24px] leading-none' }, 'Widget Analytics'),
+            ),
+            e('div', { className: 'flex items-center gap-3' },
+              e('button', {
+                onClick: () => setRefreshTick(x => x + 1),
+                disabled: loading,
+                className: 'rounded-xl bg-white/[0.04] hairline px-3 py-2 text-[11.5px] hover:bg-white/[0.08] transition disabled:opacity-50',
+              }, loading ? 'Laddar…' : 'Uppdatera'),
+              e('button', {
+                onClick: onLogout,
+                className: 'rounded-xl hairline px-3 py-2 text-[11.5px] text-white/65 hover:text-white hover:bg-white/[0.04] transition',
+              }, 'Logga ut'),
+            ),
+          ),
+          e('div', { className: 'max-w-6xl mx-auto px-6 flex gap-1 -mb-px' },
+            tabs.map(t =>
+              e('button', {
+                key: t.id, onClick: () => setTab(t.id),
+                className: 'px-4 py-2.5 text-[12px] font-bold tracking-wide border-b-2 transition ' +
+                  (tab === t.id ? 'border-purple-400 text-white' : 'border-transparent text-white/55 hover:text-white'),
+              }, t.label),
+            ),
+          ),
+        ),
+        e('main', { className: 'max-w-6xl mx-auto px-6 py-6' },
+          tab === 'overview' && e(Overview, { data }),
+          tab === 'leads' && e(LeadsTab, { leads: data.leads, onUpdate: () => setRefreshTick(x => x + 1) }),
+          tab === 'chat' && e(ChatTab, { recentChat: data.recentChat }),
+          tab === 'sessions' && e(SessionsTab, { sessions: data.sessions }),
+        ),
+      )
+    }
+
+    /* ─── App ─────────────────────────────────────────────────────── */
+    function App() {
+      const [user, setUser] = useState(null)
+      const [checking, setChecking] = useState(true)
+
+      useEffect(() => {
+        supabase.auth.getSession().then(({ data }) => {
+          if (isAllowed(data?.session?.user)) setUser(data.session.user)
+          setChecking(false)
+        })
+        const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (isAllowed(session?.user)) setUser(session.user)
+          else setUser(null)
+        })
+        return () => sub?.subscription?.unsubscribe?.()
+      }, [])
+
+      async function logout() { await supabase.auth.signOut(); setUser(null) }
+
+      if (checking) return e('div', { className: 'min-h-screen flex items-center justify-center text-white/45' }, 'Laddar…')
+      if (!user) return e(Login, { onAuth: setUser })
+      return e(Dashboard, { user, onLogout: logout })
+    }
+
+    createRoot(document.getElementById('app')).render(e(App))
+  </script>
+</body>
+</html>
