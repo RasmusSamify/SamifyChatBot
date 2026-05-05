@@ -349,8 +349,9 @@ function Home({ setScreen }) {
         </div>
       </div>
 
-      <div className="px-4 flex-1 overflow-y-auto scrollbar-hidden">
-        <div className="grid grid-cols-3 grid-rows-[88px_88px_72px] gap-2">
+      <div className="px-4 flex-1 overflow-y-auto scrollbar-hidden space-y-2">
+        {/* Övre bento: CHATTA stor + ROI/TIPS staplade */}
+        <div className="grid grid-cols-3 grid-rows-[88px_88px] gap-2">
           {/* CHATTA — featured 2x2 */}
           <motion.button
             onClick={() => setScreen('chat')}
@@ -368,7 +369,13 @@ function Home({ setScreen }) {
                 <ArrowUpRight size={16} className="text-[var(--bone)]/30 group-hover:text-[var(--purple-soft)] transition" />
               </div>
               <div className="mt-auto">
-                <div className="font-sans text-[16px] font-extrabold tracking-tight leading-none mb-1.5">Chatta med Claude</div>
+                <div className="flex items-baseline gap-1.5 mb-1">
+                  <span className="font-sans text-[16px] font-extrabold tracking-tight leading-none">Chatta med Sam</span>
+                  <span className="font-serif italic text-[12px] text-[var(--gold-soft)] leading-none">.</span>
+                </div>
+                <div className="text-[9px] tracking-[0.22em] uppercase font-bold text-[var(--bone)]/35 mb-2">
+                  S·A·M · Smart Automation Manager
+                </div>
                 <div className="text-[11.5px] text-[var(--bone)]/65 leading-snug mb-3">
                   Berätta er flaskhals — jag svarar på sekunden.
                 </div>
@@ -415,64 +422,68 @@ function Home({ setScreen }) {
               {todaysTip.title}
             </div>
           </motion.button>
+        </div>
 
-          {/* OM SAMIFY */}
+        {/* Mellersta: FAQ + BRANSCHER, två i en rad */}
+        <div className="grid grid-cols-2 gap-2">
           <motion.button
-            onClick={() => setScreen('about')}
+            onClick={() => setScreen('faq')}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.20 }}
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
-            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-2.5"
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-3 h-[64px]"
           >
-            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
-              <Users size={13} />
+            <div className="w-8 h-8 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+              <HelpCircle size={14} />
             </div>
             <div className="min-w-0">
-              <div className="font-sans text-[11px] font-bold tracking-wide leading-none mb-0.5 truncate">OM SAMIFY</div>
-              <div className="text-[9px] text-[var(--bone)]/50 uppercase tracking-wider truncate">Vilka vi är</div>
+              <div className="font-sans text-[12px] font-bold tracking-wide leading-none mb-0.5">FAQ</div>
+              <div className="text-[10px] text-[var(--bone)]/50 uppercase tracking-wider">Vanliga frågor</div>
             </div>
           </motion.button>
 
-          {/* FAQ */}
           <motion.button
-            onClick={() => setScreen('faq')}
+            onClick={() => setScreen('areas')}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
-            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-2.5"
+            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-3 h-[64px]"
           >
-            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
-              <HelpCircle size={13} />
+            <div className="w-8 h-8 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+              <Briefcase size={14} />
             </div>
             <div className="min-w-0">
-              <div className="font-sans text-[11px] font-bold tracking-wide leading-none mb-0.5 truncate">FAQ</div>
-              <div className="text-[9px] text-[var(--bone)]/50 uppercase tracking-wider truncate">Vanliga frågor</div>
-            </div>
-          </motion.button>
-
-          {/* BRANSCHER */}
-          <motion.button
-            onClick={() => setScreen('areas')}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.30 }}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            className="group relative rounded-2xl p-3 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-2.5"
-          >
-            <div className="w-7 h-7 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
-              <Briefcase size={13} />
-            </div>
-            <div className="min-w-0">
-              <div className="font-sans text-[11px] font-bold tracking-wide leading-none mb-0.5 truncate">BRANSCHER</div>
-              <div className="text-[9px] text-[var(--bone)]/50 uppercase tracking-wider truncate">Där vi jobbar</div>
+              <div className="font-sans text-[12px] font-bold tracking-wide leading-none mb-0.5">BRANSCHER</div>
+              <div className="text-[10px] text-[var(--bone)]/50 uppercase tracking-wider">Där vi jobbar</div>
             </div>
           </motion.button>
         </div>
+
+        {/* OM SAMIFY — full bredd, narrative-stil */}
+        <motion.button
+          onClick={() => setScreen('about')}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.30 }}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          className="group relative w-full rounded-2xl p-3.5 text-left hairline bg-white/[0.03] hover:bg-white/[0.06] hover:border-[var(--purple-soft)]/40 transition flex items-center gap-3 h-[64px] overflow-hidden"
+        >
+          <div className="w-8 h-8 rounded-lg grid place-items-center bg-[var(--purple)]/15 text-[var(--purple-soft)] shrink-0">
+            <Users size={14} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-sans text-[12px] font-bold tracking-wide leading-none mb-0.5">OM SAMIFY</div>
+            <div className="text-[11px] text-[var(--bone)]/55 leading-snug">
+              Litet teknik-bolag i Kalmar. Bygger och driver AI-kollegor för svenska SMB.
+            </div>
+          </div>
+          <ArrowUpRight size={14} className="text-[var(--bone)]/30 group-hover:text-[var(--purple-soft)] transition shrink-0" />
+        </motion.button>
 
         <div className="mt-3 pb-1 text-[9.5px] text-[var(--bone)]/40 text-center tracking-[0.18em] uppercase">
           Krypterat · GDPR · Drivs av <span className="shimmer-text font-semibold">Samify</span>
@@ -493,10 +504,10 @@ function Home({ setScreen }) {
   )
 }
 
-/* ── Chat screen (Claude API) ───────────────────────────────────── */
+/* ── Chat screen (Sam — drivs av Claude API) ────────────────────── */
 function ChatScreen({ setScreen }) {
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hej! Jag är Samify — er AI-kollega. Berätta vad ert teams största tidstjuv är just nu, så hjälper jag dig se vad som går att automatisera. (Eller fråga mig vad som helst.)' },
+    { role: 'assistant', content: 'Hej! Jag är Sam — Samifys AI-kollega (S.A.M., Smart Automation Manager). Berätta vad ert teams största tidstjuv är just nu, så hjälper jag dig se vad som går att automatisera. Eller fråga mig vad som helst.' },
   ])
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
@@ -567,7 +578,7 @@ function ChatScreen({ setScreen }) {
           <div className="flex items-start gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 p-3 text-[12px] text-rose-200">
             <AlertCircle size={14} className="mt-0.5 shrink-0" />
             <div>
-              Kunde inte nå Claude just nu. Testa igen eller ta <button className="underline font-semibold" onClick={() => setScreen('contact')}>Kontakt-fliken</button>.
+              Sam är offline för stunden. Testa igen eller ta <button className="underline font-semibold" onClick={() => setScreen('contact')}>Kontakt-fliken</button>.
             </div>
           </div>
         )}
@@ -744,7 +755,7 @@ function FaqScreen() {
   return (
     <div className="h-full overflow-y-auto scrollbar-hidden px-5 pb-5 text-[var(--bone)] space-y-2">
       <div className="text-[12px] text-[var(--bone)]/55 pb-2">
-        Om svaret inte finns här — ta <span className="font-semibold text-[var(--purple-soft)]">Chatta</span>-fliken så svarar Claude direkt.
+        Om svaret inte finns här — ta <span className="font-semibold text-[var(--purple-soft)]">Chatta</span>-fliken så svarar Sam direkt.
       </div>
       {qa.map((item, i) => {
         const isOpen = open === i
@@ -1244,7 +1255,7 @@ function ProactiveNudge({ onOpen, onClose }) {
         <div>
           <div className="text-[12.5px] font-semibold text-[var(--bone)]">Största tidstjuven just nu?</div>
           <div className="text-[11.5px] text-[var(--bone)]/80 mt-0.5">
-            Räkna besparing, chatta med Claude, eller boka 30 min. Allt här.
+            Räkna besparing, chatta med Sam, eller boka 30 min. Allt här.
           </div>
           <button
             onClick={onOpen}

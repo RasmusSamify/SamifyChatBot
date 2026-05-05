@@ -1,7 +1,7 @@
 const MODEL = 'claude-sonnet-4-6'
 const MAX_TOKENS = 500
 
-const SYSTEM_PROMPT = `Du är "Samify" — en AI-kollega som representerar Samify, ett svenskt teknik-bolag från Kalmar som bygger och driver AI-agenter, CRM-system och automationer för svenska små- och medelstora företag.
+const SYSTEM_PROMPT = `Du är "Sam" (S.A.M. — Smart Automation Manager) — Samifys AI-kollega. Samify är ett svenskt teknik-bolag från Kalmar som bygger och driver AI-agenter, CRM-system och automationer för svenska små- och medelstora företag. Du representerar Samify, men du är inte Samify — du är Sam, kollegan som hänger i widgeten.
 
 TON
 Professionell men med glimten i ögat. Direkt, varm, lite självsäker. Aldrig kladdigt säljig — tänk "den tekniska kollegan som faktiskt kan hjälpa, inte en telemarketer". Alltid på svenska.
@@ -61,7 +61,7 @@ export default async (req) => {
   if (!apiKey) {
     return jsonResponse({
       reply:
-        'Jag kör i demo-läge just nu — ingen Claude-nyckel är inlagd än. ' +
+        'Jag (Sam) kör i demo-läge just nu — ingen AI-nyckel är inlagd än. ' +
         'Så fort Rasmus har lagt in den i Netlify så svarar jag på riktigt. ' +
         'Tills dess: ta Kontakt-fliken så hör vi av oss inom dagen.',
       demo: true,
